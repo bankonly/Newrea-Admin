@@ -1,11 +1,11 @@
 import Res from "../Controllers/DefaultResponseController";
-import { UserQB, User } from "../Models/Seller";
+import { AdminQB, Admin } from "../Models/Seller";
 
 /** Define All Function for Provider  */
-class SellerProvider {
+class AdminProvider {
     
   /** Ceate new Seller */
-  async createNewSeller() {
+  async createNewAdmin() {
     try {
       return Res.success({ msg: "Seller Created" });
     } catch (error) {
@@ -15,4 +15,4 @@ class SellerProvider {
 }
 
 /** export new SellerProvider */
-export default new SellerProvider();
+export default new AdminProvider();
