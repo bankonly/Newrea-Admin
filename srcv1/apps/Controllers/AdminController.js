@@ -151,6 +151,34 @@ class AdminController extends Controller {
       return this.responseError({ error: error });
     }
   }
+
+  /** Change Password */
+  async changePassword() {
+    try {
+      const bodyData = {
+        password: this.body.password,
+        old_password: this.body.old_password,
+        confirm_password: this.body.confirm_password
+      };
+
+      /** Check valid objectId */
+      const isValid = validateObjectId(this.req.auth._id);
+
+      /** Validate BodyData */
+      const isValidData = AdminProvider.validateChangePwd(bodyData);
+      // return this.response({data:isEmptyObj(isValid)})
+      if (!isEmptyObj(isValidData)) return this.response({ data: isValidData });
+
+      /** call change password function */
+      const changePwd = await AdminProvider.changePassword(
+        bodyData,
+        this.req.auth._id
+      );
+      return this.response(changePwd);
+    } catch (error) {
+      return this.responseError({ error: error });
+    }
+  }
 }
 
 export default (...args) => new AdminController(...args);

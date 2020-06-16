@@ -6,7 +6,11 @@ import JWT from "../Helpers/Jwt";
 import CONSTANT from "../../configs/constant";
 import AccessPolicyProvider from "./AccessPolicyProvider";
 import { AccessPolicy } from "../Models/Access_policy";
-import { invalidObjectId, isEmptyObj,multipleValidateObj } from "../Helpers/Global";
+import {
+  invalidObjectId,
+  isEmptyObj,
+  multipleValidateObj
+} from "../Helpers/Global";
 
 /** Define All Function for Provider  */
 class AdminProvider {
@@ -35,11 +39,15 @@ class AdminProvider {
       error.email = "invalid email";
     }
 
-    if(!isEmptyObj(error)) return error
-    const validateMul = multipleValidateObj(obj,['name','email','password','confirm_password'],"number",{})
-    if(validateMul.length > 0) error = validateMul
+    if (!isEmptyObj(error)) return error;
+    const validateMul = multipleValidateObj(
+      obj,
+      ["name", "email", "password", "confirm_password"],
+      "number",
+      {}
+    );
+    if (validateMul.length > 0) error = validateMul;
     return error;
-
   }
 
   /** Validate Register Object */
@@ -52,9 +60,14 @@ class AdminProvider {
     if (typeof obj.email !== "string" || !Validator.isEmail(obj.email)) {
       error.email = "invalid email";
     }
-    if(!isEmptyObj(error)) return error
-    const validateMul = multipleValidateObj(obj,['name','email'],"number",{})
-    if(validateMul.length > 0) error = validateMul
+    if (!isEmptyObj(error)) return error;
+    const validateMul = multipleValidateObj(
+      obj,
+      ["name", "email"],
+      "number",
+      {}
+    );
+    if (validateMul.length > 0) error = validateMul;
     return error;
   }
 
@@ -264,7 +277,8 @@ class AdminProvider {
 
       /** check name */
       const isAdminData = await AdminQB.findByUserId({ id: admin_id });
-      if (isAdminData == null) return Res.notFound({msg:"admin_id does not exist"})
+      if (isAdminData == null)
+        return Res.notFound({ msg: "admin_id does not exist" });
 
       if (isAdminData.contact.email == email) error.email = "already exist";
       if (isAdminData.name == name) error.name = "already exist";
@@ -297,6 +311,37 @@ class AdminProvider {
       /** Rolback transaction */
       await transaction.abortTransaction();
       transaction.endSession();
+      return Res.somethingWrong({ error: error });
+    }
+  }
+
+  /** Validate chnage password */
+  validateChangePwd(obj) {
+    var error = {};
+    const validateMul = multipleValidateObj(obj, [], "string", {});
+    if (validateMul.length > 0) error = validateMul;
+    else if (obj.password !== obj.confirm_password)
+      error.password = "password not macth";
+
+    return error;
+  }
+
+  /** Change password */
+  async changePassword({ password, confirm_password, old_password }, admin_id) {
+    try {
+      const adminData = await Admin.findById(admin_id);
+      if (adminData == null)
+        return Res.notFound({ msg: "admin_id does not exist" });
+
+      if (!(await Bcrypt.verifyPassword(old_password, adminData.password))) {
+        return Res.badRequest({ data: "password not match with old password" });
+      }
+
+      adminData.password = await Bcrypt.hashPassword(password);
+      adminData.save();
+
+      return Res.success({ msg: "Password changed" });
+    } catch (error) {
       return Res.somethingWrong({ error: error });
     }
   }

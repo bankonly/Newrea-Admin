@@ -20,8 +20,9 @@ export default (app, router) => {
     .get("/admin", (...args) => AdminCtl(...args).getAdminList())
     .get("/admin/:admin_id", (...args) => AdminCtl(...args).getAdminById())
     .delete("/admin/:admin_id", (...args) => AdminCtl(...args).deleteAdmin())
-    .put("/admin/:admin_id", (...args) => AdminCtl(...args).updateAdmin());
-
+    .put("/admin/:admin_id", (...args) => AdminCtl(...args).updateAdmin())
+    .post("/admin/changePassword", (...args) => AdminCtl(...args).changePassword());
+    
   /** export route */
   app.use(kernel.routes.api, ApiAuthentication, router);
 };
