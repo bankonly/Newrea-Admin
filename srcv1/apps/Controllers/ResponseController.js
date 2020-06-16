@@ -6,7 +6,7 @@ class ResponseController {
   // duplicated
   duplicated({ data = {}, msg = "duplicated", status = false, code = 400 }) {
     return this.res.status(code).json({
-      message: data + " " + msg,
+      message: msg,
       status: status,
       code: code,
       data: data,
@@ -26,7 +26,7 @@ class ResponseController {
   // deleted
   deleted({ data = {}, msg = "deleted success", status = true, code = 200 }) {
     return this.res.status(code).json({
-      message: data + " " + msg,
+      message: msg,
       status: status,
       code: code,
       data: data,
@@ -36,7 +36,7 @@ class ResponseController {
   // updated
   updated({ data = {}, msg = "updated success", status = true, code = 200 }) {
     return this.res.status(code).json({
-      message: data + " " + msg,
+      message: msg,
       status: status,
       code: code,
       data: data,
@@ -46,7 +46,7 @@ class ResponseController {
   // created
   created({ data = {}, msg = "created success", status = true, code = 200 }) {
     return this.res.status(code).json({
-      message: data + " " + msg,
+      message: msg,
       status: status,
       code: code,
       data: data,
@@ -76,7 +76,7 @@ class ResponseController {
   // notFound
   notFound({ data = {}, msg = "notFound", status = false, code = 404 }) {
     return this.res.status(code).json({
-      message: data + " " + msg,
+      message: msg,
       status: status,
       code: code,
       data: data,

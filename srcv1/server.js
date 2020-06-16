@@ -12,6 +12,10 @@ import database from "./configs/db"
 /* ROUTES */
 import apiRoute from "./routes/api";
 import api from "./routes/api";
+import appRoute from "./routes/app";
+
+/** Middleware */
+import Authentcate from "./apps/Middlewares/ApiAuthentication"
 
 
 /** Load default config */
@@ -27,6 +31,8 @@ appConfig(app)
 app.use("/public", express.static(__dirname + "/public"));
 
 /** Load Route */
+appRoute(app,router) /** For /app */
+app.use(Authentcate)
 api(app,router) /** For /api */
 
 try {

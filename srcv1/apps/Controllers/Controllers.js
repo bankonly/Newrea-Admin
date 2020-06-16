@@ -9,6 +9,8 @@ class Controller {
     this.body = req.body;
     this.send = Res(res);
     this.response = Res(res).success;
+    this.badRequest = Res(res).badRequest
+    this.notFound = Res(res).notAllowed
     this.responseError = Res(res).somethingWrong;
   }
 }

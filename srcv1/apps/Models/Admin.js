@@ -1,25 +1,39 @@
 import mongoose from "mongoose";
 
 /** Import migrtion */
-import UserMigration from "../../database/migrations/UserMgrations";
-const { tableName, schema } = UserMigration(mongoose);
+import AdminMgrations from "../../database/migrations/AdminMgrations";
+const { tableName, schema } = AdminMgrations(mongoose);
 
-const UserModel = mongoose.model(tableName, schema);
+const AdminModel = mongoose.model(tableName, schema);
 
 /** Query Builder */
-class UserQueryBuilder {
+class AdminQueryBuilder {
   constructor() {
-    this.model = User;
+    this.model = AdminModel;
   }
 
   /** Find Seller By Id */
-  async findById(id) {}
+  async findByUserId({ id, isActive = [1, 0] }) {
+    // 1 mean active
+    return await this.model.findOne({ _id: id, is_active: { $in: isActive } });
+  }
 
   /** Find Seller By name */
-  async findByName(name){
-    return UserModel.findOne()
+  async findByName({ name, isActive = [1, 0] }) {
+    return await this.model.findOne({
+      name: name,
+      is_active: { $in: isActive }
+    });
+  }
+
+  /** find Admin By Email */
+  async findByEmail({ email, isActive = [1, 0] }) {
+    return await this.model.findOne({
+      "contact.email": email,
+      is_active: { $in: isActive }
+    });
   }
 }
 
-export const User = UserModel;
-export const UserQB = new UserQueryBuilder();
+export const Admin = AdminModel;
+export const AdminQB = new AdminQueryBuilder();

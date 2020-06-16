@@ -1,5 +1,6 @@
 export default {
     routes:{
-        api:"/api"
+        api:"/api", // authenticated route
+        app:"/app" // for unthorized request
     }
 }
