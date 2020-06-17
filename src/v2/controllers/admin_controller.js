@@ -1,186 +1,197 @@
-import Controller from "./controllers";
+/** Controllers */
+import Res from "./response_controller";
+
+/** Providers */
 import AdminProvider from "../providers/admin_provider";
 import AccessPolicyProvider from "../providers/access_policy_provider";
+
+/** Models */
+import { Admin, AdminQB } from "../models/admin";
+import { AccessPolicy } from "../models/access_policy";
+
+/** Helpers */
 import { isEmptyObj, validateObjectId } from "../helpers/Global";
-import { Admin, AdminQB } from "../models/Admin";
-import { AccessPolicy } from "../models/Access_policy";
 
-class AdminController extends Controller {
-  /** Admin Registeration */
-  async register() {
-    try {
-      const saveData = {
-        name: this.body.name,
-        email: this.body.email,
-        password: this.body.password,
-        phone_number: this.body.phone_number,
-        access_policy: this.body.access_policy,
-        confirm_password: this.body.confirm_password,
-        admin: this.body.admin,
-        most_popular: this.body.most_popular,
-        featured_stores: this.body.featured_stores,
-        recommended_item: this.body.recommended_item,
-        catagory: this.body.catagory,
-        driver_approved: this.body.driver_approved,
-        banner: this.body.banner,
-        popular_screen: this.body.popular_screen,
-        reason: this.body.reason
-      };
+/** Admin Registeration */
+export const register = async (req, res) => {
+  const response = Res(res);
+  try {
+    const saveData = {
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+      phone_number: req.body.phone_number,
+      access_policy: req.body.access_policy,
+      confirm_password: req.body.confirm_password,
+      admin: req.body.admin,
+      most_popular: req.body.most_popular,
+      featured_stores: req.body.featured_stores,
+      recommended_item: req.body.recommended_item,
+      catagory: req.body.catagory,
+      driver_approved: req.body.driver_approved,
+      banner: req.body.banner,
+      popular_screen: req.body.popular_screen,
+      reason: req.body.reason
+    };
 
-      const createData = { ...saveData };
-      /** Validate Request Data */
-      const isValidData = AdminProvider.validateRegisterObj(saveData);
+    const createData = { ...saveData };
+    /** Validate Request Data */
+    const isValidData = AdminProvider.validateRegisterObj(saveData);
 
-      /** Check validator */
-      if (!isEmptyObj(isValidData))
-        return this.badRequest({ data: isValidData });
+    /** Check validator */
+    if (!isEmptyObj(isValidData))
+      return response.badRequest({ data: isValidData });
 
-      /** register admin */
-      const registerAdmin = await AdminProvider.createNewAdmin(createData);
-      return this.response(registerAdmin);
-    } catch (error) {
-      return this.responseError({ error: error });
-    }
+    /** register admin */
+    const registerAdmin = await AdminProvider.createNewAdmin(createData);
+    return response.success(registerAdmin);
+  } catch (error) {
+    return response.somethingWrong({ error: error });
   }
+};
 
-  /** Login Admin */
-  async login() {
-    try {
-      /** prepare save data */
-      const loginData = {
-        author: this.body.author,
-        password: this.body.password
-      };
+/** Login Admin */
+export const login = async (req, res) => {
+  const response = Res(res);
+  try {
+    /** prepare save data */ 
+    const loginData = {
+      author: req.body.author,
+      password: req.body.password
+    };
 
-      const isValidData = AdminProvider.validateLoginObj(loginData);
+    const isValidData = AdminProvider.validateLoginObj(loginData);
 
-      /** Check validator */
-      if (!isEmptyObj(isValidData))
-        return this.badRequest({ data: isValidData });
+    /** Check validator */
+    if (!isEmptyObj(isValidData))
+      return response.badRequest({ data: isValidData });
 
-      const isLoggedIn = await AdminProvider.login(loginData);
-      return this.response(isLoggedIn);
-    } catch (error) {
-      return this.responseError({ error: error });
-    }
+    const isLoggedIn = await AdminProvider.login(loginData);
+    return response.success(isLoggedIn);
+  } catch (error) {
+    return response.somethingWrong({ error: error });
   }
+};
 
-  /** get admin list */
-  async getAdminList() {
-    try {
-      const adminData = await AdminProvider.getAdmin({});
-      return this.response(adminData);
-    } catch (error) {
-      return this.responseError({ error: error });
-    }
+/** get admin list */
+export const getAdminList = async (req, res) => {
+  const response = Res(res);
+  try {
+    const adminData = await AdminProvider.getAdmin({});
+    return response.success(adminData);
+  } catch (error) {
+    return response.somethingWrong({ error: error });
   }
+};
 
-  /** get admin list */
-  async getAdminById() {
-    try {
-      const isValid = validateObjectId(this.params.admin_id);
+/** get admin list */
+export const getAdminById = async (req, res) => {
+  const response = Res(res);
+  try {
+    const isValid = validateObjectId(req.params.admin_id);
 
-      // /** Check validator */
-      if (!isEmptyObj(isValid)) return this.badRequest({ data: isValid });
+    // /** Check validator */
+    if (!isEmptyObj(isValid)) return response.badRequest({ data: isValid });
 
-      const adminData = await AdminProvider.getAdmin({
-        adminId: this.params.admin_id
-      });
+    const adminData = await AdminProvider.getAdmin({
+      adminId: req.params.admin_id
+    });
 
-      return this.response(adminData);
-    } catch (error) {
-      return this.responseError({ error: error });
-    }
+    return response.success(adminData);
+  } catch (error) {
+    return response.somethingWrong({ error: error });
   }
+};
 
-  /** delete admin */
-  async deleteAdmin() {
-    try {
-      const isValid = validateObjectId(this.params.admin_id);
+/** delete admin */
+export const deleteAdmin = async (req, res) => {
+  const response = Res(res);
+  try {
+    const isValid = validateObjectId(req.params.admin_id);
 
-      /** Check validator */
-      if (!isEmptyObj(isValid)) return this.badRequest({ data: isValid });
+    /** Check validator */
+    if (!isEmptyObj(isValid)) return response.badRequest({ data: isValid });
 
-      const adminData = await Admin.findByIdAndDelete(this.params.admin_id);
-      if (adminData) {
-        return this.response({ msg: "Deleted success" });
-      }
-      return this.response({ msg: "Can not delete" });
-    } catch (error) {
-      return this.responseError({ error: error });
+    const adminData = await Admin.findByIdAndDelete(req.params.admin_id);
+    if (adminData) {
+      return response.success({ msg: "Deleted success" });
     }
+    return response.success({ msg: "Can not delete" });
+  } catch (error) {
+    return response.somethingWrong({ error: error });
   }
+};
 
-  /** Update Admin by Id */
-  async updateAdmin() {
-    try {
-      const saveData = {
-        name: this.body.name,
-        email: this.body.email,
-        access_policy: this.body.access_policy,
-        admin: this.body.admin,
-        most_popular: this.body.most_popular,
-        phone_number: this.body.phone_number,
-        featured_stores: this.body.featured_stores,
-        recommended_item: this.body.recommended_item,
-        catagory: this.body.catagory,
-        driver_approved: this.body.driver_approved,
-        banner: this.body.banner,
-        popular_screen: this.body.popular_screen,
-        reason: this.body.reason
-      };
+/** Update Admin by Id */
+export const updateAdmin = async (req, res) => {
+  const response = Res(res);
+  try {
+    const saveData = {
+      name: req.body.name,
+      email: req.body.email,
+      access_policy: req.body.access_policy,
+      admin: req.body.admin,
+      most_popular: req.body.most_popular,
+      phone_number: req.body.phone_number,
+      featured_stores: req.body.featured_stores,
+      recommended_item: req.body.recommended_item,
+      catagory: req.body.catagory,
+      driver_approved: req.body.driver_approved,
+      banner: req.body.banner,
+      popular_screen: req.body.popular_screen,
+      reason: req.body.reason
+    };
 
-      const updatedata = { ...saveData };
-      const isValid = validateObjectId(this.params.admin_id);
+    const updatedata = { ...saveData };
+    const isValid = validateObjectId(req.params.admin_id);
 
-      /** Check validator */
-      if (!isEmptyObj(isValid)) return this.badRequest({ data: isValid });
+    /** Check validator */
+    if (!isEmptyObj(isValid)) return response.badRequest({ data: isValid });
 
-      /** Validate Request Data */
-      const isValidData = AdminProvider.validateUpdateObj(saveData);
+    /** Validate Request Data */
+    const isValidData = AdminProvider.validateUpdateObj(saveData);
 
-      /** Check validator */
-      if (!isEmptyObj(isValidData))
-        return this.badRequest({ data: isValidData });
+    /** Check validator */
+    if (!isEmptyObj(isValidData))
+      return response.badRequest({ data: isValidData });
 
-      /** register admin */
-      const registerAdmin = await AdminProvider.updateAdmin(
-        updatedata,
-        this.params.admin_id
-      );
-      return this.response(registerAdmin);
-    } catch (error) {
-      return this.responseError({ error: error });
-    }
+    /** register admin */
+    const registerAdmin = await AdminProvider.updateAdmin(
+      updatedata,
+      req.params.admin_id
+    );
+    return response.success(registerAdmin);
+  } catch (error) {
+    return response.somethingWrong({ error: error });
   }
+};
 
-  /** Change Password */
-  async changePassword() {
-    try {
-      const bodyData = {
-        password: this.body.password,
-        old_password: this.body.old_password,
-        confirm_password: this.body.confirm_password
-      };
+/** Change Password */
+export const changePassword = async (req, res) => {
+  const response = Res(res);
+  try {
+    const bodyData = {
+      password: req.body.password,
+      old_password: req.body.old_password,
+      confirm_password: req.body.confirm_password
+    };
 
-      /** Check valid objectId */
-      const isValid = validateObjectId(this.req.auth._id);
+    /** Check valid objectId */
+    const isValid = validateObjectId(req.auth._id);
 
-      /** Validate BodyData */
-      const isValidData = AdminProvider.validateChangePwd(bodyData);
-      // return this.response({data:isEmptyObj(isValid)})
-      if (!isEmptyObj(isValidData)) return this.response({ data: isValidData });
+    /** Validate BodyData */
+    const isValidData = AdminProvider.validateChangePwd(bodyData);
+    // return response.success({data:isEmptyObj(isValid)})
+    if (!isEmptyObj(isValidData))
+      return response.success({ data: isValidData });
 
-      /** call change password function */
-      const changePwd = await AdminProvider.changePassword(
-        bodyData,
-        this.req.auth._id
-      );
-      return this.response(changePwd);
-    } catch (error) {
-      return this.responseError({ error: error });
-    }
+    /** call change password function */
+    const changePwd = await AdminProvider.changePassword(
+      bodyData,
+      req.auth._id
+    );
+    return response.success(changePwd);
+  } catch (error) {
+    return response.somethingWrong({ error: error });
   }
-}
-
-export default (...args) => new AdminController(...args);
+};

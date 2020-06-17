@@ -2,42 +2,27 @@ import express from "express";
 import log from "chalk";
 import passport from "passport";
 
-
 /** Config Import */
 /** Load ENV  */
-import defaultConfig from "./configs/default_config"
-import appConfig from "./configs/app"
-import database from "./configs/db"
+import default_config from "./configs/default_config";
+import app_config from "./configs/app";
+import database from "./configs/db";
+
+const app = express();
+/* LOAD ALL DEFAULT CONFIGURATIONS */
+app_config(app);
 
 /* ROUTES */
-import apiRoute from "./routes/api";
-import api from "./routes/api";
-import appRoute from "./routes/app";
-
-/** Middleware */
-import Authentcate from "./middlewares/ApiAuthentication"
-
-
-/** Load default config */
-const app = express();
-const router = express.Router();
-
-
-/* LOAD ALL DEFAULT CONFIGURATIONS */
-appConfig(app)
+import setup_router from "./routes/setup";
+setup_router(app);
 
 
 /* LOAD IMAGE PATH */
 app.use("/public", express.static(__dirname + "/public"));
 
-/** Load Route */
-app.use('/app',appRoute) /** For /app */
-
-api(app,router) /** For /api */
-
 try {
   /* RUN PROGRAM BASE ON ENV PORT */
-  app.listen(process.env.APP_PORT, (e) =>
+  app.listen(process.env.APP_PORT, e =>
     console.log("CONNECTED TO ", process.env.APP_PORT)
   );
 } catch (error) {

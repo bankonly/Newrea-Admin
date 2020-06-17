@@ -1,11 +1,11 @@
 import Validator from "validator";
 import Res from "../controllers/default_res_controller";
-import { AdminQB, Admin } from "../models/Admin";
+import { AdminQB, Admin } from "../models/admin";
 import Bcrypt from "../helpers/Bcrypt";
 import JWT from "../helpers/Jwt";
 import CONSTANT from "../configs/constant";
 import AccessPolicyProvider from "./access_policy_provider";
-import { AccessPolicy } from "../models/Access_policy";
+import { AccessPolicy } from "../models/access_policy";
 import {
   invalidObjectId,
   isEmptyObj,
@@ -221,7 +221,7 @@ class AdminProvider {
       if (adminId == null) {
         adminData = await Admin.find().select(selected);
       } else {
-        adminData = await Admin.find(condition).select(selected);
+        adminData = await Admin.findOne(condition).select(selected);
       }
       return Res.success({ data: adminData });
     } catch (error) {
@@ -273,14 +273,21 @@ class AdminProvider {
         popular_screen,
         reason
       };
-
-      /** check name */
+      /** check admin_id  */
       const isAdminData = await AdminQB.findByUserId({ id: admin_id });
       if (isAdminData == null)
         return Res.notFound({ msg: "admin_id does not exist" });
 
-      if (isAdminData.contact.email == email) error.email = "already exist";
-      if (isAdminData.name == name) error.name = "already exist";
+      /** check name,email */
+      const isName = await AdminQB.findByName({ name: name });
+      const isEmail = await AdminQB.findByEmail({ email: email });
+
+      /** check if two of them return null */
+      if (isName !== null) error.name = "already exist";
+      if (isEmail !== null) error.name = "already exist";
+      if (isAdminData.contact.email == email) error.email = "you entered old one";
+      if (isAdminData.name == name) error.name = "you entered old one";
+
       /** Validate Error */
       if (!isEmptyObj(error)) return Res.badRequest({ data: error });
 
