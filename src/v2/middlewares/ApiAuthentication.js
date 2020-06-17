@@ -1,7 +1,7 @@
-import { Admin, AdminQB } from "../Models/Admin";
-import Res from "../Controllers/ResponseController";
+import { Admin, AdminQB } from "../models/Admin";
+import Res from "../controllers/ResponseController";
 import Jwt from "jsonwebtoken";
-import CONSTANT from "../../configs/constant";
+import CONSTANT from "../configs/constant";
 
 export default async (req, res, next) => {
   try {
@@ -13,14 +13,14 @@ export default async (req, res, next) => {
     const decoded = Jwt.verify(authorization, process.env.SECRET_KEY);
     const userData = await Admin.findOne({
       _id: decoded.userId,
-      is_active: { $in: [1] }
+      is_online: "online"
     }).select("-password -__v");
 
     if (userData == null) {
       return Res(res).notFound({ msg: "user might be deleted or banned" });
     }
 
-    if (userData.loginCount !== decoded.loginCount) {
+    if (userData.login_count !== decoded.login_count) {
       return Res(res).unAuthorized({});
     }
     req.auth = userData;

@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import CONSTANT from "../../configs/constant"
+import CONSTANT from "../configs/constant"
 
 class JwtHelper {
   /** JWT only token */

@@ -1,16 +1,16 @@
 import Validator from "validator";
-import Res from "../Controllers/DefaultResponseController";
-import { AdminQB, Admin } from "../Models/Admin";
-import Bcrypt from "../Helpers/Bcrypt";
-import JWT from "../Helpers/Jwt";
-import CONSTANT from "../../configs/constant";
+import Res from "../controllers/DefaultResponseController";
+import { AdminQB, Admin } from "../models/Admin";
+import Bcrypt from "../helpers/Bcrypt";
+import JWT from "../helpers/Jwt";
+import CONSTANT from "../configs/constant";
 import AccessPolicyProvider from "./AccessPolicyProvider";
-import { AccessPolicy } from "../Models/Access_policy";
+import { AccessPolicy } from "../models/Access_policy";
 import {
   invalidObjectId,
   isEmptyObj,
   multipleValidateObj
-} from "../Helpers/Global";
+} from "../helpers/Global";
 
 /** Define All Function for Provider  */
 class AdminProvider {
@@ -31,6 +31,7 @@ class AdminProvider {
     if (!obj.name) error.name = "field is required";
     if (typeof obj.name !== "string") error.name = "field should be string";
     if (!obj.email) error.email = "field is required";
+    if (!obj.phone_number) error.phone_number = "field is required";
     if (!obj.password) error.password = "field is required";
     if (!obj.confirm_password) error.confirm_password = "field is required";
     if (obj.password !== obj.confirm_password)
@@ -42,7 +43,7 @@ class AdminProvider {
     if (!isEmptyObj(error)) return error;
     const validateMul = multipleValidateObj(
       obj,
-      ["name", "email", "password", "confirm_password"],
+      ["name", "email", "password", "confirm_password", "phone_number"],
       "number",
       {}
     );
@@ -57,13 +58,14 @@ class AdminProvider {
     if (!obj.name) error.name = "field is required";
     if (typeof obj.name !== "string") error.name = "field should be string";
     if (!obj.email) error.email = "field is required";
+    if (!obj.phone_number) error.phone_number = "field is required";
     if (typeof obj.email !== "string" || !Validator.isEmail(obj.email)) {
       error.email = "invalid email";
     }
     if (!isEmptyObj(error)) return error;
     const validateMul = multipleValidateObj(
       obj,
-      ["name", "email"],
+      ["name", "email", "phone_number"],
       "number",
       {}
     );
@@ -77,6 +79,7 @@ class AdminProvider {
     password,
     email,
     admin,
+    phone_number,
     access_policy,
     most_popular,
     featured_stores,
@@ -97,10 +100,11 @@ class AdminProvider {
       const saveData = {
         name,
         password,
-        contact: { email: email },
-        loginCount: 1,
+        contact: { email: email, phone_number: phone_number },
+        login_count: 1,
         access_policy,
         admin,
+        phone_number,
         most_popular,
         featured_stores,
         recommended_item,
@@ -112,11 +116,8 @@ class AdminProvider {
       };
 
       /** check name */
-      const isName = await AdminQB.findByName({ name: name, isActive: [1] });
-      const isEmail = await AdminQB.findByEmail({
-        email: email,
-        isActive: [1]
-      });
+      const isName = await AdminQB.findByName({ name: name });
+      const isEmail = await AdminQB.findByEmail({ email: email });
       if (isName !== null) error.name = "already exist";
       if (isEmail !== null) error.email = "already exist";
 
@@ -136,7 +137,7 @@ class AdminProvider {
 
         const tokenData = {
           userId: createAdmin._id,
-          loginCount: createAdmin.loginCount
+          login_count: createAdmin.login_count
         };
         const token = JWT.jwtMethod(tokenData, CONSTANT.token_life_time);
 
@@ -166,11 +167,8 @@ class AdminProvider {
   async login({ author, password }) {
     try {
       /** check name */
-      const isName = await AdminQB.findByName({ name: author, isActive: [1] });
-      const isEmail = await AdminQB.findByEmail({
-        email: author,
-        isActive: [1]
-      });
+      const isName = await AdminQB.findByName({ name: author });
+      const isEmail = await AdminQB.findByEmail({ email: author });
 
       /** check if two of them return null */
       if (isName == null && isEmail == null) {
@@ -190,13 +188,13 @@ class AdminProvider {
       if (!isPassword) return Res.badRequest({ msg: "Invalid password" });
 
       /** Store Login Count Check Old Token */
-      authorData.loginCount = authorData.loginCount + 1;
+      authorData.login_count = authorData.login_count + 1;
       authorData.save();
 
       /** Store token data */
       const tokenData = {
         userId: authorData._id,
-        loginCount: authorData.loginCount
+        login_count: authorData.login_count
       };
       /** Generate new token */
       const token = JWT.jwtMethod(tokenData, CONSTANT.token_life_time);
@@ -216,7 +214,7 @@ class AdminProvider {
       var adminData = null;
       const condition = {
         _id: adminId,
-        is_active: { $in: [1, 0] }
+        is_online: "online"
       };
 
       const selected = "-password";
@@ -237,6 +235,7 @@ class AdminProvider {
       name,
       email,
       admin,
+      phone_number,
       access_policy,
       most_popular,
       featured_stores,
@@ -258,9 +257,9 @@ class AdminProvider {
       /** save data for admin */
       const saveData = {
         name,
-        contact: { email: email },
-        loginCount: 1,
-        access_policy
+        contact: { email: email, phone_number: phone_number },
+        access_policy,
+        phone_number
       };
 
       const accessPolicySave = {

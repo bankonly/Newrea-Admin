@@ -1,5 +1,5 @@
-import Controller from "./Controllers";
-import SellerProvider from "../Providers/SellerProvider";
+import Controller from "./controllers";
+import SellerProvider from "../providers/SellerProvider";
 
 class SellerController extends Controller {
   getSeller() {
