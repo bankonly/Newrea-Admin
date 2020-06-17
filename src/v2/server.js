@@ -15,7 +15,7 @@ import api from "./routes/api";
 import appRoute from "./routes/app";
 
 /** Middleware */
-import Authentcate from "./Middlewares/ApiAuthentication"
+import Authentcate from "./middlewares/ApiAuthentication"
 
 
 /** Load default config */

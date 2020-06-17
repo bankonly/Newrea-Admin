@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 /** Import migrtion */
-import AdminMgrations from "../database/migrations/AdminMgrations";
+import AdminMgrations from "../database/schema/admin_schema";
 const { tableName, schema } = AdminMgrations(mongoose);
 
 const AdminModel = mongoose.model(tableName, schema);

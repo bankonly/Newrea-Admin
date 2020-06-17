@@ -1,10 +1,10 @@
 import Validator from "validator";
-import Res from "../controllers/DefaultResponseController";
+import Res from "../controllers/default_res_controller";
 import { AdminQB, Admin } from "../models/Admin";
 import Bcrypt from "../helpers/Bcrypt";
 import JWT from "../helpers/Jwt";
 import CONSTANT from "../configs/constant";
-import AccessPolicyProvider from "./AccessPolicyProvider";
+import AccessPolicyProvider from "./access_policy_provider";
 import { AccessPolicy } from "../models/Access_policy";
 import {
   invalidObjectId,
