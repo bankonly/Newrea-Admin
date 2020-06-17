@@ -1,4 +1,4 @@
-import Res from "./ResponseController"
+import Res from "./response_controller"
 
 class Controller {
   constructor(req, res, next) {

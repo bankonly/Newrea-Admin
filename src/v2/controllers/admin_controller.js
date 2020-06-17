@@ -1,6 +1,6 @@
 import Controller from "./controllers";
-import AdminProvider from "../providers/AdminProvider";
-import AccessPolicyProvider from "../providers/AccessPolicyProvider";
+import AdminProvider from "../providers/admin_provider";
+import AccessPolicyProvider from "../providers/access_policy_provider";
 import { isEmptyObj, validateObjectId } from "../helpers/Global";
 import { Admin, AdminQB } from "../models/Admin";
 import { AccessPolicy } from "../models/Access_policy";

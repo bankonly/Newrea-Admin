@@ -1,5 +1,5 @@
 import kernel from "../configs/kernel";
-import AdminCtl from "../controllers/AdminController";
+import AdminCtl from "../controllers/admin_controller";
 
 import express from "express";
 const router = express.Router();

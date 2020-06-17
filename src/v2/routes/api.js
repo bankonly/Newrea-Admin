@@ -1,20 +1,9 @@
 import kernel from "../configs/kernel";
-import Res from "../controllers/ResponseController";
-import SellerTypeCtl from "../controllers/SellerTypeController";
-import ApiAuthentication from "../Middlewares/ApiAuthentication";
-import AdminCtl from "../controllers/AdminController";
+import Res from "../controllers/response_controller";
+import ApiAuthentication from "../middlewares/ApiAuthentication";
+import AdminCtl from "../controllers/admin_controller";
 
 export default (app, router) => {
-  /** SellerTypeController */
-  router
-    .get("/sellerType", (...args) => SellerTypeCtl(...args).getAllSellerType())
-    .get("/sellerType/:id", (...args) => SellerTypeCtl(...args).getSellerType())
-    .put("/sellerType", (...args) => SellerTypeCtl(...args).updateSellerType())
-    .delete("/sellerType", (...args) =>
-      SellerTypeCtl(...args).deleteSellerType()
-    )
-    .post("/sellerType", (...args) => SellerTypeCtl(...args).newSellerType());
-
   /** Admin Controller */
   router
     .get("/admin", (...args) => AdminCtl(...args).getAdminList())

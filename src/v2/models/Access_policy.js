@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 /** Import migrtion */
-import AccessPolicyMigration from "../database/migrations/AccessPolicyMigration";
+import AccessPolicyMigration from "../database/schema/access_policy_schema";
 
 const { tableName, schema } = AccessPolicyMigration(mongoose);
 

@@ -1,5 +1,5 @@
 import { Admin, AdminQB } from "../models/Admin";
-import Res from "../controllers/ResponseController";
+import Res from "../controllers/response_controller";
 import Jwt from "jsonwebtoken";
 import CONSTANT from "../configs/constant";
 
