@@ -1,8 +1,8 @@
 import kernel from "../configs/kernel";
-import Res from "../apps/Controllers/ResponseController";
-import SellerTypeCtl from "../apps/Controllers/SellerTypeController";
-import ApiAuthentication from "../apps/Middlewares/ApiAuthentication";
-import AdminCtl from "../apps/Controllers/AdminController";
+import Res from "../controllers/ResponseController";
+import SellerTypeCtl from "../controllers/SellerTypeController";
+import ApiAuthentication from "../Middlewares/ApiAuthentication";
+import AdminCtl from "../controllers/AdminController";
 
 export default (app, router) => {
   /** SellerTypeController */

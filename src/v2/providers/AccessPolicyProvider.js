@@ -1,5 +1,5 @@
 import Validator from "validator";
-import Res from "../Controllers/DefaultResponseController";
+import Res from "../controllers/DefaultResponseController";
 
 /** Define All Function for Provider  */
 class AccessPolicyProvider {

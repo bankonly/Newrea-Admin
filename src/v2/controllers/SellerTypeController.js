@@ -1,5 +1,5 @@
-import Controller from "./Controllers";
-import SellerTypeProvider from "../Providers/SellerTypeProvider";
+import Controller from "./controllers";
+import SellerTypeProvider from "../providers/SellerTypeProvider";
 
 class SellerTypeController extends Controller {
   getAllSellerType() {

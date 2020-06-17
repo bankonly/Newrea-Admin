@@ -1,7 +1,7 @@
 import Bank from "./../models/Bank"
 
 // Validation
-import validate_add_bank from './../validations/add_bank'
+import validate_add_bank from '../../validations/add_bank'
 
 import { upload_bank_image } from "./../uploadImage/upload_image"
 import { delete_img } from "./../deleteImage/delete_image"

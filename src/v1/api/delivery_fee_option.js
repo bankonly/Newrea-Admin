@@ -5,7 +5,7 @@ import {
   add_delivery_free,
   get_delivery_fee_option,
   add_delivery_free_seller,
-} from "./../../controllers/delivery_fee_option";
+} from "../controllers/delivery_fee_option";
 
 router
   .post("/add_delivery_free", add_delivery_free)

@@ -1,5 +1,5 @@
-import Res from "../Controllers/DefaultResponseController";
-import { UserQB, User } from "../Models/Seller";
+import Res from "../controllers/DefaultResponseController";
+import { UserQB, User } from "../models/Seller";
 
 /** Define All Function for Provider  */
 class SellerTypeProvider {

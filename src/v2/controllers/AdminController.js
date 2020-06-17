@@ -1,9 +1,9 @@
-import Controller from "./Controllers";
-import AdminProvider from "../Providers/AdminProvider";
-import AccessPolicyProvider from "../Providers/AccessPolicyProvider";
-import { isEmptyObj, validateObjectId } from "../Helpers/Global";
-import { Admin, AdminQB } from "../Models/Admin";
-import { AccessPolicy } from "../Models/Access_policy";
+import Controller from "./controllers";
+import AdminProvider from "../providers/AdminProvider";
+import AccessPolicyProvider from "../providers/AccessPolicyProvider";
+import { isEmptyObj, validateObjectId } from "../helpers/Global";
+import { Admin, AdminQB } from "../models/Admin";
+import { AccessPolicy } from "../models/Access_policy";
 
 class AdminController extends Controller {
   /** Admin Registeration */
@@ -13,6 +13,7 @@ class AdminController extends Controller {
         name: this.body.name,
         email: this.body.email,
         password: this.body.password,
+        phone_number: this.body.phone_number,
         access_policy: this.body.access_policy,
         confirm_password: this.body.confirm_password,
         admin: this.body.admin,
@@ -119,6 +120,7 @@ class AdminController extends Controller {
         access_policy: this.body.access_policy,
         admin: this.body.admin,
         most_popular: this.body.most_popular,
+        phone_number: this.body.phone_number,
         featured_stores: this.body.featured_stores,
         recommended_item: this.body.recommended_item,
         catagory: this.body.catagory,

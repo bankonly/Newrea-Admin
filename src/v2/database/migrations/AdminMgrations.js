@@ -16,17 +16,17 @@ export default mongoose => {
           type: String,
           required: true
         },
-        phoneNumber: {
+        phone_number: {
           type: String,
           default: null
         }
       },
-      is_active: {
-        type: Array,
-        max: 1,
-        default: [1] // "0 = inactive,1 = active"
+      is_online: {
+        type: String,
+        default: "online", // "0 = inactive,1 = active"
+        required: true
       },
-      status: {
+      block_status: {
         type: Number,
         max: 1,
         default: 0 // "0 = unbanned ,1 = banned"
@@ -35,7 +35,7 @@ export default mongoose => {
         type: String,
         required: true
       },
-      loginCount: {
+      login_count: {
         type: Number,
         default: 0
       },
