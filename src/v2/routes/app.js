@@ -1,11 +1,10 @@
-import kernel from "../configs/kernel";
-import AdminCtl from "../controllers/admin_controller";
+import { register, login } from "../controllers/admin_controller";
 
-import express from "express";
-const router = express.Router();
+import { Router } from "express";
+const router = Router();
 
 /** Route For AdminController */
-router.post("/register", (...args) => AdminCtl(...args).register());
-router.post("/login", (...args) => AdminCtl(...args).login());
+router.post("/register", register);
+router.post("/login", login);
 
 export default router;

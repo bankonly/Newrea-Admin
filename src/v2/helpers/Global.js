@@ -1,28 +1,28 @@
 // check if is float or not return boolean
-const isFloat = floatNumber => {
+export const isFloat = floatNumber => {
   const isFloatType = isNaN(parseFloat(floatNumber));
   if (isFloatType) return false;
   return true;
 };
 
-const isInt = intNumber => {
+export const isInt = intNumber => {
   const isIntType = isNaN(parseInt(intNumber));
   if (isIntType) return false;
   return true;
 };
 
 const mongoose = require("mongoose");
-const invalidObjectId = id => {
+export const invalidObjectId = id => {
   return mongoose.Types.ObjectId.isValid(id);
 };
 
-const isEmptyObj = obj => {
+export const isEmptyObj = obj => {
   if (Object.keys(obj).length === 0) return true;
   return false;
 };
 
 /** validate delete userId */
-const validateObjectId = objectId => {
+export const validateObjectId = objectId => {
   var error = {};
   if (!objectId || !invalidObjectId(objectId))
     error.objectId = "invalid request";
@@ -30,7 +30,7 @@ const validateObjectId = objectId => {
 };
 
 /** Multiple validate Object */
-const multipleValidateObj = (
+export const multipleValidateObj = (
   obj,
   deleteObject,
   checkType,
@@ -60,23 +60,11 @@ const multipleValidateObj = (
           error.push(`'${element}'` + " " + msg);
         }
       } else {
-        if (
-          typeof obj[element] !== checkType ||
-          !obj[element]
-        ) {
+        if (typeof obj[element] !== checkType || !obj[element]) {
           error.push(`'${element}'` + " " + msg);
         }
       }
     }
   });
   return error;
-};
-
-export {
-  isFloat,
-  isInt,
-  invalidObjectId,
-  isEmptyObj,
-  validateObjectId,
-  multipleValidateObj
 };
