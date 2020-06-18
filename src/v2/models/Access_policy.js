@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+/** Models */
+import { Admin } from "./admin";
 /** Import migrtion */
 import AccessPolicyMigration from "../database/schema/access_policy_schema";
 
@@ -9,8 +11,16 @@ const AcessPolicyModel = mongoose.model(tableName, schema);
 
 /** Query Builder */
 class AccessQueryBuilder {
-  async findByAdminId(adminId) {
-    return await AcessPolicyModel.findOne({ admin_id: adminId });
+  /** get access policy with adminId */
+  getAccessPolicyByAdminId(adminId) {
+    return Admin.findById(adminId).populate({
+      path: "access_policy",
+    });
+  }
+
+  /** find access by name */
+  findByName(name) {
+    return AccessPolicy.findOne({ name: name });
   }
 }
 

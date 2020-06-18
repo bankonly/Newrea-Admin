@@ -1,5 +1,6 @@
 /** Router import */
 import adminRouter from "./admin";
+import accessPolicyRouter from "./access_policy";
 import unAuthenticateRouter from "./app";
 import kernel from "../configs/kernel";
 
@@ -7,8 +8,11 @@ import kernel from "../configs/kernel";
 import apiAuthenticate from "../middlewares/ApiAuthentication";
 
 export default app => {
-  /** Admin Controller Router */
-  app.use(kernel.routes.api, apiAuthenticate, adminRouter);
+  /** Api Authenticate Router Group */
+  app.use(kernel.routes.api, apiAuthenticate, [
+    adminRouter,
+    accessPolicyRouter
+  ]);
 
   /** unAuthenticate Router */
   app.use("/app", unAuthenticateRouter);

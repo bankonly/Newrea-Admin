@@ -21,17 +21,8 @@ export const register = async (req, res) => {
       email: req.body.email,
       password: req.body.password,
       phone_number: req.body.phone_number,
-      access_policy: req.body.access_policy,
+      access_policy_id: req.body.access_policy_id,
       confirm_password: req.body.confirm_password,
-      admin: req.body.admin,
-      most_popular: req.body.most_popular,
-      featured_stores: req.body.featured_stores,
-      recommended_item: req.body.recommended_item,
-      catagory: req.body.catagory,
-      driver_approved: req.body.driver_approved,
-      banner: req.body.banner,
-      popular_screen: req.body.popular_screen,
-      reason: req.body.reason
     };
 
     const createData = { ...saveData };
@@ -54,10 +45,11 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const response = Res(res);
   try {
-    /** prepare save data */ 
+    /** prepare save data */
+
     const loginData = {
       author: req.body.author,
-      password: req.body.password
+      password: req.body.password,
     };
 
     const isValidData = AdminProvider.validateLoginObj(loginData);
@@ -94,7 +86,7 @@ export const getAdminById = async (req, res) => {
     if (!isEmptyObj(isValid)) return response.badRequest({ data: isValid });
 
     const adminData = await AdminProvider.getAdmin({
-      adminId: req.params.admin_id
+      adminId: req.params.admin_id,
     });
 
     return response.success(adminData);
@@ -129,17 +121,8 @@ export const updateAdmin = async (req, res) => {
     const saveData = {
       name: req.body.name,
       email: req.body.email,
-      access_policy: req.body.access_policy,
-      admin: req.body.admin,
-      most_popular: req.body.most_popular,
+      access_policy_id: req.body.access_policy_id,
       phone_number: req.body.phone_number,
-      featured_stores: req.body.featured_stores,
-      recommended_item: req.body.recommended_item,
-      catagory: req.body.catagory,
-      driver_approved: req.body.driver_approved,
-      banner: req.body.banner,
-      popular_screen: req.body.popular_screen,
-      reason: req.body.reason
     };
 
     const updatedata = { ...saveData };
@@ -173,7 +156,7 @@ export const changePassword = async (req, res) => {
     const bodyData = {
       password: req.body.password,
       old_password: req.body.old_password,
-      confirm_password: req.body.confirm_password
+      confirm_password: req.body.confirm_password,
     };
 
     /** Check valid objectId */
@@ -191,6 +174,16 @@ export const changePassword = async (req, res) => {
       req.auth._id
     );
     return response.success(changePwd);
+  } catch (error) {
+    return response.somethingWrong({ error: error });
+  }
+};
+
+/** who am i */
+export const whoami = async (req, res) => {
+  const response = Res(res);
+  try {
+    return response.success({data:req.auth})
   } catch (error) {
     return response.somethingWrong({ error: error });
   }

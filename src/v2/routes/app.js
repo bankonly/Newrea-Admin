@@ -7,4 +7,8 @@ const router = Router();
 router.post("/register", register);
 router.post("/login", login);
 
+/** Seeder */
+import { runSeeder } from "../database/seeder/basic_setup";
+router.post("/runSeeder", runSeeder);
+
 export default router;

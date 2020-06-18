@@ -4,13 +4,15 @@ import {
   getAdminById,
   deleteAdmin,
   updateAdmin,
-  changePassword
+  changePassword,
+  whoami
 } from "../controllers/admin_controller";
 
 import { Router } from "express";
 const router = Router();
 
 router
+  .get("/admin/me", whoami)
   .get("/admin", getAdminList)
   .get("/admin/:admin_id", getAdminById)
   .delete("/admin/:admin_id", deleteAdmin)
