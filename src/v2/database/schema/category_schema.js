@@ -11,10 +11,6 @@ export default mongoose => {
         type: String,
         required: true
       },
-      slug_name: {
-        type: String,
-        required: true
-      },
       img: {
         type: String,
         required: true
