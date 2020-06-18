@@ -9,7 +9,8 @@ import { AccessPolicy } from "../models/access_policy";
 import {
   invalidObjectId,
   isEmptyObj,
-  multipleValidateObj
+  multipleValidateObj,
+  validateObjectId,
 } from "../helpers/Global";
 
 /** Define All Function for Provider  */
@@ -39,15 +40,9 @@ class AdminProvider {
     if (typeof obj.email !== "string" || !Validator.isEmail(obj.email)) {
       error.email = "invalid email";
     }
-
-    if (!isEmptyObj(error)) return error;
-    const validateMul = multipleValidateObj(
-      obj,
-      ["name", "email", "password", "confirm_password", "phone_number"],
-      "number",
-      {}
-    );
-    if (validateMul.length > 0) error = validateMul;
+    if (!validateObjectId(obj.access_policy_id)) {
+      error.access_policy_id = "field is requried as string and objectId";
+    }
     return error;
   }
 
@@ -62,14 +57,9 @@ class AdminProvider {
     if (typeof obj.email !== "string" || !Validator.isEmail(obj.email)) {
       error.email = "invalid email";
     }
-    if (!isEmptyObj(error)) return error;
-    const validateMul = multipleValidateObj(
-      obj,
-      ["name", "email", "phone_number"],
-      "number",
-      {}
-    );
-    if (validateMul.length > 0) error = validateMul;
+    if (!validateObjectId(obj.access_policy_id)) {
+      error.access_policy_id = "field is requried as string and objectId";
+    }
     return error;
   }
 
@@ -80,20 +70,8 @@ class AdminProvider {
     email,
     admin,
     phone_number,
-    access_policy,
-    most_popular,
-    featured_stores,
-    recommended_item,
-    catagory,
-    driver_approved,
-    banner,
-    popular_screen,
-    reason
+    access_policy_id,
   }) {
-    /** start transaction */
-    const transaction = await Admin.startSession();
-    transaction.startTransaction();
-
     try {
       var error = {};
       /** save data for admin */
@@ -102,18 +80,14 @@ class AdminProvider {
         password,
         contact: { email: email, phone_number: phone_number },
         login_count: 1,
-        access_policy,
-        admin,
-        phone_number,
-        most_popular,
-        featured_stores,
-        recommended_item,
-        catagory,
-        driver_approved,
-        banner,
-        popular_screen,
-        reason
+        access_policy: access_policy_id,
       };
+
+      /** find access policy id */
+      const isAccesspolicy = await AccessPolicy.findById(access_policy_id);
+      if (isAccesspolicy == null) {
+        return Res.notFound({ msg: "access_policy_id not found" });
+      }
 
       /** check name */
       const isName = await AdminQB.findByName({ name: name });
@@ -131,34 +105,21 @@ class AdminProvider {
       const createAdmin = await Admin.create(saveData);
 
       if (createAdmin) {
-        /** prepare save Data for access */
-        saveData.admin_id = createAdmin._id;
-        await AccessPolicy.create(saveData);
-
         const tokenData = {
           userId: createAdmin._id,
-          login_count: createAdmin.login_count
+          login_count: createAdmin.login_count,
         };
         const token = JWT.jwtMethod(tokenData, CONSTANT.token_life_time);
 
-        /** End transaction */
-        await transaction.commitTransaction();
-        transaction.endSession();
-
         return Res.success({
           data: {
-            token: token
-          }
+            token: token,
+          },
         });
       }
 
-      await transaction.commitTransaction();
-      transaction.endSession();
       return Res.somethingWrong({ msg: "can not create admin" });
     } catch (error) {
-      /** Rolback transaction */
-      await transaction.abortTransaction();
-      transaction.endSession();
       return Res.somethingWrong({ error: error });
     }
   }
@@ -194,14 +155,14 @@ class AdminProvider {
       /** Store token data */
       const tokenData = {
         userId: authorData._id,
-        login_count: authorData.login_count
+        login_count: authorData.login_count,
       };
       /** Generate new token */
       const token = JWT.jwtMethod(tokenData, CONSTANT.token_life_time);
       return Res.success({
         data: {
-          token: token
-        }
+          token: token,
+        },
       });
     } catch (error) {
       return Res.somethingWrong({ error: error });
@@ -214,14 +175,24 @@ class AdminProvider {
       var adminData = null;
       const condition = {
         _id: adminId,
-        is_online: "online"
+        is_online: "online",
       };
 
-      const selected = "-password";
+      const join = {
+        path: "access_policy",
+        select: "-_id -createdAt -updatedAt -__v",
+      };
+      const selected = "-password -__v";
       if (adminId == null) {
-        adminData = await Admin.find().select(selected);
+        adminData = await Admin.find().populate(join).select(selected);
       } else {
-        adminData = await Admin.findOne(condition).select(selected);
+        adminData = await Admin.findOne(condition)
+          .populate(join)
+          .select(selected);
+      }
+
+      if (adminData == null || adminData.length < 1) {
+        return Res.notFound({ msg: "no user" });
       }
       return Res.success({ data: adminData });
     } catch (error) {
@@ -231,48 +202,25 @@ class AdminProvider {
 
   /** Update admin Data */
   async updateAdmin(
-    {
-      name,
-      email,
-      admin,
-      phone_number,
-      access_policy,
-      most_popular,
-      featured_stores,
-      recommended_item,
-      catagory,
-      driver_approved,
-      banner,
-      popular_screen,
-      reason
-    },
+    { name, email, admin, phone_number, access_policy_id },
     admin_id
   ) {
-    /** start transaction */
-    const transaction = await Admin.startSession();
-    transaction.startTransaction();
-
     try {
       var error = {};
       /** save data for admin */
       const saveData = {
         name,
         contact: { email: email, phone_number: phone_number },
-        access_policy,
-        phone_number
+        access_policy: access_policy_id,
+        phone_number,
       };
 
-      const accessPolicySave = {
-        admin,
-        most_popular,
-        featured_stores,
-        recommended_item,
-        catagory,
-        driver_approved,
-        banner,
-        popular_screen,
-        reason
-      };
+      /** find access policy id */
+      const isAccesspolicy = await AccessPolicy.findById(access_policy_id);
+      if (isAccesspolicy == null) {
+        return Res.notFound({ msg: "access_policy_id not found" });
+      }
+
       /** check admin_id  */
       const isAdminData = await AdminQB.findByUserId({ id: admin_id });
       if (isAdminData == null)
@@ -285,7 +233,8 @@ class AdminProvider {
       /** check if two of them return null */
       if (isName !== null) error.name = "already exist";
       if (isEmail !== null) error.name = "already exist";
-      if (isAdminData.contact.email == email) error.email = "you entered old one";
+      if (isAdminData.contact.email == email)
+        error.email = "you entered old one";
       if (isAdminData.name == name) error.name = "you entered old one";
 
       /** Validate Error */
@@ -297,22 +246,10 @@ class AdminProvider {
       );
 
       if (updateAdmin) {
-        /** prepare save Data for access */
-        await AccessPolicy.updateOne(
-          { admin_id: admin_id },
-          { $set: accessPolicySave }
-        );
-
-        /** End transaction */
-        await transaction.commitTransaction();
-        transaction.endSession();
-
         return Res.success({ msg: "updated" });
       }
 
-      await transaction.abortTransaction();
-      transaction.endSession();
-      return Res.somethingWrong({ msg: "can not create admin" });
+      return Res.somethingWrong({ msg: "can not update admin" });
     } catch (error) {
       /** Rolback transaction */
       await transaction.abortTransaction();

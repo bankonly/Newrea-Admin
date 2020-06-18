@@ -13,18 +13,18 @@ class AdminQueryBuilder {
   }
 
   /** Find Seller By Id */
-  async findByUserId({ id }) {
-    return await this.model.findOne({ _id: id });
+  findByUserId({ id }) {
+    return this.model.findOne({ _id: id });
   }
 
   /** Find Seller By name */
-  async findByName({ name }) {
-    return await this.model.findOne({ name: name });
+  findByName({ name }) {
+    return this.model.findOne({ name: name });
   }
 
   /** find Admin By Email */
-  async findByEmail({ email }) {
-    return await this.model.findOne({ "contact.email": email });
+  findByEmail({ email }) {
+    return this.model.findOne({ "contact.email": email });
   }
 }
 

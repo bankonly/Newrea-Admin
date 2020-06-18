@@ -13,9 +13,14 @@ export default async (req, res, next) => {
     const decoded = Jwt.verify(authorization, process.env.SECRET_KEY);
     const userData = await Admin.findOne({
       _id: decoded.userId,
-      is_online: "online"
-    }).select("-password -__v");
-    
+      is_online: "online",
+    })
+      .populate({
+        path: "access_policy",
+        select: "is_super_admin",
+      })
+      .select("-password -__v");
+
     if (userData == null) {
       return Res(res).notFound({ msg: "user might be deleted or banned" });
     }
@@ -24,6 +29,7 @@ export default async (req, res, next) => {
       return Res(res).unAuthorized({});
     }
     req.auth = userData;
+    req.is_super_admin = userData.access_policy.is_super_admin
     return next();
   } catch (error) {
     console.log(error.message);

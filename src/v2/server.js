@@ -22,7 +22,7 @@ app.use("/public", express.static(__dirname + "/public"));
 
 try {
   /* RUN PROGRAM BASE ON ENV PORT */
-  app.listen(process.env.APP_PORT, e =>
+  app.listen(process.env.APP_PORT, error =>
     console.log("CONNECTED TO ", process.env.APP_PORT)
   );
 } catch (error) {

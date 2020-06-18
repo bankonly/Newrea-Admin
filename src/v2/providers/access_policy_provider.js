@@ -1,24 +1,139 @@
-import Validator from "validator";
+import _ from "validator";
 import Res from "../controllers/default_res_controller";
 
-/** Define All Function for Provider  */
-class AccessPolicyProvider {
-  /** Validate Register obj */
-  validateAccessObj(obj) {
-    var error = {};
-    var msg = "field should be number and field is required";
-    if (typeof obj.admin !== "number" || !obj.admin) error.admin = msg;
-    if (typeof obj.most_popular !== "number" || !obj.most_popular) error.most_popular = msg;
-    if (typeof obj.featured_stores !== "number" || !obj.featured_stores) error.featured_stores = msg;
-    if (typeof obj.recommended_item !== "number" || !obj.recommended_item) error.recommended_item = msg;
-    if (typeof obj.catagory !== "number" || !obj.catagory) error.catagory = msg;
-    if (typeof obj.driver_approved !== "number" || !obj.driver_approved) error.driver_approved = msg;
-    if (typeof obj.banner !== "number" || !obj.banner) error.banner = msg;
-    if (typeof obj.popular_screen !== "number" || !obj.popular_screen) error.popular_screen = msg;
-    if (typeof obj.reason !== "number" || !obj.reason) error.reason = msg;
-    return error;
-  }
-}
+/** Helpers */
+import {
+  multipleValidateObj,
+  isEmptyObj,
+  isValidObj,
+  isBoolean,
+  isString,
+  validateObjectId,
+  invalidObjectId,
+} from "../helpers/Global";
 
-/** export new SellerProvider */
-export default new AccessPolicyProvider();
+/** Models */
+import { AccessPolicy, AccessPolicyQB } from "../models/access_policy";
+
+/** validate create data */
+export const validateCreateData = (obj) => {
+  var error = {};
+  if (!isValidObj(obj)) return (error.obj = "invalid object");
+  if (!isBoolean(obj.is_super_admin)) {
+    error.is_super_admin = "field is required as boolean";
+  }
+  if (!obj.name) error.name = "field is required";
+  if (!isEmptyObj(error)) return error;
+
+  const validObj = multipleValidateObj(
+    obj,
+    ["is_super_admin", "name"],
+    "number",
+    {}
+  );
+  if (validObj.length > 0) error = validObj;
+  return validObj;
+};
+
+/** Create new access policy */
+export const newAccessPolicy = async (accessPolicyData, authAccessPolicy) => {
+  try {
+    /** Check if auth is not super admin */
+    if (!authAccessPolicy) return Res.notAllowed({ msg: "access denied" });
+
+    if (!isValidObj(accessPolicyData)) {
+      return Res.badRequest({ data: "invalid object" });
+    }
+
+    /** check name */
+    const isName = await AccessPolicyQB.findByName(accessPolicyData.name);
+    if (isName !== null) return Res.duplicated({ msg: "name already exist" });
+
+    /** create access policy */
+    const createAccess = await AccessPolicy.create(accessPolicyData);
+    return Res.success({ data: createAccess });
+  } catch (error) {
+    return Res.somethingWrong({ error: error });
+  }
+};
+
+/** get access policy */
+export const _getAccessPolicy = async (accp_id = null) => {
+  try {
+    var accData = null;
+    if (accp_id !== null) {
+      accData = AccessPolicy.findOne({
+        _id: accp_id,
+      });
+    } else {
+      accData = AccessPolicy.find();
+    }
+
+    const respAcc = await accData.select("-__v");
+
+    /** check if accData no data */
+    if (respAcc == null || respAcc.length < 1) {
+      return Res.notFound({ msg: "no access policy data" });
+    }
+
+    return Res.success({ data: respAcc });
+  } catch (error) {
+    return Res.somethingWrong({ error: error });
+  }
+};
+
+/** update access policy */
+export const _updateAccessPolicy = async (
+  { updateData, authAccessPolicy },
+  accp_id
+) => {
+  try {
+    /** Check if auth is not super admin */
+    if (!authAccessPolicy) return Res.notAllowed({ msg: "access denied" });
+
+    if (!isValidObj(updateData)) {
+      return Res.badRequest({ data: "invalid object" });
+    }
+
+    /** check accp_id */
+    if (!validateObjectId(accp_id)) {
+      return Res.badRequest({ msg: "invalid access policy id" });
+    }
+
+    /** check name */
+    const isName = await AccessPolicyQB.findByName(updateData.name);
+    if (isName !== null) return Res.duplicated({ msg: "name already exist" });
+
+    /** check if access policy exist */
+    const isAccess = AccessPolicy.findById(accp_id);
+    if ((await isAccess) == null) {
+      return Res.notFound({ msg: "access policy id not found" });
+    }
+
+    /** update access policy */
+    const updateAccess = await isAccess.update(updateData);
+    if (!updateData) return Res.badRequest({ msg: "can not update" });
+    return Res.success({ msg: "updated" });
+  } catch (error) {
+    return Res.somethingWrong({ error: error });
+  }
+};
+
+/** delete access policy */
+export const _deleteAccessPolicy = async (accp_id, authAccessPolicy) => {
+  try {
+    /** Check if auth is not super admin */
+    if (!authAccessPolicy) return Res.notAllowed({ msg: "access denied" });
+
+    if (!validateObjectId(accp_id)) {
+      return Res.badRequest({ msg: "invalid access policy id" });
+    }
+
+    const delAcc = await AccessPolicy.findByIdAndDelete(accp_id);
+    if (!delAcc)
+      return Res.badRequest({ msg: "can not delete or id not exist" });
+    return Res.success({ msg: "deleted" });
+  } catch (error) {
+    return Res.somethingWrong({ error: error });
+  }
+};

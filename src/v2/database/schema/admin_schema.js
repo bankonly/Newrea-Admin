@@ -40,9 +40,8 @@ export default mongoose => {
         default: 0
       },
       access_policy: {
-        type: Number,
-        enum: [1, 2, 3], // 1 = super admin,2 = editable admin,3 = read only,
-        default: 1,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "access_policy",
         required: true
       }
     },

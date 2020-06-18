@@ -6,45 +6,49 @@ export default mongoose => {
     /** 2 = readonly */
     /** 3 = hidden */
     {
-      admin_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "admin"
+      name:{
+        type:String,
+        required:true
       },
       admin: {
         type: Number,
-        default: 2
+        default: 1
       },
       most_popular: {
         type: Number,
-        default: 2
+        default: 1
       },
       featured_stores: {
         type: Number,
-        default: 2
+        default: 1
       },
       recommended_item: {
         type: Number,
-        default: 2
+        default: 1
       },
       catagory: {
         type: Number,
-        default: 2
+        default: 1
       },
       driver_approved: {
         type: Number,
-        default: 2
+        default: 1
       },
       banner: {
         type: Number,
-        default: 2
+        default: 1
       },
       popular_screen: {
         type: Number,
-        default: 2
+        default: 1
       },
       reason: {
         type: Number,
-        default: 2
+        default: 1
+      },
+      is_super_admin:{
+        type:Boolean,
+        required:true,
       }
     },
     { collection: tableName, timestamps: true }
