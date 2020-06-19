@@ -106,3 +106,6 @@ dist
 # private key
 private.key
 private.key.pub
+
+
+img/
