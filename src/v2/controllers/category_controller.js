@@ -10,6 +10,9 @@ import { uploadImage, uploadImagev2 } from "../providers/file_provider";
 import {
   _saveCategory,
   validateSaveData,
+  _updateCategory,
+  _getCategory,
+  _deleteCategory,
 } from "../providers/category_provider";
 
 /** Configs */
@@ -48,44 +51,71 @@ export const saveCategory = async (req, res, next) => {
 };
 
 /** update catagory */
-export const updateCategory = (req, res, next) => {
+export const updateCategory = async (req, res, next) => {
   /** define response */
   const response = ResCtl(res);
   try {
-    return response.success({});
+    /** Check if auth is not super admin */
+    if (!req.is_super_admin)
+      return response.notAllowed({ msg: "access denied" });
+
+    const isUpload = await uploadImage({
+      req: req,
+      res: res,
+      path: constant.imgPath.category.path,
+      field: "image",
+    });
+
+    if (!isUpload.status) return response.badRequest(isUpload);
+
+    const saveData = {
+      name: isUpload.data.name,
+      img: isUpload.data.img,
+    };
+
+    /** validate save data */
+    const isValid = validateSaveData(saveData);
+    if (!isEmptyObj(isValid)) return response.badRequest({ data: isValid });
+
+    /** cal save function from provider */
+    const isImageSave = await _updateCategory(req.params.cat_id, saveData);
+    return response.success(isImageSave);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
 };
 
 /** get all catagory */
-export const getAllCategory = (req, res, next) => {
+export const getAllCategory = async (req, res, next) => {
   /** define response */
   const response = ResCtl(res);
   try {
-    return response.success({});
+    const catData = await _getCategory();
+    return response.success(catData);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
 };
 
 /** get catagory */
-export const getCategory = (req, res, next) => {
+export const getCategory = async (req, res, next) => {
   /** define response */
   const response = ResCtl(res);
   try {
-    return response.success({});
+    const catData = await _getCategory(req.params.cat_id);
+    return response.success(catData);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
 };
 
 /** delete catagory */
-export const deleteCategory = (req, res, next) => {
+export const deleteCategory = async (req, res, next) => {
   /** define response */
   const response = ResCtl(res);
   try {
-    return response.success({});
+    const catData = await _deleteCategory(req.params.cat_id);
+    return response.success(catData);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }

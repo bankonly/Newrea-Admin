@@ -7,6 +7,9 @@ import { Category, CategoryQB } from "../models/category";
 import { imageUpload } from "./file_provider";
 import { isString } from "../helpers/Global";
 
+/** helpers */
+import { validateObjectId } from "../helpers/Global";
+
 /** validate save data */
 export const validateSaveData = (obj) => {
   var error = {};
@@ -35,35 +38,73 @@ export const _saveCategory = async (saveData) => {
 };
 
 /** update category */
-export const _updateCategory = () => {
+export const _updateCategory = async (cat_id, updateData) => {
   try {
-    return Res.success({ data: null });
+    if (!validateObjectId(cat_id)) {
+      return Res.badRequest({ msg: "invalid cat_id id" });
+    }
+    const isIdExist = await Category.findById(cat_id);
+    if (isIdExist == null) {
+      return Res.notFound({ msg: "Id is not exist" });
+    }
+    /** name check */
+    const isName = await CategoryQB.findByName(updateData.name);
+    if (isName !== null) {
+      return Res.badRequest({ msg: "Name is already exist" });
+    }
+
+    /** save data */
+    isIdExist.img = updateData.img;
+    isIdExist.name = updateData.name;
+
+    if (await isIdExist.save()) return Res.success({ data: "updated" });
+    return Res.badRequest({ msg: "can not update" });
   } catch (error) {
     return Res.somethingWrong({ error: error });
   }
 };
 
-/** get category */
-export const _getCategory = (cat_id = null) => {
+// /** get category */
+export const _getCategory = async (cat_id = null) => {
   try {
-    return Res.success({ data: null });
+    var catData = null;
+    if (cat_id !== null) {
+      if (!validateObjectId(cat_id)) {
+        return Res.badRequest({ msg: "invalid cat_id id" });
+      }
+      catData = Category.findOne({
+        _id: cat_id,
+      });
+    } else {
+      catData = Category.find();
+    }
+
+    const respCategory = await catData.select("-__v");
+
+    /** check if accData no data */
+    if (respCategory == null || respCategory.length < 1) {
+      return Res.notFound({ msg: "no category data data" });
+    }
+
+    return Res.success({ data: respCategory });
   } catch (error) {
     return Res.somethingWrong({ error: error });
   }
 };
 
-/** delete category */
-export const _deleteCategory = () => {
+// /** delete category */
+export const _deleteCategory = async (cat_id) => {
   try {
-    // /** Check if auth is not super admin */
-    // if (!authAccessPolicy) return Res.notAllowed({ msg: "access denied" });
+    if (!validateObjectId(cat_id)) {
+      return Res.badRequest({ msg: "invalid cat_id id" });
+    }
 
-    // if (!validateObjectId(accp_id)) {
-    //   return Res.badRequest({ msg: "invalid access policy id" });
-    // }
-    return Res.success({ data: null });
+    const delCat = await Category.findByIdAndDelete(cat_id);
+    if (!delCat) {
+      return Res.badRequest({ msg: "can not delete or id not exist" });
+    }
+    return Res.success({ msg: "deleted" });
   } catch (error) {
     return Res.somethingWrong({ error: error });
   }
 };
-
