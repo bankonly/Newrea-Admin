@@ -10,8 +10,8 @@ export const runSeeder = async (req, res) => {
     is_super_admin: true,
     name: !req.body.username ? "super_admin" : req.body.username,
   };
-
   /** Admin Data */
+  // res.json({msg:"HELEKEI"})
   const adminData = [
     {
       name: "super_admin",
@@ -30,8 +30,8 @@ export const runSeeder = async (req, res) => {
       password: await Bcrypt.hashPassword("Test123!"), // 111998tsc
     },
   ];
-
-  const checkAccessPolicy = await AccessPolicy.find();
+  
+  const checkAccessPolicy = await AccessPolicy.find()
   if (checkAccessPolicy.length > 0) {
     return res.json("Seeder already run... please try again");
   }
@@ -39,6 +39,6 @@ export const runSeeder = async (req, res) => {
   adminData[0].access_policy = accessSave._id;
   adminData[1].access_policy = accessSave._id;
   await Admin.create(adminData);
+  return res.json("Seeder Created");
 
-  res.json("Seeder Created");
 };

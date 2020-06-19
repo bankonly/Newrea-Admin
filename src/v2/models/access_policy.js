@@ -25,4 +25,3 @@ class AccessQueryBuilder {
 }
 
 export const AccessPolicy = AcessPolicyModel;
-export const AccessPolicyQB = new AccessQueryBuilder();
