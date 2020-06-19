@@ -1,25 +1,50 @@
 /** Modules */
-import sharp from "sharp";
-import fs from "fs";
 
 import ResCtl from "./response_controller";
 
 /** Helpers */
-import { isString } from "../helpers/Global";
+import { isString, isEmptyObj } from "../helpers/Global";
 
 /** Providers */
-import { uploadImage,singleImgUpload } from "../providers/file_provider";
+import { uploadImage, uploadImagev2 } from "../providers/file_provider";
+import {
+  _saveCategory,
+  validateSaveData,
+} from "../providers/category_provider";
+
+/** Configs */
+import constant from "../configs/constant";
 
 /** save catagory */
-export const saveCategory = (req, res, next) => {
+export const saveCategory = async (req, res, next) => {
   /** define response */
   const response = ResCtl(res);
   try {
-    const upload = uploadImage("./img")
-    /** upload */
-    upload.single("catImage")
-    return response.success({ data: req.file });
+    const saveData = {
+      name: req.body.name,
+      image: req.body.image,
+    };
+
+    const isUpload = await uploadImage({
+      req: req,
+      res: res,
+      path: constant.imgPath.category.path,
+      field: "image",
+    });
+
+    if (!isUpload.status) response.success(isUpload);
+
+    const isValid = validateSaveData(saveData);
+    if (!isEmptyObj(isValid)) return response.badRequest({ data: isValid });
+    // const isImageSave = _saveCategory();
+
+    // const isUpload = uploadImagev2(req, {
+    //   path: constant.imgPath.category.path,
+    // });
+
+    return response.success(isUpload);
   } catch (error) {
+    console.log(error);
     return response.somethingWrong({ error: error });
   }
 };

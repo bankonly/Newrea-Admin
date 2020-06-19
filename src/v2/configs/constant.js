@@ -16,10 +16,10 @@ export default {
   PRIVATE_KEY: fs.readFileSync("./private.key", "UTF-8"),
   JWT_ALGORITHMS: process.env.JWT_ALGORITHMS,
   token_life_time: process.env.TOKEN_LIFE_TIME,
+  image_size_allow:process.env.IMAGE_SIZE_ALLOW,
   imgPath: {
     category: {
-      field: "catImage",
-      path: "./img",
+      path: "./img/category/",
     },
   },
 };

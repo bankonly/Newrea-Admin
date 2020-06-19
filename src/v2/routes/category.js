@@ -1,6 +1,7 @@
-import { uploadImage } from "../providers/file_provider";
 import { Router } from "express";
 const router = Router();
+
+import multer from "multer";
 
 /** configs */
 import CONSTANT from "../configs/constant";
@@ -20,10 +21,6 @@ router
   .get("/category/:cat_id", getCategory)
   .delete("/category/:cat_id", deleteCategory)
   .put("/category/:cat_id", updateCategory)
-  /** save image */
-  .post(
-    "/category",
-    saveCategory
-  );
+  .post("/category", saveCategory);
 
 export default router;
