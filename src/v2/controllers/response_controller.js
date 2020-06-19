@@ -5,7 +5,7 @@ class ResponseController {
 
   // duplicated
   duplicated({ data = {}, msg = "duplicated", status = false, code = 400 }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -15,7 +15,7 @@ class ResponseController {
 
   // success
   success({ data = {}, msg = "success", status = true, code = 200 }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -25,7 +25,7 @@ class ResponseController {
 
   // deleted
   deleted({ data = {}, msg = "deleted success", status = true, code = 200 }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -35,7 +35,7 @@ class ResponseController {
 
   // updated
   updated({ data = {}, msg = "updated success", status = true, code = 200 }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -45,7 +45,7 @@ class ResponseController {
 
   // created
   created({ data = {}, msg = "created success", status = true, code = 200 }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -55,7 +55,7 @@ class ResponseController {
 
   // error
   error({ data = {}, msg = "something wrong", status = false, code = 500 }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -65,7 +65,7 @@ class ResponseController {
 
   // badRequest
   badRequest({ data = {}, msg = "badRequest", status = false, code = 400 }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -75,7 +75,7 @@ class ResponseController {
 
   // notFound
   notFound({ data = {}, msg = "notFound", status = false, code = 404 }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -90,7 +90,7 @@ class ResponseController {
     status = false,
     code = 419,
   }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -100,7 +100,7 @@ class ResponseController {
 
   // notAllowed
   notAllowed({ data = {}, msg = "notAllowed", status = false, code = 405 }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -110,7 +110,7 @@ class ResponseController {
 
   // outPut
   outPut({ data = {}, msg = "success", status = true, code = 200 }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -127,7 +127,7 @@ class ResponseController {
     error,
   }) {
     console.log(error.message);
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
