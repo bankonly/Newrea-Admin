@@ -3,15 +3,11 @@ export default mongoose => {
   const schema = new mongoose.Schema(
     {
       parent_id: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "category",
         default: null
       },
       name: {
-        type: String,
-        required: true
-      },
-      slug_name: {
         type: String,
         required: true
       },

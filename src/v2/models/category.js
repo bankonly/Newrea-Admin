@@ -4,14 +4,28 @@ import mongoose from "mongoose";
 import category_schema from "../database/schema/category_schema";
 const { tableName, schema } = category_schema(mongoose);
 
-const Category = mongoose.model(tableName, schema);
+const CategoryModel = mongoose.model(tableName, schema);
 
 /** Query Builder */
 class CategoryQueryBuilder {
+  /** find by name */
+  findByName(name) {
+    return CategoryModel.findOne({
+      name: name,
+    });
+  }
+
+  /** find parent id */
+  findByParentId(parentId) {
+    return CategoryModel.find({
+      parent_id: parentId,
+    });
+  }
+
   constructor() {
-    this.model = Category;
+    this.model = CategoryModel;
   }
 }
 
-export const Model = Category;
-export const ModelQB = new CategoryQueryBuilder();
+export const Category = CategoryModel;
+export const CategoryQB = new CategoryQueryBuilder();

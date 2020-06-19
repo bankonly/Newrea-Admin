@@ -1,10 +1,10 @@
 import fs from "fs";
 
-const CONSTANTS = {
+export default {
   publicPath: "public",
   defaultImgPath: "./public/images/",
   productImgPath: "products/",
-  imageTypeAccept: process.env.IMAGE_TYPE_ACCEPT.split(","),
+  image_type_accept: process.env.IMAGE_TYPE_ACCEPT.split(","),
   fetchLimit: parseInt(process.env.DB_FETCH_LIMITER),
   userRole: process.env.USER_ROLE,
   adminRole: process.env.ADMIN_ROLE,
@@ -15,7 +15,11 @@ const CONSTANTS = {
   TYPE_WRITE: "utf-8",
   PRIVATE_KEY: fs.readFileSync("./private.key", "UTF-8"),
   JWT_ALGORITHMS: process.env.JWT_ALGORITHMS,
-  token_life_time: process.env.TOKEN_LIFE_TIME
+  token_life_time: process.env.TOKEN_LIFE_TIME,
+  image_size_allow:process.env.IMAGE_SIZE_ALLOW,
+  imgPath: {
+    category: {
+      path: "./img/category/",
+    },
+  },
 };
-
-export default CONSTANTS;
