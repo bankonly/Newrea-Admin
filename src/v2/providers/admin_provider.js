@@ -231,11 +231,12 @@ class AdminProvider {
       const isEmail = await AdminQB.findByEmail({ email: email });
 
       /** check if two of them return null */
-      if (isName !== null && isName.name !== name) error.name = "already exist";
-      if (isEmail !== null && isName.name !== name) error.name = "already exist";
-      if (isAdminData.contact.email == email)
+      if (isName !== null) error.name = "already exist";
+      if (isEmail !== null) error.name = "already exist";
+      if (isEmail !== null && isAdminData.contact.email == email)
         error.email = "you entered old one";
-      if (isAdminData.name == name) error.name = "you entered old one";
+      if (isName !== null && isAdminData.name == name)
+        error.name = "you entered old one";
 
       /** Validate Error */
       if (!isEmptyObj(error)) return Res.badRequest({ data: error });
