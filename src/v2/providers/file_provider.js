@@ -49,7 +49,7 @@ export const uploadImage = ({
   height = 512,
   width = 512,
   maxUpload = 5,
-  fileType = ".jpg",
+  fileType = ".jpg"
 }) => {
   try {
     if (!field) return Res.badRequest({ msg: field + " is required" });
@@ -97,7 +97,7 @@ export const uploadImage = ({
                 oldPath: response.data.file,
                 newPath: newFile,
               });
-              console.log(response.data);
+
               if (!isResize.status) {
                 response = isResize;
               } else response = Res.success(response);
@@ -108,6 +108,7 @@ export const uploadImage = ({
         if (!response.status) {
           return resolve(response);
         } else {
+          req.body.img = response.data.file;
           return resolve(Res.success({ data: req.body }));
         }
       });

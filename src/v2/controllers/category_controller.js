@@ -20,11 +20,6 @@ export const saveCategory = async (req, res, next) => {
   /** define response */
   const response = ResCtl(res);
   try {
-    const saveData = {
-      name: req.body.name,
-      image: req.body.image,
-    };
-
     const isUpload = await uploadImage({
       req: req,
       res: res,
@@ -32,17 +27,20 @@ export const saveCategory = async (req, res, next) => {
       field: "image",
     });
 
-    if (!isUpload.status) response.success(isUpload);
+    if (!isUpload.status) return response.badRequest(isUpload);
 
+    const saveData = {
+      name: isUpload.data.name,
+      img: isUpload.data.img,
+    };
+
+    /** validate save data */
     const isValid = validateSaveData(saveData);
     if (!isEmptyObj(isValid)) return response.badRequest({ data: isValid });
-    // const isImageSave = _saveCategory();
 
-    // const isUpload = uploadImagev2(req, {
-    //   path: constant.imgPath.category.path,
-    // });
-
-    return response.success(isUpload);
+    /** cal save function from provider */
+    const isImageSave = await _saveCategory(saveData);
+    return response.success(isImageSave);
   } catch (error) {
     console.log(error);
     return response.somethingWrong({ error: error });
