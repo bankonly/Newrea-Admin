@@ -234,7 +234,7 @@ class AdminProvider {
       if (isName !== null) error.name = "already exist";
       if (isEmail !== null) error.name = "already exist";
       if (isEmail !== null && isAdminData.contact.email == email)
-        error.email = "you entered old one";
+        error.email = "you entered old one ";
       if (isName !== null && isAdminData.name == name)
         error.name = "you entered old one";
 
