@@ -233,9 +233,10 @@ class AdminProvider {
       /** check if two of them return null */
       if (isName !== null) error.name = "already exist";
       if (isEmail !== null) error.name = "already exist";
-      if (isAdminData.contact.email == email)
-        error.email = "you entered old one";
-      if (isAdminData.name == name) error.name = "you entered old one";
+      if (isEmail !== null && isAdminData.contact.email == email)
+        error.email = "you entered old one ";
+      if (isName !== null && isAdminData.name == name)
+        error.name = "you entered old one";
 
       /** Validate Error */
       if (!isEmptyObj(error)) return Res.badRequest({ data: error });
