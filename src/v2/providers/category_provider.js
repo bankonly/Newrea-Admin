@@ -74,9 +74,10 @@ export const _getCategory = async (cat_id = null) => {
       }
       catData = Category.findOne({
         _id: cat_id,
+        parent_id: null,
       });
     } else {
-      catData = Category.find();
+      catData = Category.find({ parent_id: null });
     }
 
     const respCategory = await catData.select("-__v");
