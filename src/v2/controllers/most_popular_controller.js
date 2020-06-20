@@ -132,7 +132,7 @@ export const deleteMostPopular = async (req, res, next) => {
 
     const mos_id = req.body.mos_id;
     if (!isEmpty(mos_id) || !validateObjectId(mos_id)) {
-      return response.badRequest({ msg: "mos_id is required" });
+      return response.badRequest({ msg: "mos_id is required " });
     }
     
     const delAcc = await MostPopular.findByIdAndDelete(mos_id);
