@@ -6,7 +6,7 @@ const crypto = require("crypto-js");
 
 // get all sellers
 exports.getSellerList = async (req, res) => {
-  const response = Res(res);
+  const response = new Res(res);
   try {
     const sellers = await sellerModel.find().populate(["category_id"]);
     if (sellers.length > 0) {
@@ -20,7 +20,7 @@ exports.getSellerList = async (req, res) => {
 };
 // get seller by ID
 exports.findSellerByID = async (req, res) => {
-  const response = Res(res);
+  const response = new Res(res);
   const sellerID = req.params.sellerID;
   try {
     const sellers = await sellerModel
@@ -37,7 +37,7 @@ exports.findSellerByID = async (req, res) => {
 };
 // create new  seller
 exports.createSeller = async (req, res) => {
-  const response = Res(res);
+  const response = new Res(res);
   const SECRET_KEY_PASS = process.env.SECRET_KEY_PASS;
   const sellerData = req.body;
   const encriptedPass = crypto.AES.encrypt(
@@ -63,7 +63,7 @@ exports.createSeller = async (req, res) => {
 
 // disable  seller
 exports.disableSeller = async (req, res) => {
-  const response = Res(res);
+  const response = new Res(res);
   const sellerID = req.params.sellerID;
   try {
     const foundSeller = await sellerModel.findById(sellerID);
@@ -83,7 +83,7 @@ exports.disableSeller = async (req, res) => {
 
 // edit  seller
 exports.updateSeller = async (req, res) => {
-  const response = Res(res);
+  const response = new Res(res);
   const sellerID = req.params.sellerID;
   const sellerData = req.body;
   try {
@@ -109,7 +109,7 @@ exports.updateSeller = async (req, res) => {
 exports.sellerLogin = async (req, res) => {
   console.log("working...");
 
-  const response = Res(res);
+  const response = new Res(res);
   const SECRET_KEY_PASS = process.env.SECRET_KEY_PASS;
   const SECRET_KEY = process.env.SECRET_KEY;
   const sellerPass = req.body.pass;

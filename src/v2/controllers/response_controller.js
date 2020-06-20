@@ -135,7 +135,6 @@ class ResponseController {
       data: data,
     });
   }
-
 }
 
-export default (res) => new ResponseController(res);
+module.exports = ResponseController;

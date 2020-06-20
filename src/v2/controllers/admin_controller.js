@@ -14,7 +14,7 @@ import { isEmptyObj, validateObjectId } from "../helpers/Global";
 
 /** Admin Registeration */
 export const register = async (req, res) => {
-  const response = Res(res);
+  const response = new Res(res);
   try {
     const saveData = {
       name: req.body.name,
@@ -43,7 +43,7 @@ export const register = async (req, res) => {
 
 /** Login Admin */
 export const login = async (req, res) => {
-  const response = Res(res);
+  const response = new Res(res);
   try {
     /** prepare save data */
 
@@ -67,7 +67,7 @@ export const login = async (req, res) => {
 
 /** get admin list */
 export const getAdminList = async (req, res) => {
-  const response = Res(res);
+  const response = new Res(res);
   try {
     const adminData = await AdminProvider.getAdmin({});
     return response.success(adminData);
@@ -78,7 +78,7 @@ export const getAdminList = async (req, res) => {
 
 /** get admin list */
 export const getAdminById = async (req, res) => {
-  const response = Res(res);
+  const response = new Res(res);
   try {
     const isValid = validateObjectId(req.params.admin_id);
 
@@ -97,7 +97,7 @@ export const getAdminById = async (req, res) => {
 
 /** delete admin */
 export const deleteAdmin = async (req, res) => {
-  const response = Res(res);
+  const response = new Res(res);
   try {
     const isValid = validateObjectId(req.params.admin_id);
 
@@ -116,7 +116,7 @@ export const deleteAdmin = async (req, res) => {
 
 /** Update Admin by Id */
 export const updateAdmin = async (req, res) => {
-  const response = Res(res);
+  const response = new Res(res);
   try {
     const saveData = {
       name: req.body.name,
@@ -151,7 +151,7 @@ export const updateAdmin = async (req, res) => {
 
 /** Change Password */
 export const changePassword = async (req, res) => {
-  const response = Res(res);
+  const response = new Res(res);
   try {
     const bodyData = {
       password: req.body.password,
@@ -181,7 +181,7 @@ export const changePassword = async (req, res) => {
 
 /** who am i */
 export const whoami = async (req, res) => {
-  const response = Res(res);
+  const response = new Res(res);
   try {
     return response.success({data:req.auth})
   } catch (error) {

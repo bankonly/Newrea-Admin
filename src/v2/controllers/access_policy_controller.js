@@ -1,28 +1,21 @@
 /** Controllers */
-import Res from "./response_controller";
+const Res = require("./response_controller");
 
 /** Helpers */
-import { isEmptyObj, validateObjectId } from "../helpers/Global";
+const { isEmptyObj, validateObjectId } = require("../helpers/Global");
 
 /** Models */
-import { AccessPolicy } from "../models/access_policy";
-import { Admin } from "../models/admin";
+const { AccessPolicy } = require("../models/access_policy");
+const { Admin } = require("../models/admin");
 
 /** Providers */
-import {
-  validateCreateData,
-  newAccessPolicy,
-  _updateAccessPolicy,
-  _deleteAccessPolicy,
-  _getAccessPolicy,
-} from "../providers/access_policy_provider";
-import { cm_delete } from "../providers/common_provider";
+const AccProvider = require("../providers/access_policy_provider");
 
 /** get access policy */
 export const getAllAccessPolicy = async (req, res) => {
-  const response = Res(res);
+  const response = new Res(res);
   try {
-    const accp = await _getAccessPolicy();
+    const accp = await AccProvider._getAccessPolicy();
     return response.success(accp);
   } catch (error) {
     return response.somethingWrong({ error: error });
@@ -31,12 +24,12 @@ export const getAllAccessPolicy = async (req, res) => {
 
 /** get access policy */
 export const getAccessPolicy = async (req, res) => {
-  const response = Res(res);
+  const response = new Res(res);
   try {
     if (!validateObjectId(req.params.accp_id)) {
       return response.badRequest({ msg: "invalid access policy id" });
     }
-    const accp = await _getAccessPolicy(req.params.accp_id);
+    const accp = await AccProvider._getAccessPolicy(req.params.accp_id);
     return response.success(accp);
   } catch (error) {
     return response.somethingWrong({ error: error });
@@ -45,7 +38,7 @@ export const getAccessPolicy = async (req, res) => {
 
 /** create new access policy */
 export const createNewAccessPolicy = async (req, res) => {
-  const response = Res(res);
+  const response = new Res(res);
   try {
     /** create data */
     const validateData = {
@@ -60,19 +53,25 @@ export const createNewAccessPolicy = async (req, res) => {
       reason: req.body.reason,
       is_super_admin: req.body.is_super_admin,
       name: req.body.name,
+      order: req.body.order,
+      seller: req.body.seller,
+      return: req.body.return,
     };
 
     /** Clone data from validateData */
     const createData = { ...validateData };
 
     /** validate request data from body */
-    const isValidData = validateCreateData(validateData);
+    const isValidData = AccProvider.validateCreateData(validateData);
     if (!isEmptyObj(isValidData)) {
       return response.badRequest({ data: isValidData });
     }
 
     /** call create func from provider */
-    const isCreated = await newAccessPolicy(createData, req.is_super_admin);
+    const isCreated = await AccProvider.newAccessPolicy(
+      createData,
+      req.is_super_admin
+    );
     return response.success(isCreated);
   } catch (error) {
     return response.somethingWrong({ error: error });
@@ -81,7 +80,7 @@ export const createNewAccessPolicy = async (req, res) => {
 
 /** update access policy */
 export const updateAccessPolicy = async (req, res) => {
-  const response = Res(res);
+  const response = new Res(res);
   try {
     /** create data */
     const validateData = {
@@ -96,19 +95,22 @@ export const updateAccessPolicy = async (req, res) => {
       reason: req.body.reason,
       is_super_admin: req.body.is_super_admin,
       name: req.body.name,
+      order: req.body.order,
+      seller: req.body.seller,
+      return: req.body.return,
     };
 
     /** Clone data from validateData */
     const updateData = { ...validateData };
 
     /** validate request data from body */
-    const isValidData = validateCreateData(validateData);
+    const isValidData = AccProvider.validateCreateData(validateData);
     if (!isEmptyObj(isValidData)) {
       return response.badRequest({ data: isValidData });
     }
 
     /** call create func from provider */
-    const isUpdate = await _updateAccessPolicy(
+    const isUpdate = await AccProvider._updateAccessPolicy(
       {
         updateData: updateData,
         authAccessPolicy: req.is_super_admin,
@@ -123,9 +125,9 @@ export const updateAccessPolicy = async (req, res) => {
 
 /** delete access policy */
 export const deleteAccessPolicy = async (req, res) => {
-  const response = Res(res);
+  const response = new Res(res);
   try {
-    const delAcc = await _deleteAccessPolicy(
+    const delAcc = await AccProvider._deleteAccessPolicy(
       req.params.accp_id,
       req.is_super_admin
     );
@@ -137,7 +139,7 @@ export const deleteAccessPolicy = async (req, res) => {
 
 /** get admin access policy with token */
 export const getMyAccessPolicy = async (req, res) => {
-  const response = Res(res);
+  const response = new Res(res);
   try {
     const accp = Admin.findById(req.auth._id)
       .populate({

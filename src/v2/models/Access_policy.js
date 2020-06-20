@@ -47,6 +47,18 @@ const schema = new mongoose.Schema(
       type: Number,
       default: 1,
     },
+    return: {
+      type: Number,
+      default: 1,
+    },
+    order: {
+      type: Number,
+      default: 1,
+    },
+    seller: {
+      type: Number,
+      default: 1,
+    },
     is_super_admin: {
       type: Boolean,
       required: true,

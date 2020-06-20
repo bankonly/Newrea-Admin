@@ -15,13 +15,6 @@ const schema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    product_id: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "product_seller",
-        required: true,
-      },
-    ],
     is_active: {
       type: String,
       default: "active",
