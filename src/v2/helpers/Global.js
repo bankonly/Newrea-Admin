@@ -87,3 +87,11 @@ export const isString = (value) => {
   if (typeof value !== "string") return false;
   return true;
 };
+
+
+/** validate */
+export const isEmpty = (value,method = "string") => {
+  if (value == null || !value) return false;
+  if (typeof value !== method) return false;
+  return true;
+};

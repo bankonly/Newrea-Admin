@@ -41,16 +41,19 @@ export const imageValidate = (fileData, filetype = ".jpg") => {
 };
 
 /** single image upload */
-export const uploadImage = ({
-  path,
-  field,
-  req,
-  res,
-  height = 512,
-  width = 512,
-  maxUpload = 5,
-  fileType = ".jpg"
-}) => {
+export const uploadImage = (
+  {
+    path,
+    field,
+    req,
+    res,
+    height = 512,
+    width = 512,
+    maxUpload = 5,
+    fileType = ".jpg",
+  },
+  callback
+) => {
   try {
     if (!field) return Res.badRequest({ msg: field + " is required" });
     /** check if path exist and create */
@@ -64,50 +67,58 @@ export const uploadImage = ({
       var response = Res.success({});
       var error = {};
       upload(req, res, (err) => {
+        const isValid = callback(req.body);
         req.body = req.body;
-        if (req.files.length > 5) {
-          error.limit = "limit upload is " + maxUpload;
-          response = Res.badRequest({ data: error });
-        } else if (req.files.length == 0) {
-          error.image = "image can not be null";
-          response = Res.badRequest({ data: error });
+        if (!isEmptyObj(isValid)) {
+          response = Res.badRequest({ data: isValid });
         } else {
-          /** loop image list */
-          req.files.forEach((file, index) => {
-            const resizePath = path;
-            const folderName = width + "x" + height + "/";
-            /** new file name */
-            const newFile = resizePath + folderName + file.filename + fileType;
-            /** rename image */
-            response = imageValidate(file, fileType);
-            if (err || !response.status) {
-              // console.log(path + file.filename + fileType)
-              removeImage(path + file.filename + fileType);
-              response = Res.badRequest(response);
-            } else {
-              /** check if new dir is not exist */
-              if (!fs.existsSync(resizePath + folderName)) {
-                fs.mkdirSync(resizePath + folderName);
+          if (req.files.length > 5) {
+            error.limit = "limit upload is " + maxUpload;
+            response = Res.badRequest({ data: error });
+          } else if (req.files.length == 0) {
+            error.image = "image can not be null";
+            response = Res.badRequest({ data: error });
+          } else {
+            /** loop image list */
+            req.files.forEach((file, index) => {
+              const resizePath = path;
+              const folderName = width + "x" + height + "/";
+              /** new file name */
+              const newFile =
+                resizePath + folderName + file.filename + fileType;
+              /** rename image */
+              req.body.removePath = [newFile];
+              response = imageValidate(file, fileType);
+              if (err || !response.status) {
+                // console.log(path + file.filename + fileType)
+                removeImage(path + file.filename + fileType);
+                response = Res.badRequest(response);
+              } else {
+                /** check if new dir is not exist */
+                if (!fs.existsSync(resizePath + folderName)) {
+                  fs.mkdirSync(resizePath + folderName);
+                }
+
+                /** call resize func */
+                const isResize = resizeImage({
+                  width: width,
+                  height: height,
+                  oldPath: response.data.file,
+                  newPath: newFile,
+                });
+
+                if (!isResize.status) {
+                  response = isResize;
+                } else response = Res.success(response);
               }
-
-              /** call resize func */
-              const isResize = resizeImage({
-                width: width,
-                height: height,
-                oldPath: response.data.file,
-                newPath: newFile,
-              });
-
-              if (!isResize.status) {
-                response = isResize;
-              } else response = Res.success(response);
-            }
-          });
+            });
+          }
         }
         /** if save image not success */
         if (!response.status) {
           return resolve(response);
         } else {
+          req.body.removePath.push(response.data.file)
           req.body.img = response.data.file;
           return resolve(Res.success({ data: req.body }));
         }
@@ -151,5 +162,7 @@ export const uploadImagev2 = (req, path, multiples = true) => {
 };
 
 export const removeImage = (path) => {
-  fs.unlink(path, (err) => console.log(err));
+  path.forEach((value,index)=>{
+    fs.unlink(value, (err) => console.log(err));
+  })
 };
