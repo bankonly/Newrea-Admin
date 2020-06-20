@@ -69,25 +69,4 @@ const schema = new mongoose.Schema(
 
 const AccessPolicy = mongoose.model(tableName, schema);
 
-<<<<<<< HEAD:src/v2/models/access_policy.js
-const AcessPolicyModel = mongoose.model(tableName, schema);
-
-/** Query Builder */
-class AccessQueryBuilder {
-  /** get access policy with adminId */
-  getAccessPolicyByAdminId(adminId) {
-    return Admin.findById(adminId).populate({
-      path: "access_policy",
-    });
-  }
-
-  /** find access by name */
-  findByName(name) {
-    return AccessPolicy.findOne({ name: name });
-  }
-}
-
-export const AccessPolicy = AcessPolicyModel;
-=======
 export { AccessPolicy };
->>>>>>> d196840db2412f761c4ae1adab8b20e67ff23dfe:src/v2/models/Access_policy.js
