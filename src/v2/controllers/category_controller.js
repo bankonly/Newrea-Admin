@@ -18,7 +18,7 @@ import {
 /** Configs */
 import constant from "../configs/constant";
 
-/** save catagory */
+/** save category */
 export const saveCategory = async (req, res, next) => {
   /** define response */
   const response = new ResCtl(res);
@@ -44,7 +44,7 @@ export const saveCategory = async (req, res, next) => {
   }
 };
 
-/** update catagory */
+/** update category */
 export const updateCategory = async (req, res, next) => {
   /** define response */
   const response = new ResCtl(res);
@@ -70,7 +70,7 @@ export const updateCategory = async (req, res, next) => {
   }
 };
 
-/** get all catagory */
+/** get all category */
 export const getAllCategory = async (req, res, next) => {
   /** define response */
   const response = new ResCtl(res);
@@ -82,7 +82,7 @@ export const getAllCategory = async (req, res, next) => {
   }
 };
 
-/** get catagory */
+/** get category */
 export const getCategory = async (req, res, next) => {
   /** define response */
   const response = new ResCtl(res);
@@ -94,7 +94,7 @@ export const getCategory = async (req, res, next) => {
   }
 };
 
-/** delete catagory */
+/** delete category */
 export const deleteCategory = async (req, res, next) => {
   /** define response */
   const response = new ResCtl(res);
