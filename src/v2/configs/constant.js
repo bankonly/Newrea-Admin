@@ -18,7 +18,7 @@ module.exports = {
   token_life_time: process.env.TOKEN_LIFE_TIME,
   image_size_allow: process.env.IMAGE_SIZE_ALLOW,
   imgPath: {
-    category: "./img/category/",
-    most_popular: "./img/most_popular/",
+    category: "./../img/category/",
+    most_popular: "./../img/most_popular/",
   },
 };

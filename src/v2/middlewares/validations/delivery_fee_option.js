@@ -3,7 +3,7 @@ const deliveryFeeOptionModel = require("./../../models/delivery_fee_option");
 import Res from "./../../controllers/response_controller";
 
 exports.create = async (req, res, next) => {
-  const response = Res(res);
+  const response = new Res(res);;
   const data = req.body;
   const reqName = data.name.toLowerCase();
 
