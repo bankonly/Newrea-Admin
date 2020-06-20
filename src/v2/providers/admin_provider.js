@@ -1,6 +1,6 @@
 import Validator from "validator";
 import Res from "../controllers/default_res_controller";
-import { AdminQB, Admin } from "../models/admin";
+import { Admin } from "../models/admin";
 import Bcrypt from "../helpers/Bcrypt";
 import JWT from "../helpers/Jwt";
 import CONSTANT from "../configs/constant";
@@ -90,8 +90,8 @@ class AdminProvider {
       }
 
       /** check name */
-      const isName = await AdminQB.findByName({ name: name });
-      const isEmail = await AdminQB.findByEmail({ email: email });
+      const isName = await Admin.findOne({ name: name });
+      const isEmail = await Admin.findOne({ "contact.email": email });
       if (isName !== null) error.name = "already exist";
       if (isEmail !== null) error.email = "already exist";
 
@@ -128,8 +128,8 @@ class AdminProvider {
   async login({ author, password }) {
     try {
       /** check name */
-      const isName = await AdminQB.findByName({ name: author });
-      const isEmail = await AdminQB.findByEmail({ email: author });
+      const isName = await Admin.findOne({ name: author });
+      const isEmail = await Admin.findOne({ "contact.email": author });
 
       /** check if two of them return null */
       if (isName == null && isEmail == null) {
@@ -222,21 +222,27 @@ class AdminProvider {
       }
 
       /** check admin_id  */
-      const isAdminData = await AdminQB.findByUserId({ id: admin_id });
+      const isAdminData = await Admin.findById(admin_id);
       if (isAdminData == null)
         return Res.notFound({ msg: "admin_id does not exist" });
 
       /** check name,email */
-      const isName = await AdminQB.findByName({ name: name });
-      const isEmail = await AdminQB.findByEmail({ email: email });
+      const isName = await Admin.findOne({ name: name });
+      const isEmail = await Admin.findOne({ "contact.email": email });
+      const isPhoneNumber = await Admin.findOne({
+        "contact.phone_number": phone_number,
+      });
 
       /** check if two of them return null */
-      if (isName !== null) error.name = "already exist";
-      if (isEmail !== null) error.name = "already exist";
-      if (isEmail !== null && isAdminData.contact.email == email)
-        error.email = "you entered old one ";
-      if (isName !== null && isAdminData.name == name)
-        error.name = "you entered old one";
+      if (isName !== null && isName.name !== isAdminData.name) {
+        error.name = "already exist";
+      }
+      if (
+        isEmail !== null &&
+        isEmail.contact.email !== isAdminData.contact.email
+      ) {
+        error.email = "already exist";
+      }
 
       /** Validate Error */
       if (!isEmptyObj(error)) return Res.badRequest({ data: error });

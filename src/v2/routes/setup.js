@@ -3,6 +3,9 @@ import adminRouter from "./admin";
 import accessPolicyRouter from "./access_policy";
 import categoryRouter from "./category";
 import unAuthenticateRouter from "./app";
+import seller from "./seller";
+import mostPopularRouter from "./most_popular";
+import delivery_fee_option from "./delivery_fee_option";
 
 /** configs */
 import kernel from "../configs/kernel";
@@ -16,6 +19,9 @@ export default (app) => {
     adminRouter,
     accessPolicyRouter,
     categoryRouter,
+    seller,
+    mostPopularRouter,
+    delivery_fee_option,
   ]);
 
   /** unAuthenticate Router */

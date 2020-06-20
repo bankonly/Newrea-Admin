@@ -1,32 +1,54 @@
 import mongoose from "mongoose";
 
-/** Import migrtion */
-import admin_schema from "../database/schema/admin_schema";
-const { tableName, schema } = admin_schema(mongoose);
+const tableName = "admin";
+const schema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      max: 100,
+      required: true,
+    },
+    age: {
+      type: Number,
+      default: null,
+    },
+    contact: {
+      email: {
+        type: String,
+        required: true,
+      },
+      phone_number: {
+        type: String,
+        default: null,
+      },
+    },
+    is_online: {
+      type: String,
+      default: "online", // "0 = inactive,1 = active"
+      required: true,
+    },
+    block_status: {
+      type: Number,
+      max: 1,
+      default: 0, // "0 = unbanned ,1 = banned"
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    login_count: {
+      type: Number,
+      default: 0,
+    },
+    access_policy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "access_policy",
+      required: true,
+    },
+  },
+  { collection: tableName, timestamps: true }
+);
 
-const AdminModel = mongoose.model(tableName, schema);
+const Admin = mongoose.model(tableName, schema);
 
-/** Query Builder */
-class AdminQueryBuilder {
-  constructor() {
-    this.model = AdminModel;
-  }
-
-  /** Find Seller By Id */
-  findByUserId({ id }) {
-    return this.model.findOne({ _id: id });
-  }
-
-  /** Find Seller By name */
-  findByName({ name }) {
-    return this.model.findOne({ name: name });
-  }
-
-  /** find Admin By Email */
-  findByEmail({ email }) {
-    return this.model.findOne({ "contact.email": email });
-  }
-}
-
-export const Admin = AdminModel;
-export const AdminQB = new AdminQueryBuilder();
+export { Admin };

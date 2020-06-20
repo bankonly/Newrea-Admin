@@ -1,4 +1,4 @@
-import bycrypt from "bcrypt"
+import bycrypt from "bcrypt";
 
 class BcryptHelper {
   async hashPassword(password, round = 10) {

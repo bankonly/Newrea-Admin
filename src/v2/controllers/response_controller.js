@@ -44,6 +44,7 @@ class ResponseController {
   }
 
   // created
+
   created({ data = {}, msg = "created success", status = true, code = 200 }) {
     return this.res.json({
       message: msg,
@@ -134,7 +135,6 @@ class ResponseController {
       data: data,
     });
   }
-
 }
 
-export default (res) => new ResponseController(res);
+module.exports = ResponseController;
