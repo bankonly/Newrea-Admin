@@ -25,7 +25,7 @@ exports.findSellerByID = async (req, res) => {
   try {
     const sellers = await sellerModel
       .findById(sellerID)
-      .populate("category_id");
+      .populate(["category_id", "delivery_fee_option_id"]);
     if (sellers) {
       response.success({ data: sellers });
     } else {
@@ -70,9 +70,10 @@ exports.disableSeller = async (req, res) => {
     if (!foundSeller) {
       response.notFound({ data: sellers, msg: "seller not found" });
     }
-    foundSeller.is_active = "inActive";
+    const newValue = foundSeller.is_active === "active" ? "inActive" : "active";
+    foundSeller.is_active = newValue;
     if (await foundSeller.save()) {
-      response.success({ data: foundSeller, msg: "disable seller success" });
+      response.success({ data: foundSeller});
     } else {
       response.somethingWrong({});
     }
@@ -104,7 +105,6 @@ exports.updateSeller = async (req, res) => {
     response.somethingWrong({ error: ex });
   }
 };
-
 //   seller login
 exports.sellerLogin = async (req, res) => {
   console.log("working...");

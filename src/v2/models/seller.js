@@ -26,7 +26,7 @@ const SellerSchema = new Schema({
   },
   is_active: {
     type: String,
-    required: true,
+    enum: ["active", "inActive"],
     default: "active",
   },
   img: {
