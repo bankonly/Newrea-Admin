@@ -1,13 +1,14 @@
 import Res from "../controllers/default_res_controller";
 
 /** Models */
-import { Category, CategoryQB } from "../models/category";
+import { Category } from "../models/category";
 
 /** Providers */
 import { imageUpload } from "./file_provider";
-import { isString } from "../helpers/Global";
 
 /** helpers */
+import { isString } from "../helpers/Global";
+import { isIdExist, deleteOne } from "../helpers/query_builder";
 import { validateObjectId } from "../helpers/Global";
 
 /** validate save data */
@@ -22,7 +23,7 @@ export const validateSaveData = (obj) => {
 export const _saveCategory = async (saveData) => {
   try {
     /** name check */
-    const isName = await CategoryQB.findByName(saveData.name);
+    const isName = await Category.findOne({ name: saveData.name });
     if (isName !== null) {
       return Res.badRequest({ msg: "Name is already exist" });
     }
@@ -43,21 +44,21 @@ export const _updateCategory = async (cat_id, updateData) => {
     if (!validateObjectId(cat_id)) {
       return Res.badRequest({ msg: "invalid cat_id id" });
     }
-    const isIdExist = await Category.findById(cat_id);
-    if (isIdExist == null) {
+    const isCatID = await isIdExist(Category, cat_id);
+    if (isCatID == null) {
       return Res.notFound({ msg: "Id is not exist" });
     }
     /** name check */
-    const isName = await CategoryQB.findByName(updateData.name);
-    if (isName !== null) {
+    const isName = await Category.findOne({ name: updateData.name });
+    if (isName !== null && isName.name !== isCatID.name) {
       return Res.badRequest({ msg: "Name is already exist" });
     }
 
     /** save data */
-    isIdExist.img = updateData.img;
-    isIdExist.name = updateData.name;
+    isCatID.img = updateData.img;
+    isCatID.name = updateData.name;
 
-    if (await isIdExist.save()) return Res.success({ data: "updated" });
+    if (await isCatID.save()) return Res.success({ data: "updated" });
     return Res.badRequest({ msg: "can not update" });
   } catch (error) {
     return Res.somethingWrong({ error: error });
@@ -100,7 +101,7 @@ export const _deleteCategory = async (cat_id) => {
       return Res.badRequest({ msg: "invalid cat_id id" });
     }
 
-    const delCat = await Category.findByIdAndDelete(cat_id);
+    const delCat = await deleteOne(Category, cat_id);
     if (!delCat) {
       return Res.badRequest({ msg: "can not delete or id not exist" });
     }

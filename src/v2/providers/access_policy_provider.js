@@ -1,4 +1,3 @@
-import _ from "validator";
 import Res from "../controllers/default_res_controller";
 
 /** Helpers */
@@ -13,7 +12,7 @@ import {
 } from "../helpers/Global";
 
 /** Models */
-import { AccessPolicy, AccessPolicyQB } from "../models/access_policy";
+import { AccessPolicy } from "../models/access_policy";
 
 /** validate create data */
 export const validateCreateData = (obj) => {
@@ -46,7 +45,7 @@ export const newAccessPolicy = async (accessPolicyData, authAccessPolicy) => {
     }
 
     /** check name */
-    const isName = await AccessPolicyQB.findByName(accessPolicyData.name);
+    const isName = await AccessPolicy.findOne({ name: accessPolicyData.name });
     if (isName !== null) return Res.duplicated({ msg: "name already exist" });
 
     /** create access policy */
@@ -62,21 +61,19 @@ export const _getAccessPolicy = async (accp_id = null) => {
   try {
     var accData = null;
     if (accp_id !== null) {
-      accData = AccessPolicy.findOne({
+      accData = await AccessPolicy.findOne({
         _id: accp_id,
-      });
+      }).select("-__v");
     } else {
-      accData = AccessPolicy.find();
+      accData = await AccessPolicy.find().select("-__v");
     }
 
-    const respAcc = await accData.select("-__v");
-
     /** check if accData no data */
-    if (respAcc == null || respAcc.length < 1) {
+    if (accData == null || accData.length < 1) {
       return Res.notFound({ msg: "no access policy data" });
     }
 
-    return Res.success({ data: respAcc });
+    return Res.success({ data: accData });
   } catch (error) {
     return Res.somethingWrong({ error: error });
   }
@@ -100,19 +97,22 @@ export const _updateAccessPolicy = async (
       return Res.badRequest({ msg: "invalid access policy id" });
     }
 
-    /** check name */
-    const isName = await AccessPolicyQB.findByName(updateData.name);
-    if (isName !== null) return Res.duplicated({ msg: "name already exist" });
-
-    /** check if access policy exist */
-    const isAccess = AccessPolicy.findById(accp_id);
-    if ((await isAccess) == null) {
+    // /** check if access policy exist */
+    const isAccess = await AccessPolicy.findById(accp_id);
+    if (isAccess == null) {
       return Res.notFound({ msg: "access policy id not found" });
     }
 
+    /** check name */
+    const isName = await AccessPolicy.findOne({ name: updateData.name });
+    if (isName !== null && isName.name !== isAccess.name)
+      return Res.duplicated({ msg: "name already exist" });
+
     /** update access policy */
-    const updateAccess = await isAccess.update(updateData);
-    if (!updateData) return Res.badRequest({ msg: "can not update" });
+    isAccess.img = updateData.img;
+    isAccess.name = updateData.name;
+
+    if (!isAccess.save()) return Res.badRequest({ msg: "can not update" });
     return Res.success({ msg: "updated" });
   } catch (error) {
     return Res.somethingWrong({ error: error });

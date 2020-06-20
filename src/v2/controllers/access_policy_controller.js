@@ -5,7 +5,8 @@ import Res from "./response_controller";
 import { isEmptyObj, validateObjectId } from "../helpers/Global";
 
 /** Models */
-import { AccessPolicyQB, AccessPolicy } from "../models/access_policy";
+import { AccessPolicy } from "../models/access_policy";
+import { Admin } from "../models/admin";
 
 /** Providers */
 import {
@@ -138,9 +139,11 @@ export const deleteAccessPolicy = async (req, res) => {
 export const getMyAccessPolicy = async (req, res) => {
   const response = Res(res);
   try {
-    const accp = AccessPolicyQB.getAccessPolicyByAdminId(req.auth._id).select(
-      "-__v"
-    );
+    const accp = Admin.findById(req.auth._id)
+      .populate({
+        path: "access_policy",
+      })
+      .select("-__v");
     const { access_policy } = await accp;
     return response.success({ data: access_policy });
   } catch (error) {
