@@ -44,6 +44,7 @@ class ResponseController {
   }
 
   // created
+
   created({ data = {}, msg = "created success", status = true, code = 200 }) {
     return this.res.json({
       message: msg,
