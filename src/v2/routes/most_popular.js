@@ -13,8 +13,8 @@ import {
 /** define routes */
 router
   .post("/getAllMostPopular", getAllMostPopular)
-  .post("/getMostPopular/:mos_id", getMostPopular)
-  .post("/delMostPopular/:mos_id", deleteMostPopular)
+  .post("/getMostPopular", getMostPopular)
+  .post("/deleteMostPopular", deleteMostPopular)
   .post("/updateMostPopular/:mos_id", updateMostPopular)
   .post("/addMostPopular", saveMostPopular);
 

@@ -49,7 +49,7 @@ export const uploadImage = (
     res,
     height = 512,
     width = 512,
-    maxUpload = 5,
+    maxUpload = 1,
     fileType = ".jpg",
   },
   callback
@@ -118,7 +118,7 @@ export const uploadImage = (
         if (!response.status) {
           return resolve(response);
         } else {
-          req.body.removePath.push(response.data.file)
+          req.body.removePath.push(response.data.file);
           req.body.img = response.data.file;
           return resolve(Res.success({ data: req.body }));
         }
@@ -162,7 +162,7 @@ export const uploadImagev2 = (req, path, multiples = true) => {
 };
 
 export const removeImage = (path) => {
-  path.forEach((value,index)=>{
+  path.forEach((value, index) => {
     fs.unlink(value, (err) => console.log(err));
-  })
+  });
 };
