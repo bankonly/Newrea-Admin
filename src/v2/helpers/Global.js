@@ -95,3 +95,4 @@ export const isEmpty = (value,method = "string") => {
   if (typeof value !== method) return false;
   return true;
 };
+

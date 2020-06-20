@@ -1,17 +1,21 @@
 /** helpers */
 const { isString, isEmpty, validateObjectId } = require("../helpers/Global");
 
+/** providers */
+const { isIdExist } = require("../helpers/query_builder");
+
 /** Models */
 const { MostPopular } = require("../models/most_popular");
 
 /** controller */
 import Res from "../controllers/default_res_controller";
 
-export const validateSaveData = (obj) => {
+export const validateSaveData = async (obj) => {
   var error = {};
   var msg = "field is required as string";
   if (!isEmpty(obj.title)) error.title = msg;
   if (!isEmpty(obj.desc)) error.desc = msg;
+  if (!isEmpty(obj.mos_id) || !validateObjectId(obj.mos_id)) error.mos_id = msg;
   return error;
 };
 
