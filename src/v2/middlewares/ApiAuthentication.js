@@ -4,10 +4,11 @@ import Jwt from "jsonwebtoken";
 import CONSTANT from "../configs/constant";
 
 export default async (req, res, next) => {
+  const response = new Res(res);
   try {
     const authorization = req.headers.authorization;
     if (!authorization) {
-      return Res(res).unAuthorized({});
+      return response.unAuthorized({});
     }
 
     const decoded = Jwt.verify(authorization, process.env.SECRET_KEY);
@@ -22,17 +23,17 @@ export default async (req, res, next) => {
       .select("-password -__v");
 
     if (userData == null) {
-      return Res(res).notFound({ msg: "user might be deleted or banned" });
+      return response.notFound({ msg: "user might be deleted or banned" });
     }
 
     if (userData.login_count !== decoded.login_count) {
-      return Res(res).unAuthorized({});
+      return response.unAuthorized({});
     }
     req.auth = userData;
-    req.is_super_admin = userData.access_policy.is_super_admin
+    req.is_super_admin = userData.access_policy.is_super_admin;
     return next();
   } catch (error) {
     console.log(error.message);
-    return Res(res).unAuthorized({});
+    return response.unAuthorized({});
   }
 };
