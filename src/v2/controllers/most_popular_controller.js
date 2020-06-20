@@ -3,8 +3,14 @@
 const ResCtl = require("./response_controller");
 
 /** Helpers */
-const { isString, isEmptyObj, validateObjectId } = require("../helpers/Global");
+const {
+  isString,
+  isEmptyObj,
+  validateObjectId,
+  isEmpty,
+} = require("../helpers/Global");
 const { isIdExist } = require("../helpers/query_builder");
+
 /** Models */
 const { MostPopular } = require("../models/most_popular");
 
@@ -102,7 +108,12 @@ export const getMostPopular = async (req, res, next) => {
   /** define response */
   const response = new ResCtl(res);
   try {
-    const most_data = await _getMostPopular(req.params.mos_id);
+    const mos_id = req.body.mos_id;
+    if (!isEmpty(mos_id)) {
+      return response.badRequest({ msg: "mos_id is required" });
+    }
+
+    const most_data = await _getMostPopular(mos_id);
     return response.success(most_data);
   } catch (error) {
     return response.somethingWrong({ error: error });
@@ -119,11 +130,12 @@ export const deleteMostPopular = async (req, res, next) => {
       return response.notAllowed({ msg: "access denied" });
     }
 
-    if (!validateObjectId(req.params.mos_id)) {
-      return response.badRequest({ msg: "invalid access policy id" });
+    const mos_id = req.body.mos_id;
+    if (!isEmpty(mos_id) || !validateObjectId(mos_id)) {
+      return response.badRequest({ msg: "mos_id is required " });
     }
-
-    const delAcc = await MostPopular.findByIdAndDelete(req.params.mos_id);
+    
+    const delAcc = await MostPopular.findByIdAndDelete(mos_id);
     if (!delAcc) {
       return response.badRequest({ msg: "can not delete or id not exist" });
     }
