@@ -1,31 +1,34 @@
 import mongoose from "mongoose";
 
-/** Import migrtion */
-import category_schema from "../database/schema/category_schema";
-const { tableName, schema } = category_schema(mongoose);
+const tableName = "category";
+const schema = new mongoose.Schema(
+  {
+    // parent_id: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "category",
+    //   default: null,
+    // },
+    name: {
+      type: String,
+      required: true,
+    },
+    img: {
+      type: String,
+      required: true,
+    },
+    is_active: {
+      type: String,
+      required: true,
+      default: "active",
+    },
+    created_date: {
+      type: Date,
+      default: Date.now(),
+    },
+  },
+  { collection: tableName }
+);
 
-const CategoryModel = mongoose.model(tableName, schema);
+const Category = mongoose.model(tableName, schema);
 
-/** Query Builder */
-class CategoryQueryBuilder {
-  /** find by name */
-  findByName(name) {
-    return CategoryModel.findOne({
-      name: name,
-    });
-  }
-
-  /** find parent id */
-  findByParentId(parentId) {
-    return CategoryModel.find({
-      parent_id: parentId,
-    });
-  }
-
-  constructor() {
-    this.model = CategoryModel;
-  }
-}
-
-export const Category = CategoryModel;
-export const CategoryQB = new CategoryQueryBuilder();
+export { Category };

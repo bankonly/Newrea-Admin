@@ -6,7 +6,7 @@ import AdminProvider from "../providers/admin_provider";
 import AccessPolicyProvider from "../providers/access_policy_provider";
 
 /** Models */
-import { Admin, AdminQB } from "../models/admin";
+import { Admin } from "../models/admin";
 import { AccessPolicy } from "../models/access_policy";
 
 /** Helpers */

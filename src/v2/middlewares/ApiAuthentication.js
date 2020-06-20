@@ -1,4 +1,4 @@
-import { Admin, AdminQB } from "../models/admin";
+import { Admin } from "../models/admin";
 import Res from "../controllers/response_controller";
 import Jwt from "jsonwebtoken";
 import CONSTANT from "../configs/constant";
