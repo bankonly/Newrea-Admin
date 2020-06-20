@@ -27,7 +27,7 @@ const schema = new mongoose.Schema(
       type: Number,
       default: 1,
     },
-    catagory: {
+    category: {
       type: Number,
       default: 1,
     },
