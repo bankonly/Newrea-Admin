@@ -4,7 +4,7 @@ const ResCtl = require("./response_controller");
 
 /** Helpers */
 const { isString, isEmptyObj, validateObjectId } = require("../helpers/Global");
-
+const { isIdExist } = require("../helpers/query_builder");
 /** Models */
 const { MostPopular } = require("../models/most_popular");
 
@@ -53,6 +53,13 @@ export const updateMostPopular = async (req, res, next) => {
   const response = new ResCtl(res);
   var errorImg = null;
   try {
+    if (!validateObjectId(req.params.mos_id)) {
+      return response.badRequest({ msg: "invalid most popular id" });
+    }
+
+    const isId = await isIdExist(MostPopular, req.params.mos_id);
+    if (isId == null) return response.notFound({ msg: "id not exist" });
+
     /** validate image and body data */
     const isUpload = await uploadImage(
       {
