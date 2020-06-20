@@ -4,6 +4,7 @@ import accessPolicyRouter from "./access_policy";
 import categoryRouter from "./category";
 import unAuthenticateRouter from "./app";
 import seller from "./seller";
+import delivery_fee_option from "./delivery_fee_option";
 
 /** configs */
 import kernel from "../configs/kernel";
@@ -18,6 +19,7 @@ export default (app) => {
     accessPolicyRouter,
     categoryRouter,
     seller,
+    delivery_fee_option,
   ]);
 
   /** unAuthenticate Router */
