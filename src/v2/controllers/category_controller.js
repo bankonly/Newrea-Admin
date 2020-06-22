@@ -1,12 +1,17 @@
 /** Modules */
-
+import fs from "fs";
 import ResCtl from "./response_controller";
 
 /** Helpers */
 import { isString, isEmptyObj } from "../helpers/Global";
 
 /** Providers */
-import { uploadImage, uploadImagev2 } from "../providers/file_provider";
+import {
+  uploadImage,
+  removeFileMany,
+  uploadImageMany,
+} from "../providers/file_provider";
+
 import {
   _saveCategory,
   validateSaveData,
@@ -23,20 +28,21 @@ export const saveCategory = async (req, res, next) => {
   /** define response */
   const response = new ResCtl(res);
   try {
-    const isUpload = await uploadImage(
-      {
-        req: req,
-        res: res,
-        path: constant.imgPath.category,
-        field: "image",
-      },
-      validateSaveData
-    );
+    const isUpload = await uploadImage({
+      req: req,
+      res: res,
+      path: constant.imgPath.category,
+      field: "image",
+    });
 
+    const isValid = await validateSaveData(req.body);
+    if (!isEmptyObj(isValid)) {
+      return response.badRequest({ data: isValid });
+    }
     if (!isUpload.status) return response.badRequest(isUpload);
 
     /** cal save function from provider */
-    const isImageSave = await _saveCategory(isUpload.data);
+    const isImageSave = await _saveCategory(req.body);
     return response.success(isImageSave);
   } catch (error) {
     console.log(error);
@@ -53,12 +59,15 @@ export const updateCategory = async (req, res, next) => {
     if (!req.is_super_admin)
       return response.notAllowed({ msg: "access denied" });
 
-    const isUpload = await uploadImage({
-      req: req,
-      res: res,
-      path: constant.imgPath.category,
-      field: "image",
-    },validateSaveData);
+    const isUpload = await uploadImage(
+      {
+        req: req,
+        res: res,
+        path: constant.imgPath.category,
+        field: "image",
+      },
+      validateSaveData
+    );
 
     if (!isUpload.status) return response.badRequest(isUpload);
 
