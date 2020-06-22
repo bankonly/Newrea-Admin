@@ -61,7 +61,6 @@ const SellerSchema = new Schema({
   },
   is_online: {
     type: String,
-    required: true,
     default: "close",
   },
   created_date: {

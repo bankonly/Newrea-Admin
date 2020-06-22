@@ -56,7 +56,7 @@ exports.createSeller = async (req, res) => {
         msg: "create seller successfully",
       });
     } else {
-      response.success({ data: sellers, msg: "create seller failed" });
+      response.success({ msg: "create seller failed" });
     }
   } catch (ex) {
     response.somethingWrong({ error: ex });
@@ -70,17 +70,17 @@ exports.disableSeller = async (req, res) => {
   try {
     const foundSeller = await sellerModel.findById(sellerID);
     if (!foundSeller) {
-      response.notFound({ data: sellers, msg: "seller not found" });
+      return response.notFound({ data: sellerID, msg: "seller not found" });
     }
     const newValue = foundSeller.is_active === "active" ? "inActive" : "active";
     foundSeller.is_active = newValue;
     if (await foundSeller.save()) {
-      response.success({ data: foundSeller });
+      return response.success({ data: foundSeller });
     } else {
-      response.somethingWrong({});
+      return response.somethingWrong({});
     }
   } catch (ex) {
-    response.somethingWrong({ error: ex });
+    return response.somethingWrong({ error: ex });
   }
 };
 
@@ -92,18 +92,18 @@ exports.updateSeller = async (req, res) => {
   try {
     let foundSeller = await sellerModel.findById(sellerID);
     if (!foundSeller) {
-      response.notFound({ data: sellers, msg: "seller not found" });
+      return response.notFound({ data: sellerID, msg: "seller not found" });
     }
     foundSeller.set(sellerData);
     if (await foundSeller.save()) {
-      response.success({
+      return response.success({
         data: foundSeller,
         msg: "update seller successfully",
       });
     } else {
-      response.somethingWrong({});
+      return response.somethingWrong({});
     }
   } catch (ex) {
-    response.somethingWrong({ error: ex });
+    return response.somethingWrong({ error: ex });
   }
 };
