@@ -6,11 +6,12 @@ import AdminProvider from "../providers/admin_provider";
 import AccessPolicyProvider from "../providers/access_policy_provider";
 
 /** Models */
-import { Admin } from "../models/admin";
-import { AccessPolicy } from "../models/access_policy";
+import Admin from "../models/admin";
+import AccessPolicy from "../models/access_policy";
 
 /** Helpers */
 import { isEmptyObj, validateObjectId } from "../helpers/Global";
+import { deleteIsActive } from "../helpers/query_builder";
 
 /** Admin Registeration */
 export const register = async (req, res) => {
@@ -69,7 +70,9 @@ export const login = async (req, res) => {
 export const getAdminList = async (req, res) => {
   const response = new Res(res);
   try {
-    const adminData = await AdminProvider.getAdmin({});
+    const adminData = await AdminProvider.getAdmin({
+      is_super_admin: req.is_super_admin,
+    });
     return response.success(adminData);
   } catch (error) {
     return response.somethingWrong({ error: error });
@@ -87,6 +90,7 @@ export const getAdminById = async (req, res) => {
 
     const adminData = await AdminProvider.getAdmin({
       adminId: req.params.admin_id,
+      is_super_admin: req.is_super_admin,
     });
 
     return response.success(adminData);
@@ -104,11 +108,11 @@ export const deleteAdmin = async (req, res) => {
     /** Check validator */
     if (!isEmptyObj(isValid)) return response.badRequest({ data: isValid });
 
-    const adminData = await Admin.findByIdAndDelete(req.params.admin_id);
-    if (adminData) {
-      return response.success({ msg: "Deleted success" });
+    const delAcc = await deleteIsActive(Admin, req.params.admin_id);
+    if (!delAcc) {
+      return response.badRequest({ msg: "can not delete" });
     }
-    return response.success({ msg: "Can not delete" });
+    return response.success({ msg: "deleted" });
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
@@ -183,7 +187,7 @@ export const changePassword = async (req, res) => {
 export const whoami = async (req, res) => {
   const response = new Res(res);
   try {
-    return response.success({data:req.auth})
+    return response.success({ data: req.auth });
   } catch (error) {
     return response.somethingWrong({ error: error });
   }

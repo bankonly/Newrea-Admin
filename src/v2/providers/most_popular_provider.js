@@ -15,7 +15,6 @@ export const validateSaveData = async (obj) => {
   var msg = "field is required as string";
   if (!isEmpty(obj.title)) error.title = msg;
   if (!isEmpty(obj.desc)) error.desc = msg;
-  if (!isEmpty(obj.mos_id) || !validateObjectId(obj.mos_id)) error.mos_id = msg;
   return error;
 };
 

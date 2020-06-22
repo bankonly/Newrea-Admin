@@ -1,11 +1,11 @@
 import Validator from "validator";
 import Res from "../controllers/default_res_controller";
-import { Admin } from "../models/admin";
+import Admin from "../models/admin";
 import Bcrypt from "../helpers/Bcrypt";
 import JWT from "../helpers/Jwt";
 import CONSTANT from "../configs/constant";
 import AccessPolicyProvider from "./access_policy_provider";
-import { AccessPolicy } from "../models/access_policy";
+import AccessPolicy from "../models/access_policy";
 import {
   invalidObjectId,
   isEmptyObj,
@@ -170,13 +170,17 @@ class AdminProvider {
   }
 
   /** get Admin */
-  async getAdmin({ adminId = null }) {
+  async getAdmin({ adminId = null, is_super_admin }) {
     try {
       var adminData = null;
       const condition = {
         _id: adminId,
         is_online: "online",
       };
+
+      if (!is_super_admin) {
+        condition.is_active = "in_active";
+      }
 
       const join = {
         path: "access_policy",

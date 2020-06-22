@@ -5,6 +5,7 @@ import categoryRouter from "./category";
 import unAuthenticateRouter from "./app";
 import seller from "./seller";
 import mostPopularRouter from "./most_popular";
+import bannerRouter from "./banner";
 import delivery_fee_option from "./delivery_fee_option";
 
 /** configs */
@@ -22,6 +23,7 @@ export default (app) => {
     seller,
     mostPopularRouter,
     delivery_fee_option,
+    bannerRouter
   ]);
 
   /** unAuthenticate Router */

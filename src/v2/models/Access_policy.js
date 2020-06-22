@@ -69,4 +69,4 @@ const schema = new mongoose.Schema(
 
 const AccessPolicy = mongoose.model(tableName, schema);
 
-export { AccessPolicy };
+module.exports = AccessPolicy;
