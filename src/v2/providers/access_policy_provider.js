@@ -12,7 +12,7 @@ import {
 } from "../helpers/Global";
 
 /** Models */
-import { AccessPolicy } from "../models/access_policy";
+import AccessPolicy from "../models/access_policy";
 
 /** validate create data */
 export const validateCreateData = (obj) => {

@@ -3,7 +3,8 @@ import fs from "fs";
 import ResCtl from "./response_controller";
 
 /** Helpers */
-import { isString, isEmptyObj } from "../helpers/Global";
+import { isString, isEmptyObj, validateObjectId } from "../helpers/Global";
+import { deleteIsActive } from "../helpers/query_builder"
 
 /** Providers */
 import {
@@ -11,6 +12,9 @@ import {
   removeFileMany,
   uploadImageMany,
 } from "../providers/file_provider";
+
+/** Models */
+import Category from "../models/category";
 
 import {
   _saveCategory,
@@ -45,7 +49,6 @@ export const saveCategory = async (req, res, next) => {
     const isImageSave = await _saveCategory(req.body);
     return response.success(isImageSave);
   } catch (error) {
-    console.log(error);
     return response.somethingWrong({ error: error });
   }
 };
@@ -59,15 +62,12 @@ export const updateCategory = async (req, res, next) => {
     if (!req.is_super_admin)
       return response.notAllowed({ msg: "access denied" });
 
-    const isUpload = await uploadImage(
-      {
-        req: req,
-        res: res,
-        path: constant.imgPath.category,
-        field: "image",
-      },
-      validateSaveData
-    );
+    const isUpload = await uploadImage({
+      req: req,
+      res: res,
+      path: constant.imgPath.category,
+      field: "image",
+    });
 
     if (!isUpload.status) return response.badRequest(isUpload);
 
@@ -108,8 +108,16 @@ export const deleteCategory = async (req, res, next) => {
   /** define response */
   const response = new ResCtl(res);
   try {
-    const catData = await _deleteCategory(req.params.cat_id);
-    return response.success(catData);
+    const isValid = validateObjectId(req.params.cat_id);
+
+    /** Check validator */
+    if (!isEmptyObj(isValid)) return response.badRequest({ data: isValid });
+
+    const delAcc = await deleteIsActive(Category, req.params.cat_id);
+    if (!delAcc) {
+      return response.badRequest({ msg: "can not delete" });
+    }
+    return response.success({ msg: "deleted" });
   } catch (error) {
     return response.somethingWrong({ error: error });
   }

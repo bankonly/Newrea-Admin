@@ -112,7 +112,7 @@ export const uploadImage = async ({
         removePath.push(removePath[0].push(oldPath));
         req.body.img = filenameSingle;
         req.body.removePathIfError = removePath[0];
-        resolve(Res.success({ data: req.body }));
+        return resolve(Res.success({ data: req.body }));
       });
     });
   } catch (error) {
@@ -182,10 +182,10 @@ export const removeFileMany = (path) => {
     path.forEach((value) => {
       while (true) {
         if (!fs.existsSync(value)) {
-          fs.unlinkSync(value);
+          fs.unlink(value);
           break;
         }
-        console.log("REMOVED")
+        console.log("REMOVED");
       }
     });
   } catch (error) {
@@ -278,4 +278,8 @@ export const uploadImageMany = async ({
   } catch (error) {
     return Res.somethingWrong({ error: error });
   }
+};
+
+export const saveImageExpress = ({ path, imageSize = [800, 200], file }) => {
+  console.log(file)
 };
