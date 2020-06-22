@@ -1,5 +1,5 @@
 import { config } from "dotenv"
 
 
-/** Load ENV */
+// Load ENV 
 config()

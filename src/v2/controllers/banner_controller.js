@@ -1,8 +1,8 @@
-/** Modules */
+// Modules 
 
 import ResCtl from "./response_controller";
 
-/** Helpers */
+// Helpers 
 import {
   isString,
   isEmptyObj,
@@ -11,17 +11,17 @@ import {
 } from "../helpers/Global";
 import { isIdExist, deleteIsActive } from "../helpers/query_builder";
 
-/** Models */
+// Models 
 
-/** Provider s */
+// Provider s 
 import { uploadImage } from "../providers/file_provider";
 
-/** Configs */
+// Configs 
 import constant from "../configs/constant";
 
-/** save most popular */
+// save most popular 
 export const saveBanner = async (req, res, next) => {
-  /** define response */
+  // define response 
   const response = new ResCtl(res);
   try {
     const isUpload = uploadImage({ path: constant.imgPath.banner, file: req.files.img,req });
@@ -31,9 +31,9 @@ export const saveBanner = async (req, res, next) => {
   }
 };
 
-/** update most popular */
+// update most popular 
 export const updateBanner = async (req, res, next) => {
-  /** define response */
+  // define response 
   const response = new ResCtl(res);
   try {
     return response.success({ msg: "updated" });
@@ -42,9 +42,9 @@ export const updateBanner = async (req, res, next) => {
   }
 };
 
-/** get all most popular */
+// get all most popular 
 export const getAllBanner = async (req, res, next) => {
-  /** define response */
+  // define response 
   const response = new ResCtl(res);
   try {
     return response.success({});
@@ -53,9 +53,9 @@ export const getAllBanner = async (req, res, next) => {
   }
 };
 
-/** get most popular */
+// get most popular 
 export const getBanner = async (req, res, next) => {
-  /** define response */
+  // define response 
   const response = new ResCtl(res);
   try {
     return response.success({});
@@ -64,9 +64,9 @@ export const getBanner = async (req, res, next) => {
   }
 };
 
-/** delete most popular */
+// delete most popular 
 export const deleteBanner = async (req, res, next) => {
-  /** define response */
+  // define response 
   const response = new ResCtl(res);
   try {
     return response.success({ msg: "deleted" });

@@ -1,27 +1,22 @@
-import Res from "../controllers/default_res_controller";
+const Res = require("../controllers/default_res_controller");
 
-/** Models */
-import Category from "../models/category";
+// Models
+const Category = require("../models/category");
 
-/** Providers */
-import { uploadImage } from "./file_provider";
+// helpers
+const Helpers = require("../helpers/Global");
 
-/** helpers */
-import { isString } from "../helpers/Global";
-import { isIdExist, deleteOne } from "../helpers/query_builder";
-import { validateObjectId } from "../helpers/Global";
-
-/** validate save data */
-export const validateSaveData = (obj) => {
+// validate save data
+export function validateSaveData(obj) {
   var error = {};
   var msg = "field is required";
   if (!obj.body.name) error.name = msg;
   if (!obj.files.img) error.img = msg;
   return error;
-};
+}
 
-// /** get category */
-export const _getCategory = async (cat_id = null, is_super_admin = false) => {
+// // get category
+export async function fetch(cat_id = null, is_super_admin = false) {
   try {
     var catData = null;
     var condition = {
@@ -33,7 +28,7 @@ export const _getCategory = async (cat_id = null, is_super_admin = false) => {
     }
 
     if (cat_id !== null) {
-      if (!validateObjectId(cat_id)) {
+      if (!Helpers.validateObjectId(cat_id)) {
         return Res.badRequest({ msg: "invalid cat_id id" });
       }
       condition._id = cat_id;
@@ -44,7 +39,7 @@ export const _getCategory = async (cat_id = null, is_super_admin = false) => {
 
     const respCategory = await catData.select("-__v");
 
-    /** check if accData no data */
+    // check if accData no data
     if (respCategory == null || respCategory.length < 1) {
       return Res.notFound({ msg: "no category data data" });
     }
@@ -53,4 +48,4 @@ export const _getCategory = async (cat_id = null, is_super_admin = false) => {
   } catch (error) {
     return Res.somethingWrong({ error: error });
   }
-};
+}

@@ -3,10 +3,10 @@ const router = Router();
 
 import multer from "multer";
 
-/** configs */
+// configs 
 import CONSTANT from "../configs/constant";
 
-/** Controllers */
+// Controllers 
 import {
   saveCategory,
   updateCategory,
@@ -15,7 +15,7 @@ import {
   getCategory,
 } from "../controllers/category_controller";
 
-/** define routes */
+// define routes 
 router
   .get("/category", getAllCategory)
   .get("/category/:cat_id", getCategory)

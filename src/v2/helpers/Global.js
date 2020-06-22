@@ -1,36 +1,36 @@
 // check if is float or not return boolean
-export const isFloat = (floatNumber) => {
+export function isFloat(floatNumber) {
   const isFloatType = isNaN(parseFloat(floatNumber));
   if (isFloatType) return false;
   return true;
-};
+}
 
-export const isInt = (intNumber) => {
+export function isInt(intNumber) {
   const isIntType = isNaN(parseInt(intNumber));
   if (isIntType) return false;
   return true;
-};
+}
 
-const mongoose = require("mongoose");
-export const invalidObjectId = (id) => {
-  return mongoose.Types.ObjectId.isValid(id);
-};
+import { Types } from "mongoose";
+export function invalidObjectId(id) {
+  return Types.ObjectId.isValid(id);
+}
 
-export const isEmptyObj = (obj) => {
+export function isEmptyObj(obj) {
   if (Object.keys(obj).length === 0) return true;
   return false;
-};
+}
 
-/** validate delete userId */
-export const validateObjectId = (objectId) => {
+// validate delete userId 
+export function validateObjectId(objectId) {
   if (!objectId || typeof objectId !== "string" || !invalidObjectId(objectId)) {
     return false;
   }
   return true;
-};
+}
 
-/** Multiple validate Object */
-export const multipleValidateObj = (
+// Multiple validate Object 
+export function multipleValidateObj(
   obj,
   deleteObject,
   checkType,
@@ -38,7 +38,7 @@ export const multipleValidateObj = (
     msgNumber = "field should be number and field is required ,maximum is 3",
     msgString = "field should be String and field is required",
   }
-) => {
+) {
   var msg = null;
   if (checkType == "number") {
     msg = msgNumber;
@@ -67,35 +67,35 @@ export const multipleValidateObj = (
     }
   });
   return error;
-};
+}
 
-/**check valid object */
-export const isValidObj = (obj) => {
+//check valid object 
+export function isValidObj(obj) {
   if (typeof obj !== "object") return false;
   return true;
-};
+}
 
-/** Boolean validate */
-export const isBoolean = (value) => {
+// Boolean validate 
+export function isBoolean(value) {
   if (typeof value !== "boolean") return false;
   return true;
-};
+}
 
-/** String validate */
-export const isString = (value) => {
+// String validate 
+export function isString(value) {
   if (value == null || !value) return false;
   if (typeof value !== "string") return false;
   return true;
-};
+}
 
-/** validate */
-export const isEmpty = (value, method = "string") => {
+// validate 
+export function isEmpty(value, method = "string") {
   if (value == null || !value) return false;
   if (typeof value !== method) return false;
   return true;
-};
+}
 
-/** is array */
-export const isArray = (value) => {
+// is array 
+export function isArray(value) {
   return Array.isArray(value) ? true : false;
-};
+}

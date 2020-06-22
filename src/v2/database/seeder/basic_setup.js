@@ -1,17 +1,17 @@
 import AccessPolicy from "../../models/access_policy";
 import Admin from "../../models/admin";
 
-/** Helpers */
+// Helpers 
 import Bcrypt from "../../helpers/Bcrypt";
 
 export const runSeeder = async (req, res) => {
-  /** Access Policy Data */
+  // Access Policy Data 
   const accessPolicyData = {
     is_super_admin: true,
     name: !req.body.username ? "super_admin" : req.body.username,
   };
 
-  /** Admin Data */
+  // Admin Data 
   const adminData = [
     {
       name: "super_admin",

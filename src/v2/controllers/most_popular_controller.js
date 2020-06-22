@@ -1,43 +1,24 @@
-/** Modules */
+// Files Import Models,Controller ...
+const Helpers = require("../helpers/Global");
+const QB = require("../helpers/query_builder");
+const FileProvider = require("../providers/file_provider");
+const ResCtl = require("./response_controller");
+const MostProvider = require("../providers/most_popular_provider");
+const constant = require("../configs/constant");
+const MostPopular = require("../models/most_popular");
 
-import ResCtl from "./response_controller";
-
-/** Helpers */
-import {
-  isString,
-  isEmptyObj,
-  validateObjectId,
-  isEmpty,
-} from "../helpers/Global";
-import { isIdExist, deleteIsActive } from "../helpers/query_builder";
-
-/** Models */
-import { MostPopular } from "../models/most_popular";
-
-/** Providers */
-import { uploadImage, removeImage } from "../providers/file_provider";
-import {
-  validateSaveData,
-  _getMostPopular,
-} from "../providers/most_popular_provider";
-
-/** Configs */
-import constant from "../configs/constant";
-
-/** save most popular */
+// save most popular
 export const saveMostPopular = async (req, res, next) => {
-  /** define response */
+  // define response
   const response = new ResCtl(res);
-  var errorImg = null;
   try {
-    /** create new data */
-    const isValid = validateSaveData(req);
-    if (!isEmptyObj(isValid)) {
+    const isValid = MostProvider.validateSaveData(req, true);
+    if (!Helpers.isEmptyObj(isValid)) {
       return response.badRequest({ data: isValid });
     }
 
-    /** validate image and body data */
-    const isUpload = uploadImage({
+    // validate image and body data
+    const isUpload = FileProvider.uploadImage({
       path: constant.imgPath.most_popular,
       file: req.files.img,
       req: req,
@@ -45,7 +26,8 @@ export const saveMostPopular = async (req, res, next) => {
 
     if (!isUpload.status) return response.badRequest(isUpload);
 
-    const isCreate = await MostPopular.create(req.body);
+    // create new data
+    const isCreate = await MostPopular.create(req.params);
     if (!isCreate) return response.badRequest({ msg: "can not create" });
     return response.success({ data: isCreate });
   } catch (error) {
@@ -53,30 +35,29 @@ export const saveMostPopular = async (req, res, next) => {
   }
 };
 
-/** update most popular */
+// update most popular
 export const updateMostPopular = async (req, res, next) => {
-  /** define response */
+  // define response
   const response = new ResCtl(res);
-  var errorImg = null;
   try {
-    if (!validateObjectId(req.params.mos_id)) {
+    if (!Helpers.validateObjectId(req.params.mos_id)) {
       return response.badRequest({ msg: "invalid most popular id" });
     }
 
-    const isValid = await validateSaveData(req, false);
-    if (!isEmptyObj(isValid)) {
+    const isValid = MostProvider.validateSaveData(req, false);
+    if (!Helpers.isEmptyObj(isValid)) {
       return response.badRequest({ data: isValid });
     }
 
-    const isId = await isIdExist(MostPopular, req.params.mos_id);
+    const isId = await QB.isIdExist(MostPopular, req.params.mos_id);
     if (isId == null) return response.notFound({ msg: "id not exist" });
 
-    /** validate image and body data */
+    // validate image and body data
     if (req.files) {
       if (!req.files.img) {
-        return response.badRequest({ msg: "img param is required" });
+        return response.badRequest({ msg: "img is required" });
       }
-      const isUpload = uploadImage({
+      const isUpload = FileProvider.uploadImage({
         path: constant.imgPath.most_popular,
         file: req.files.img,
         req: req,
@@ -84,10 +65,10 @@ export const updateMostPopular = async (req, res, next) => {
 
       if (!isUpload.status) return response.badRequest(isUpload);
     }
-    /** create new data */
+    // create new data
     const isUpdate = await MostPopular.updateOne(
       { _id: req.params.mos_id },
-      { $set: req.body }
+      { $set: req.params }
     );
     if (!isUpdate) return response.badRequest({ msg: "can not update" });
     return response.success({ msg: "updated" });
@@ -96,58 +77,58 @@ export const updateMostPopular = async (req, res, next) => {
   }
 };
 
-/** get all most popular */
+// get all most popular
 export const getAllMostPopular = async (req, res, next) => {
-  /** define response */
+  // define response
   const response = new ResCtl(res);
   try {
-    const most_data = await _getMostPopular(null, req.is_super_admin);
+    const most_data = await MostProvider.fetch(null, req.is_super_admin);
     return response.success(most_data);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
 };
 
-/** get most popular */
+// get most popular
 export const getMostPopular = async (req, res, next) => {
-  /** define response */
+  // define response
   const response = new ResCtl(res);
   try {
     const mos_id = req.params.mos_id;
-    if (!isEmpty(mos_id)) {
+    if (!Helpers.isEmpty(mos_id)) {
       return response.badRequest({ msg: "mos_id is required" });
     }
 
-    const most_data = await _getMostPopular(mos_id, req.is_super_admin);
+    const most_data = await MostProvider.fetch(mos_id, req.is_super_admin);
     return response.success(most_data);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
 };
 
-/** delete most popular */
+// delete most popular
 export const deleteMostPopular = async (req, res, next) => {
-  /** define response */
+  // define response
   const response = new ResCtl(res);
   try {
-    /** Check if auth is not super admin */
+    // Check if auth is not super admin
     if (!req.is_super_admin) {
       return response.notAllowed({ msg: "access denied" });
     }
 
     const mos_id = req.params.mos_id;
-    if (!isEmpty(mos_id) || !validateObjectId(mos_id)) {
-      return response.badRequest({ msg: "mos_id is required " });
+    if (!Helpers.isEmpty(mos_id) || !Helpers.validateObjectId(mos_id)) {
+      return response.badRequest({ msg: "invalid id" });
     }
 
-    const isId = await isIdExist(MostPopular, mos_id);
-    if (!isId || isId.is_active == "in_active") {
-      return response.notFound({ msg: "no data" });
+    const isId = await MostPopular.findById(mos_id);
+    if (!isId || isId.is_active !== "active") {
+      return response.badRequest({ msg: "no data" });
     }
 
-    const delAcc = await deleteIsActive(MostPopular, mos_id);
-    if (!delAcc) {
-      return response.badRequest({ msg: "can not delete or id not exist" });
+    const isDel = await QB.deleteIsActive(MostPopular, mos_id);
+    if (!isDel) {
+      return response.badRequest({ msg: "can not delete" });
     }
     return response.success({ msg: "deleted" });
   } catch (error) {

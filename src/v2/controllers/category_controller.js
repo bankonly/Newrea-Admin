@@ -1,52 +1,36 @@
-/** Modules */
-import fs from "fs";
-import ResCtl from "./response_controller";
+// Files Import Models,Controller ...
+const Helpers = require("../helpers/Global");
+const QB = require("../helpers/query_builder");
+const FileProvider = require("../providers/file_provider");
+const ResCtl = require("./response_controller");
+const Category = require("../models/category");
+const CatProvider = require("../providers/category_provider");
+const constant = require("../configs/constant");
 
-/** Helpers */
-import { isString, isEmptyObj, validateObjectId } from "../helpers/Global";
-import { deleteIsActive, isIdExist } from "../helpers/query_builder";
-
-/** Providers */
-import { uploadImage } from "../providers/file_provider";
-
-/** Models */
-import Category from "../models/category";
-
-import {
-  _saveCategory,
-  validateSaveData,
-  _updateCategory,
-  _getCategory,
-  _deleteCategory,
-} from "../providers/category_provider";
-
-/** Configs */
-import constant from "../configs/constant";
-
-/** save category */
+// save category
 export const saveCategory = async (req, res, next) => {
-  /** define response */
+  // define response
   const response = new ResCtl(res);
   try {
-    const isValid = await validateSaveData(req);
-    if (!isEmptyObj(isValid)) {
+    const isValid = CatProvider.validateSaveData(req);
+    if (!Helpers.isEmptyObj(isValid)) {
       return response.badRequest({ data: isValid });
     }
 
-    /** name check */
+    // name check
     const isName = await Category.findOne({ name: req.body.name });
     if (isName !== null) {
       return response.badRequest({ msg: "Name is already exist" });
     }
 
-    const isUpload = uploadImage({
+    const isUpload = FileProvider.uploadImage({
       req: req,
       path: constant.imgPath.category,
       file: req.files.img,
     });
     if (!isUpload.status) return response.badRequest(isUpload);
 
-    /** cal save function from provider */
+    // cal save function from provider
     const isSave = await Category.create(req.body);
     if (!isSave) return response.badRequest({ msg: "can not add" });
 
@@ -56,37 +40,40 @@ export const saveCategory = async (req, res, next) => {
   }
 };
 
-/** update category */
+// update category
 export const updateCategory = async (req, res, next) => {
-  /** define response */
+  // define response
   const response = new ResCtl(res);
   try {
-    /** Check if auth is not super admin */
+    // Check if auth is not super admin
     if (!req.is_super_admin)
       return response.notAllowed({ msg: "access denied" });
 
     const cat_id = req.params.cat_id;
 
-    /** cal save function from provider */
-    if (!validateObjectId(cat_id) || !req.body.name) {
+    // cal save function from provider
+    if (!Helpers.validateObjectId(cat_id) || !req.body.name) {
       return response.badRequest({ msg: "invalid request" });
     }
 
-    const isCatID = await isIdExist(Category, cat_id);
+    const isCatID = await QB.isIdExist(Category, cat_id);
     if (isCatID == null) {
       return response.notFound({ msg: "Id is not exist" });
     }
-    /** name check */
+    // name check
     const isName = await Category.findOne({ name: req.body.name });
     if (isName !== null && isName.name !== isCatID.name) {
       return response.badRequest({ msg: "Name is already exist" });
     }
 
-    /** save data */
+    // save data
     isCatID.name = req.body.name;
 
     if (req.files) {
-      const isUpload = uploadImage({
+      if (!req.files.img) {
+        return response.badRequest({ msg: "img is required" });
+      }
+      const isUpload = FileProvider.uploadImage({
         req: req,
         path: constant.imgPath.category,
         file: req.files.img,
@@ -102,46 +89,49 @@ export const updateCategory = async (req, res, next) => {
   }
 };
 
-/** get all category */
+// get all category
 export const getAllCategory = async (req, res, next) => {
-  /** define response */
+  // define response
   const response = new ResCtl(res);
   try {
-    const catData = await _getCategory();
+    const catData = await CatProvider.fetch(null, req.is_super_admin);
     return response.success(catData);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
 };
 
-/** get category */
+// get category
 export const getCategory = async (req, res, next) => {
-  /** define response */
+  // define response
   const response = new ResCtl(res);
   try {
-    const catData = await _getCategory(req.params.cat_id,req.is_super_admin);
+    const catData = await CatProvider.fetch(
+      req.params.cat_id,
+      req.is_super_admin
+    );
     return response.success(catData);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
 };
 
-/** delete category */
+// delete category
 export const deleteCategory = async (req, res, next) => {
-  /** define response */
+  // define response
   const response = new ResCtl(res);
   try {
-    const isValid = validateObjectId(req.params.cat_id);
+    // Check validator
+    if (!Helpers.validateObjectId(req.params.cat_id)) {
+      return response.badRequest({ data: "invalid id" });
+    }
 
-    /** Check validator */
-    if (!isEmptyObj(isValid)) return response.badRequest({ data: isValid });
-
-    const isId = await isIdExist(Category, req.params.cat_id);
+    const isId = await QB.isIdExist(Category, req.params.cat_id);
     if (!isId || isId.is_active == "in_active") {
       return response.notFound({ msg: "no data" });
     }
 
-    const delAcc = await deleteIsActive(Category, req.params.cat_id);
+    const delAcc = await QB.deleteIsActive(Category, req.params.cat_id);
     if (!delAcc) {
       return response.badRequest({ msg: "can not delete" });
     }

@@ -1,30 +1,20 @@
-/** helpers */
-const { isString, isEmpty, validateObjectId } = require("../helpers/Global");
+// helpers
+const Res = require("../controllers/default_res_controller");
+const Helpers = require("../helpers/Global");
+const MostPopular = require("../models/most_popular");
 
-/** providers */
-const { isIdExist } = require("../helpers/query_builder");
-
-/** Models */
-const { MostPopular } = require("../models/most_popular");
-
-/** controller */
-import Res from "../controllers/default_res_controller";
-
-export const validateSaveData = (obj, update = false) => {
+export function validateSaveData(obj, update = false) {
   var error = {};
   var msg = "field is required as string";
-  if (!isEmpty(obj.body.title)) error.title = msg;
-  if (!isEmpty(obj.body.desc)) error.desc = msg;
+  if (!Helpers.isEmpty(obj.body.title)) error.title = msg;
+  if (!Helpers.isEmpty(obj.body.desc)) error.desc = msg;
   if (update) {
     if (!obj.files.img) error.img = msg;
   }
   return error;
-};
+}
 
-export const _getMostPopular = async (
-  most_id = null,
-  is_super_admin = false
-) => {
+export async function fetch(most_id = null, is_super_admin = false) {
   try {
     var mostData = null;
 
@@ -34,7 +24,7 @@ export const _getMostPopular = async (
     }
 
     if (most_id !== null) {
-      if (!validateObjectId(most_id)) {
+      if (!Helpers.validateObjectId(most_id)) {
         return Res.badRequest({ msg: "invalid most_id id" });
       }
       condition = { _id: most_id };
@@ -45,13 +35,13 @@ export const _getMostPopular = async (
 
     const respMostPopular = await mostData.select("-__v");
 
-    /** check if accData no data */
+    // check if accData no data
     if (respMostPopular == null || respMostPopular.length < 1) {
-      return Res.notFound({ msg: "no category data data" });
+      return Res.notFound({ msg: "no data" });
     }
 
     return Res.success({ data: respMostPopular });
   } catch (error) {
     return Res.somethingWrong({ error: error });
   }
-};
+}

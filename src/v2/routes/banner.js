@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 
-/** Controllers */
+// Controllers 
 import {
   saveBanner,
   updateBanner,
@@ -10,7 +10,7 @@ import {
   getBanner,
 } from "../controllers/banner_controller";
 
-/** define routes */
+// define routes 
 router
   .get("/banner", getAllBanner)
   .get("/banner/:banner_id", getBanner)

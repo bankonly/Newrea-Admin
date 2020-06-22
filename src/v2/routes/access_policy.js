@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 
-/** Controllers */
+// Controllers 
 import {
   createNewAccessPolicy,
   getAccessPolicy,
@@ -11,7 +11,7 @@ import {
   getMyAccessPolicy
 } from "../controllers/access_policy_controller";
 
-/** define routes */
+// define routes 
 router
   .get("/accessPolicy", getAllAccessPolicy)
   .get("/accessPolicy/me", getMyAccessPolicy)

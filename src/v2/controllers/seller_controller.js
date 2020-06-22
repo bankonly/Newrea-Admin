@@ -4,7 +4,8 @@ const sellerModel = require("../models/seller");
 
 const crypto = require("crypto-js");
 
-const config = require("./../configs/constant").default;
+const config = require("./../configs/constant");
+
 
 const { uploadImage } = require("./../providers/file_provider");
 

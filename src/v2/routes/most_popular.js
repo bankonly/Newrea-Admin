@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 
-/** Controllers */
+// Controllers 
 import {
   saveMostPopular,
   updateMostPopular,
@@ -10,7 +10,7 @@ import {
   getMostPopular,
 } from "../controllers/most_popular_controller";
 
-/** define routes */
+// define routes 
 router
   .get("/mostPopular", getAllMostPopular)
   .get("/mostPopular/:mos_id", getMostPopular)
