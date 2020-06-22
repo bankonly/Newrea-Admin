@@ -20,5 +20,6 @@ export default {
   imgPath: {
     category: "./img/categories/",
     most_popular: "./img/most_popular/",
+    banner:"./img/banner/"
   },
 };
