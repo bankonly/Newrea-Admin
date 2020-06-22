@@ -109,8 +109,12 @@ export const _updateAccessPolicy = async (
       return Res.duplicated({ msg: "name already exist" });
 
     /** update access policy */
-    isAccess.img = updateData.img;
-    isAccess.name = updateData.name;
+    const isUpdate = await AccessPolicy.updateOne(
+      {
+        _id: accp_id,
+      },
+      { $set: updateData }
+    );
 
     if (!isAccess.save()) return Res.badRequest({ msg: "can not update" });
     return Res.success({ msg: "updated" });

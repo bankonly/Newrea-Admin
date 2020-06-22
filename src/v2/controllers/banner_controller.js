@@ -14,7 +14,7 @@ import { isIdExist, deleteIsActive } from "../helpers/query_builder";
 /** Models */
 
 /** Provider s */
-import { saveImageExpress } from "../providers/file_provider";
+import { uploadImage } from "../providers/file_provider";
 
 /** Configs */
 import constant from "../configs/constant";
@@ -24,7 +24,8 @@ export const saveBanner = async (req, res, next) => {
   /** define response */
   const response = new ResCtl(res);
   try {
-    return response.success({ data: isCreate });
+    const isUpload = uploadImage({ path: constant.imgPath.banner, file: req.files });
+    return response.success(isUpload);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
