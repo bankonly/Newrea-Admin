@@ -8,7 +8,9 @@ const crypto = require("crypto-js");
 exports.getSellerList = async (req, res) => {
   const response = new Res(res);
   try {
-    const sellers = await sellerModel.find().populate(["category_id"]);
+    const sellers = await sellerModel
+      .find()
+      .populate(["category_id", "delivery_fee_option_id"]);
     if (sellers.length > 0) {
       response.success({ data: sellers });
     } else {
@@ -73,7 +75,7 @@ exports.disableSeller = async (req, res) => {
     const newValue = foundSeller.is_active === "active" ? "inActive" : "active";
     foundSeller.is_active = newValue;
     if (await foundSeller.save()) {
-      response.success({ data: foundSeller});
+      response.success({ data: foundSeller });
     } else {
       response.somethingWrong({});
     }
@@ -100,51 +102,6 @@ exports.updateSeller = async (req, res) => {
       });
     } else {
       response.somethingWrong({});
-    }
-  } catch (ex) {
-    response.somethingWrong({ error: ex });
-  }
-};
-//   seller login
-exports.sellerLogin = async (req, res) => {
-  console.log("working...");
-
-  const response = new Res(res);
-  const SECRET_KEY_PASS = process.env.SECRET_KEY_PASS;
-  const SECRET_KEY = process.env.SECRET_KEY;
-  const sellerPass = req.body.pass;
-  const sellerName = req.body.user_name;
-  try {
-    let foundSeller = await sellerModel.findOne({ user_name: sellerName });
-    console.log(foundSeller);
-
-    if (!foundSeller) {
-      response.notFound({ data: foundSeller, msg: "seller not found" });
-    }
-    let passDecript = crypto.AES.decrypt(
-      foundSeller.pass.toString(),
-      SECRET_KEY_PASS
-    );
-
-    let decryptPass = passDecript.toString(crypto.enc.Utf8);
-    if (decryptPass) {
-      decryptPass = decryptPass.replace(/"/g, "");
-      if (sellerPass === decryptPass) {
-        const JWTpayload = {
-          id: foundSeller._id,
-        };
-        // Create JWT Payload
-        const token = sign(JWTpayload, SECRET_KEY, {
-          expiresIn: 600,
-        });
-        const data = {
-          success: true,
-          token: "Bearer " + token,
-        };
-        response.success({ data: data });
-      } else {
-        throw new Error();
-      }
     }
   } catch (ex) {
     response.somethingWrong({ error: ex });

@@ -31,7 +31,7 @@ export const _saveCategory = async (saveData) => {
     /** save data */
     const isSave = await Category.create(saveData);
 
-    if (isSave) return Res.success({ data: "created" });
+    if (isSave) return Res.success({ data: isSave });
     return Res.badRequest({ msg: "can not create" });
   } catch (error) {
     return Res.somethingWrong({ error: error });

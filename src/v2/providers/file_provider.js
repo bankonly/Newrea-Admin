@@ -6,122 +6,113 @@ import sharp from "sharp";
 import formidable from "formidable";
 
 /** helpers */
-import { isEmptyObj } from "../helpers/Global";
+import {
+  isEmptyObj,
+  isEmpty,
+  validateObjectId,
+  isString,
+  isArray,
+} from "../helpers/Global";
 
 /** Controllers */
 import Res from "../controllers/default_res_controller";
 
 /** validate image */
-export const imageValidate = (fileData, filetype = ".jpg") => {
+export const imageValidate = (imageSize, field) => {
   try {
-    var error = {};
-    var file = "./" + fileData.path + filetype;
-    fs.rename(fileData.path, file, (err) => {
-      if (err) error.upload = "image upload failed";
-    });
-
-    /** check if image over than define */
-    if (fileData.size > constant.image_size_allow) {
-      error.maxSize = "max size is " + constant.image_size_allow + "bytes";
+    if (!Array.isArray(imageSize)) {
+      return Res.badRequest({ msg: "imageSize is should be array" });
     }
 
-    /** check file type */
-    if (!constant.image_type_accept.includes(fileData.mimetype.split("/")[1])) {
-      error.fileType = "file type is not correct";
+    for (var i = 0; i < imageSize.length; i++) {
+      if (typeof imageSize[i] !== "number") {
+        return Res.badRequest({ msg: "imageSize is should be number" });
+      }
     }
 
-    if (!isEmptyObj(error)) {
-      return Res.badRequest({ data: error });
-    }
+    if (!isString(field))
+      return Res.badRequest({ msg: "image is required as string" });
 
-    return Res.success({ data: { file: file, fileType: filetype } });
+    return Res.success({});
   } catch (error) {
     return Res.somethingWrong({ error: error });
   }
 };
 
 /** single image upload */
-export const uploadImage = (
-  {
-    path,
-    field,
-    req,
-    res,
-    height = 512,
-    width = 512,
-    maxUpload = 1,
-    fileType = ".jpg",
-  },
-  callback
-) => {
+export const uploadImage = async ({
+  path,
+  field,
+  req,
+  res,
+  imageSize = [800, 200],
+  fileType = ".jpg",
+}) => {
   try {
-    if (!field) return Res.badRequest({ msg: field + " is required" });
+    /** validate image before save */
+    const validateImage = imageValidate(imageSize, field);
+    if (!validateImage.status) return validateImage;
+
     /** check if path exist and create */
-    if (!fs.existsSync(path)) {
-      fs.mkdirSync(path);
-    }
+    createDirIfNotExist(path);
 
-    /** save image with multi */
-    const upload = multer({ dest: path }).array(field, maxUpload);
-    return new Promise((resolve, reject) => {
-      var response = Res.success({});
-      var error = {};
-      upload(req, res, (err) => {
-        const isValid = callback(req.body);
-        req.body = req.body;
-        if (!isEmptyObj(isValid)) {
-          response = Res.badRequest({ data: isValid });
-        } else {
-          if (req.files.length > 5) {
-            error.limit = "limit upload is " + maxUpload;
-            response = Res.badRequest({ data: error });
-          } else if (req.files.length == 0) {
-            error.image = "image can not be null";
-            response = Res.badRequest({ data: error });
-          } else {
-            /** loop image list */
-            req.files.forEach((file, index) => {
-              const resizePath = path;
-              const folderName = width + "x" + height + "/";
-              /** new file name */
-              const newFile =
-                resizePath + folderName + file.filename + fileType;
-              /** rename image */
-              req.body.removePath = [newFile];
-              response = imageValidate(file, fileType);
-              if (err || !response.status) {
-                // console.log(path + file.filename + fileType)
-                removeImage(path + file.filename + fileType);
-                response = Res.badRequest(response);
-              } else {
-                /** check if new dir is not exist */
-                if (!fs.existsSync(resizePath + folderName)) {
-                  fs.mkdirSync(resizePath + folderName);
-                }
+    /** save image path for single file */
+    var imgPath = null;
+    var filenameSingle = null;
+    var fullImgPath = null;
+    var removePath = [];
+    const storage = multer.diskStorage({
+      destination: function (req, file, callback) {
+        callback(null, path);
+      },
+      filename: function (req, file, callback) {
+        const filename = uuid() + Date.now() + fileType;
+        filenameSingle = filename;
+        callback(null, filename);
+      },
+    });
 
-                /** call resize func */
-                const isResize = resizeImage({
-                  width: width,
-                  height: height,
-                  oldPath: response.data.file,
-                  newPath: newFile,
-                });
-
-                if (!isResize.status) {
-                  response = isResize;
-                } else response = Res.success(response);
-              }
-            });
-          }
+    /** store old path or resize */
+    fullImgPath = imgPath + filenameSingle;
+    const upload = multer({
+      storage: storage,
+      fileFilter: function (req, file, callback) {
+        if (!constant.image_type_accept.includes(file.mimetype.split("/")[1])) {
+          callback(new Error("image type is not allow"), false);
         }
-        /** if save image not success */
-        if (!response.status) {
-          return resolve(response);
-        } else {
-          req.body.removePath.push(response.data.file);
-          req.body.img = response.data.file;
-          return resolve(Res.success({ data: req.body }));
+        callback(null, true);
+      },
+      limits: {
+        files: 1,
+        fileSize: constant.image_size_allow,
+      },
+    }).single(field);
+
+    return await new Promise((resolve, reject) => {
+      upload(req, res, async (err) => {
+        /** Handle Error */
+        if (err) {
+          return resolve(Res.badRequest({ msg: err.message }));
         }
+        if (err instanceof multer.MulterError) {
+          return resolve(Res.badRequest({ msg: err.message }));
+        }
+
+        const oldPath = path + filenameSingle;
+
+        /** resize image */
+        const resizePath = resizeImage({
+          size: imageSize,
+          path: path,
+          fileName: filenameSingle,
+        });
+
+        /** store remove path if validate error */
+        removePath.push(resizePath);
+        removePath.push(removePath[0].push(oldPath));
+        req.body.img = filenameSingle;
+        req.body.removePathIfError = removePath[0];
+        resolve(Res.success({ data: req.body }));
       });
     });
   } catch (error) {
@@ -129,40 +120,162 @@ export const uploadImage = (
   }
 };
 
-export const resizeImage = ({ width, height, oldPath, newPath }) => {
+export const createDirIfNotExist = (path) => {
   try {
-    var response = Res.success({});
-    sharp(oldPath)
-      .resize(width, height)
-      .toFile(newPath, (e, info) => {
-        if (e) response = Res.badRequest({ msg: "imagevalidate error" });
-      });
-    return response;
+    if (!fs.existsSync(path)) {
+      fs.mkdirSync(path);
+    }
   } catch (error) {
-    return Res.somethingWrong({ error: error, msg: "from resize" });
+    return new Error(error);
   }
 };
 
-/** save image */
-export const uploadImagev2 = (req, path, multiples = true) => {
+export const resizeImage = ({ size, path, newPath, fileName }) => {
   try {
-    const form = formidable({ multiples: multiples });
-    form.parse(req, (err, fields, files) => {
-      // const oldPath = fi
-      console.log(files.image);
-      console.log(typeof files.image);
+    if (!isArray(size)) {
+      return new Error("size should be array");
+    }
+    var removePath = [];
+    for (var i = 0; i < size.length; i++) {
+      const newPath = path + size[i] + "x" + size[i] + "/";
+      const newFile = newPath + fileName;
+      const destination = path + fileName;
+      /** check if new dir is not exist */
+      createDirIfNotExist(newPath);
+      /** store remove path if validate error */
+      sharp(destination)
+        .resize(size[i])
+        .toFile(newFile, (e, info) => {
+          if (e) {
+            return new Error(e.message);
+          }
+        });
+      removePath.push(newFile);
+    }
+    return removePath;
+  } catch (error) {
+    return new Error(error);
+  }
+};
 
-      if (multiples) {
-        files.im;
+/** remove one file */
+export const removeFile = (path) => {
+  try {
+    while (true) {
+      if (fs.existsSync(path)) {
+        fs.unlinkSync(path);
+        break;
+      }
+    }
+  } catch (error) {
+    return new Error(error);
+  }
+};
+
+/** remove image */
+export const removeFileMany = (path) => {
+  try {
+    if (!isArray(path)) {
+      return new Error("remove path should be array");
+    }
+
+    path.forEach((value) => {
+      while (true) {
+        if (!fs.existsSync(value)) {
+          fs.unlinkSync(value);
+          break;
+        }
+        console.log("REMOVED")
       }
     });
   } catch (error) {
-    return Res.somethingWrong({ error: error, msg: "from resize" });
+    return new Error(error);
   }
 };
 
-export const removeImage = (path) => {
-  path.forEach((value, index) => {
-    fs.unlink(value, (err) => console.log(err));
-  });
+/** single image upload */
+export const uploadImageMany = async ({
+  path,
+  field,
+  req,
+  res,
+  imageSize = [800, 200],
+  fileType = ".jpg",
+  maxUpload = 2,
+}) => {
+  try {
+    /** validate image before save */
+    const validateImage = imageValidate(imageSize, field);
+    if (!validateImage.status) return validateImage;
+
+    /** check if path exist and create */
+    createDirIfNotExist(path);
+
+    /** save image path for single file */
+    var imgPath = null;
+    var fullImgPath = null;
+    var removePath = [];
+    const storage = multer.diskStorage({
+      destination: function (req, file, callback) {
+        callback(null, path);
+      },
+      filename: function (req, file, callback) {
+        const filename = uuid() + Date.now() + fileType;
+        callback(null, filename);
+      },
+    });
+
+    const upload = multer({
+      storage: storage,
+      fileFilter: function (req, file, callback) {
+        if (!constant.image_type_accept.includes(file.mimetype.split("/")[1])) {
+          callback(new Error("image type is not allow"), false);
+        }
+        callback(null, true);
+      },
+      limits: {
+        files: maxUpload,
+        fileSize: constant.image_size_allow,
+      },
+    }).array(field, maxUpload);
+
+    return await new Promise((resolve, reject) => {
+      upload(req, res, async (err) => {
+        /** Handle Error */
+        if (err) {
+          return resolve(Res.badRequest({ msg: err.message }));
+        }
+        if (err instanceof multer.MulterError) {
+          return resolve(Res.badRequest({ msg: err.message }));
+        }
+
+        var removeOldPath = [];
+        for (var i = 0; i < req.files.length; i++) {
+          const file = req.files[i];
+          const oldPath = path + file.filename;
+          removeOldPath.push(oldPath);
+          /** resize image */
+          const resizePath = resizeImage({
+            size: imageSize,
+            path: path,
+            fileName: file.filename,
+          });
+
+          /** store remove path if validate error */
+          removePath.push(resizePath[0]);
+          removePath.push(oldPath);
+          // req.body.img = file.filename;
+        }
+
+        req.body.removePathIfError = removePath;
+        console.log(removeOldPath);
+        removeOldPath.forEach((value) => {
+          removeFile(value);
+        });
+        resolve(Res.success({ data: req.body }));
+      });
+    });
+  } catch (error) {
+    return Res.somethingWrong({ error: error });
+  }
 };

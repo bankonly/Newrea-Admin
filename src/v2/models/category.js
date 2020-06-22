@@ -3,11 +3,11 @@ import mongoose from "mongoose";
 const tableName = "category";
 const schema = new mongoose.Schema(
   {
-    // parent_id: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "category",
-    //   default: null,
-    // },
+    parent_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "category",
+      default: null,
+    },
     name: {
       type: String,
       required: true,
@@ -31,4 +31,4 @@ const schema = new mongoose.Schema(
 
 const Category = mongoose.model(tableName, schema);
 
-export { Category };
+module.exports = Category;
