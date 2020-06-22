@@ -42,7 +42,7 @@ export const saveCategory = async (req, res, next) => {
     const isUpload = uploadImage({
       req: req,
       path: constant.imgPath.category,
-      file: req.files,
+      file: req.files.img,
     });
     if (!isUpload.status) return response.badRequest(isUpload);
 
@@ -89,7 +89,7 @@ export const updateCategory = async (req, res, next) => {
       const isUpload = uploadImage({
         req: req,
         path: constant.imgPath.category,
-        file: req.files,
+        file: req.files.img,
       });
       isCatID.img = req.body.img;
       if (!isUpload.status) return response.badRequest(isUpload);

@@ -19,7 +19,8 @@ export default {
   image_size_allow: process.env.IMAGE_SIZE_ALLOW,
   imgPath: {
     category: "./img/categories/",
+    seller: "./img/seller/",
     most_popular: "./img/most_popular/",
-    banner:"./img/banner/"
+    banner: "./img/banner/",
   },
 };

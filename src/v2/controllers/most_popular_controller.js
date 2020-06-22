@@ -39,7 +39,7 @@ export const saveMostPopular = async (req, res, next) => {
     /** validate image and body data */
     const isUpload = uploadImage({
       path: constant.imgPath.most_popular,
-      file: req.files,
+      file: req.files.img,
       req: req,
     });
 
@@ -63,7 +63,7 @@ export const updateMostPopular = async (req, res, next) => {
       return response.badRequest({ msg: "invalid most popular id" });
     }
 
-    const isValid = await validateSaveData(req.body);
+    const isValid = await validateSaveData(req, false);
     if (!isEmptyObj(isValid)) {
       return response.badRequest({ data: isValid });
     }
@@ -73,9 +73,12 @@ export const updateMostPopular = async (req, res, next) => {
 
     /** validate image and body data */
     if (req.files) {
+      if (!req.files.img) {
+        return response.badRequest({ msg: "img param is required" });
+      }
       const isUpload = uploadImage({
         path: constant.imgPath.most_popular,
-        field: "image",
+        file: req.files.img,
         req: req,
       });
 

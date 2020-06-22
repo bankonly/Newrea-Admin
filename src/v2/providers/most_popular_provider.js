@@ -10,12 +10,14 @@ const { MostPopular } = require("../models/most_popular");
 /** controller */
 import Res from "../controllers/default_res_controller";
 
-export const validateSaveData = (obj) => {
+export const validateSaveData = (obj, update = false) => {
   var error = {};
   var msg = "field is required as string";
   if (!isEmpty(obj.body.title)) error.title = msg;
   if (!isEmpty(obj.body.desc)) error.desc = msg;
-  if (!obj.files.img) error.img = msg;
+  if (update) {
+    if (!obj.files.img) error.img = msg;
+  }
   return error;
 };
 
