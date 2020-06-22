@@ -2,7 +2,7 @@
 const Res = require("./response_controller");
 
 /** Helpers */
-const { deleteIsActive } = require("../helpers/query_builder");
+const { deleteIsActive,isIdExist } = require("../helpers/query_builder");
 const { isEmptyObj, validateObjectId } = require("../helpers/Global");
 
 /** Models */
@@ -132,7 +132,12 @@ export const deleteAccessPolicy = async (req, res) => {
 
     /** Check validator */
     if (!isEmptyObj(isValid)) return response.badRequest({ data: isValid });
-    
+
+    const isId = await isIdExist(Admin, req.params.admin_id);
+    if (!isId || isId.is_active == "in_active") {
+      return response.notFound({ msg: "no user" });
+    }
+
     const delAcc = await deleteIsActive(AccessPolicy, req.params.accp_id);
     if (!delAcc) {
       return response.badRequest({ msg: "can not delete" });

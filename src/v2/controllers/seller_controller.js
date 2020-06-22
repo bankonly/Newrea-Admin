@@ -4,6 +4,10 @@ const sellerModel = require("../models/seller");
 
 const crypto = require("crypto-js");
 
+const config = require("./../configs/constant").default;
+
+const { uploadImage } = require("./../providers/file_provider");
+
 // get all sellers
 exports.getSellerList = async (req, res) => {
   const response = new Res(res);
@@ -40,6 +44,16 @@ exports.findSellerByID = async (req, res) => {
 // create new  seller
 exports.createSeller = async (req, res) => {
   const response = new Res(res);
+  const uploadStt = uploadImage({
+    req,
+    path: config.imgPath.seller,
+    file: req.files.img,
+  });
+  if (uploadStt.status && uploadStt.code === 200) {
+    req.body.img = uploadStt.data.imageName;
+  }
+  
+  return res.send(uploadStt);
   const SECRET_KEY_PASS = process.env.SECRET_KEY_PASS;
   const sellerData = req.body;
   const encriptedPass = crypto.AES.encrypt(
@@ -56,7 +70,7 @@ exports.createSeller = async (req, res) => {
         msg: "create seller successfully",
       });
     } else {
-      response.success({ data: sellers, msg: "create seller failed" });
+      response.success({ msg: "create seller failed" });
     }
   } catch (ex) {
     response.somethingWrong({ error: ex });
@@ -70,17 +84,17 @@ exports.disableSeller = async (req, res) => {
   try {
     const foundSeller = await sellerModel.findById(sellerID);
     if (!foundSeller) {
-      response.notFound({ data: sellers, msg: "seller not found" });
+      return response.notFound({ data: sellerID, msg: "seller not found" });
     }
     const newValue = foundSeller.is_active === "active" ? "inActive" : "active";
     foundSeller.is_active = newValue;
     if (await foundSeller.save()) {
-      response.success({ data: foundSeller });
+      return response.success({ data: foundSeller });
     } else {
-      response.somethingWrong({});
+      return response.somethingWrong({});
     }
   } catch (ex) {
-    response.somethingWrong({ error: ex });
+    return response.somethingWrong({ error: ex });
   }
 };
 
@@ -92,18 +106,18 @@ exports.updateSeller = async (req, res) => {
   try {
     let foundSeller = await sellerModel.findById(sellerID);
     if (!foundSeller) {
-      response.notFound({ data: sellers, msg: "seller not found" });
+      return response.notFound({ data: sellerID, msg: "seller not found" });
     }
     foundSeller.set(sellerData);
     if (await foundSeller.save()) {
-      response.success({
+      return response.success({
         data: foundSeller,
         msg: "update seller successfully",
       });
     } else {
-      response.somethingWrong({});
+      return response.somethingWrong({});
     }
   } catch (ex) {
-    response.somethingWrong({ error: ex });
+    return response.somethingWrong({ error: ex });
   }
 };

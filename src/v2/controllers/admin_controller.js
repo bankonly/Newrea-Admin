@@ -11,7 +11,7 @@ import AccessPolicy from "../models/access_policy";
 
 /** Helpers */
 import { isEmptyObj, validateObjectId } from "../helpers/Global";
-import { deleteIsActive } from "../helpers/query_builder";
+import { deleteIsActive, isIdExist } from "../helpers/query_builder";
 
 /** Admin Registeration */
 export const register = async (req, res) => {
@@ -107,6 +107,9 @@ export const deleteAdmin = async (req, res) => {
 
     /** Check validator */
     if (!isEmptyObj(isValid)) return response.badRequest({ data: isValid });
+
+    const isId = await isIdExist(Admin, req.params.admin_id);
+    if (!isId || isId.is_active == "in_active") return response.notFound({ msg: "no user" });
 
     const delAcc = await deleteIsActive(Admin, req.params.admin_id);
     if (!delAcc) {
