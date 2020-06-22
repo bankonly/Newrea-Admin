@@ -27,22 +27,22 @@ exports.createValidator = async (req, res, next) => {
   }
   // check validator categorys is exist in database?
   //   get all category id lavel1
-  // const categorysID = await categoryModel
-  //   .find({ parent_id: null })
-  //   .select("_id");
-  // // check category is exist?
-  // let notValidCategory = [];
-  // data.category_id.map((e) => {
-  //   if (!categorysID.includes(e)) {
-  //     notValidCategory.push(e);
-  //   }
-  // });
-  // if (notValidCategory.length > 0) {
-  //   return response.badRequest({
-  //     data: notValidCategory,
-  //     msg: `categories not valid`,
-  //   });
-  // }
+  const categorysID = await categoryModel
+    .find({ parent_id: null })
+    .select("_id");
+  // check category is exist?
+  let notValidCategory = [];
+  data.category_id.map((e) => {
+    if (!categorysID.includes(e)) {
+      notValidCategory.push(e);
+    }
+  });
+  if (notValidCategory.length > 0) {
+    return response.badRequest({
+      data: notValidCategory,
+      msg: `categories not valid`,
+    });
+  }
 
   // validate user_name is unique?
   const reqUserName = data.user_name.toLowerCase();

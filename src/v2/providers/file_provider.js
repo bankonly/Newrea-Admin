@@ -60,7 +60,7 @@ export const resizeImage = ({ size, path, fileName }) => {
       createDirIfNotExist(newPath);
       /** store remove path if validate error */
       sharp(destination)
-        .resize(size[i])
+        .resize(size[i], size[i])
         .toFile(newFile, (e, info) => {
           if (e) {
             return new Error(e.message);
