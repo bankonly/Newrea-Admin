@@ -82,6 +82,16 @@ exports.createValidator = async (req, res, next) => {
     return response.badRequest({ data: err });
   }
 };
+exports.checkValidObjectId = (req, res, next) => {
+  const response = new Res(res);
+  const key = Object.keys(req.params)[0];
+  if (!mongoose.Types.ObjectId.isValid(req.params[key])) {
+    return response.badRequest({
+      msg: `ObjectId ${req.params[key]} is not valid`,
+    });
+  }
+  next();
+};
 
 function randomPassword() {
   return password.randomPassword({
