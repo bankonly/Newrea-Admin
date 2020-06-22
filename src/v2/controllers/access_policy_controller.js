@@ -7,7 +7,7 @@ const Admin = require("../models/admin");
 const AccProvider = require("../providers/access_policy_provider");
 
 // get access policy
-export const getAllAccessPolicy = async (req, res) => {
+export async function getAllAccessPolicy(req, res) {
   const response = new Res(res);
   try {
     const accp = await AccProvider.fetch();
@@ -15,10 +15,10 @@ export const getAllAccessPolicy = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // get access policy
-export const getAccessPolicy = async (req, res) => {
+export async function getAccessPolicy(req, res) {
   const response = new Res(res);
   try {
     if (!Helpers.validateObjectId(req.params.accp_id)) {
@@ -29,10 +29,10 @@ export const getAccessPolicy = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // create new access policy
-export const createNewAccessPolicy = async (req, res) => {
+export async function createNewAccessPolicy(req, res) {
   const response = new Res(res);
   try {
     // create data
@@ -68,10 +68,10 @@ export const createNewAccessPolicy = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // update access policy
-export const updateAccessPolicy = async (req, res) => {
+export async function updateAccessPolicy(req, res) {
   const response = new Res(res);
   try {
     // create data
@@ -113,10 +113,10 @@ export const updateAccessPolicy = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // delete access policy
-export const deleteAccessPolicy = async (req, res) => {
+export async function deleteAccessPolicy(req, res) {
   const response = new Res(res);
   try {
     // Check validator
@@ -140,10 +140,10 @@ export const deleteAccessPolicy = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // get admin access policy with token
-export const getMyAccessPolicy = async (req, res) => {
+export async function getMyAccessPolicy(req, res) {
   const response = new Res(res);
   try {
     const accp = Admin.findById(req.auth._id)
@@ -156,4 +156,4 @@ export const getMyAccessPolicy = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}

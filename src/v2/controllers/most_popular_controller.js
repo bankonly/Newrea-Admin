@@ -6,9 +6,10 @@ const ResCtl = require("./response_controller");
 const MostProvider = require("../providers/most_popular_provider");
 const constant = require("../configs/constant");
 const MostPopular = require("../models/most_popular");
+const { func } = require("@hapi/joi");
 
 // save most popular
-export const saveMostPopular = async (req, res, next) => {
+export async function saveMostPopular(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
@@ -33,10 +34,10 @@ export const saveMostPopular = async (req, res, next) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // update most popular
-export const updateMostPopular = async (req, res, next) => {
+export async function updateMostPopular(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
@@ -75,10 +76,10 @@ export const updateMostPopular = async (req, res, next) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // get all most popular
-export const getAllMostPopular = async (req, res, next) => {
+export async function getAllMostPopular(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
@@ -87,10 +88,10 @@ export const getAllMostPopular = async (req, res, next) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // get most popular
-export const getMostPopular = async (req, res, next) => {
+export async function getMostPopular(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
@@ -104,10 +105,10 @@ export const getMostPopular = async (req, res, next) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // delete most popular
-export const deleteMostPopular = async (req, res, next) => {
+export async function deleteMostPopular(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
@@ -134,4 +135,4 @@ export const deleteMostPopular = async (req, res, next) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}

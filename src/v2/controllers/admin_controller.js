@@ -8,7 +8,7 @@ const Helpers = require("../helpers/Global");
 const QueryBuilder = require("../helpers/query_builder");
 
 // Admin Registeration
-export const register = async (req, res) => {
+export async function register(req, res) {
   const response = new Res(res);
   try {
     const saveData = {
@@ -34,10 +34,10 @@ export const register = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // Login Admin
-export const login = async (req, res) => {
+export async function login(req, res) {
   const response = new Res(res);
   try {
     // prepare save data
@@ -57,10 +57,10 @@ export const login = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // get admin list
-export const getAdminList = async (req, res) => {
+export async function getAdminList(req, res) {
   const response = new Res(res);
   try {
     const adminData = await AdminProvider.getAdmin({
@@ -70,10 +70,10 @@ export const getAdminList = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // get admin list
-export const getAdminById = async (req, res) => {
+export async function getAdminById(req, res) {
   const response = new Res(res);
   try {
     // Check validator
@@ -90,10 +90,10 @@ export const getAdminById = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // delete admin
-export const deleteAdmin = async (req, res) => {
+export async function deleteAdmin(req, res) {
   const response = new Res(res);
   try {
     // Check validator
@@ -116,10 +116,10 @@ export const deleteAdmin = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // Update Admin by Id
-export const updateAdmin = async (req, res) => {
+export async function updateAdmin(req, res) {
   const response = new Res(res);
   try {
     const saveData = {
@@ -151,10 +151,10 @@ export const updateAdmin = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // Change Password
-export const changePassword = async (req, res) => {
+export async function changePassword(req, res) {
   const response = new Res(res);
   try {
     const bodyData = {
@@ -180,14 +180,14 @@ export const changePassword = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // who am i
-export const whoami = async (req, res) => {
+export async function whoami(req, res) {
   const response = new Res(res);
   try {
     return response.success({ data: req.auth });
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}

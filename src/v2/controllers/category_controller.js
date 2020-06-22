@@ -8,7 +8,7 @@ const CatProvider = require("../providers/category_provider");
 const constant = require("../configs/constant");
 
 // save category
-export const saveCategory = async (req, res, next) => {
+export async function saveCategory(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
@@ -38,10 +38,10 @@ export const saveCategory = async (req, res, next) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // update category
-export const updateCategory = async (req, res, next) => {
+export async function updateCategory(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
@@ -87,10 +87,10 @@ export const updateCategory = async (req, res, next) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // get all category
-export const getAllCategory = async (req, res, next) => {
+export async function getAllCategory(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
@@ -99,10 +99,10 @@ export const getAllCategory = async (req, res, next) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // get category
-export const getCategory = async (req, res, next) => {
+export async function getCategory(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
@@ -114,10 +114,10 @@ export const getCategory = async (req, res, next) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // delete category
-export const deleteCategory = async (req, res, next) => {
+export async function deleteCategory(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
@@ -139,4 +139,4 @@ export const deleteCategory = async (req, res, next) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}

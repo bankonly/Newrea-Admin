@@ -1,26 +1,12 @@
-import { Router } from "express";
+const { Router } = require("express");
 const router = Router();
+const CatCtrl = require("../controllers/category_controller");
 
-import multer from "multer";
-
-// configs 
-import CONSTANT from "../configs/constant";
-
-// Controllers 
-import {
-  saveCategory,
-  updateCategory,
-  deleteCategory,
-  getAllCategory,
-  getCategory,
-} from "../controllers/category_controller";
-
-// define routes 
 router
-  .get("/category", getAllCategory)
-  .get("/category/:cat_id", getCategory)
-  .delete("/category/:cat_id", deleteCategory)
-  .put("/category/:cat_id", updateCategory)
-  .post("/category", saveCategory);
+  .get("/category", CatCtrl.getAllCategory)
+  .get("/category/:cat_id", CatCtrl.getCategory)
+  .delete("/category/:cat_id", CatCtrl.deleteCategory)
+  .put("/category/:cat_id", CatCtrl.updateCategory)
+  .post("/category", CatCtrl.saveCategory);
 
 export default router;

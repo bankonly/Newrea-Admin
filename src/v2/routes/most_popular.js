@@ -1,21 +1,12 @@
-import { Router } from "express";
+const { Router } = require("express");
 const router = Router();
+const MostCtrl = require("../controllers/most_popular_controller");
 
-// Controllers 
-import {
-  saveMostPopular,
-  updateMostPopular,
-  deleteMostPopular,
-  getAllMostPopular,
-  getMostPopular,
-} from "../controllers/most_popular_controller";
-
-// define routes 
 router
-  .get("/mostPopular", getAllMostPopular)
-  .get("/mostPopular/:mos_id", getMostPopular)
-  .delete("/mostPopular/:mos_id", deleteMostPopular)
-  .put("/mostPopular/:mos_id", updateMostPopular)
-  .post("/mostPopular", saveMostPopular);
+  .get("/mostPopular", MostCtrl.getAllMostPopular)
+  .get("/mostPopular/:mos_id", MostCtrl.getMostPopular)
+  .delete("/mostPopular/:mos_id", MostCtrl.deleteMostPopular)
+  .put("/mostPopular/:mos_id", MostCtrl.updateMostPopular)
+  .post("/mostPopular", MostCtrl.saveMostPopular);
 
 export default router;
