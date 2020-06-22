@@ -24,7 +24,7 @@ export const saveBanner = async (req, res, next) => {
   /** define response */
   const response = new ResCtl(res);
   try {
-    const isUpload = uploadImage({ path: constant.imgPath.banner, file: req.files });
+    const isUpload = uploadImage({ path: constant.imgPath.banner, file: req.files.img,req });
     return response.success(isUpload);
   } catch (error) {
     return response.somethingWrong({ error: error });
