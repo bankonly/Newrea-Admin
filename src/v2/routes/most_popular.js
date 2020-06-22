@@ -12,10 +12,10 @@ import {
 
 /** define routes */
 router
-  .post("/getAllMostPopular", getAllMostPopular)
-  .post("/getMostPopular", getMostPopular)
-  .post("/deleteMostPopular", deleteMostPopular)
-  .post("/updateMostPopular/:mos_id", updateMostPopular)
-  .post("/addMostPopular", saveMostPopular);
+  .get("/mostPopular", getAllMostPopular)
+  .get("/mostPopular/:mos_id", getMostPopular)
+  .delete("/mostPopular/:mos_id", deleteMostPopular)
+  .put("/mostPopular/:mos_id", updateMostPopular)
+  .post("/mostPopular", saveMostPopular);
 
 export default router;

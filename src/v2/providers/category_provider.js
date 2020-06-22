@@ -1,7 +1,7 @@
 import Res from "../controllers/default_res_controller";
 
 /** Models */
-import { Category } from "../models/category";
+import Category from "../models/category";
 
 /** Providers */
 import { imageUpload } from "./file_provider";

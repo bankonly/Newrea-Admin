@@ -1,5 +1,5 @@
-import { AccessPolicy } from "../../models/access_policy";
-import { Admin } from "../../models/admin";
+import AccessPolicy from "../../models/access_policy";
+import Admin from "../../models/admin";
 
 /** Helpers */
 import Bcrypt from "../../helpers/Bcrypt";

@@ -40,6 +40,11 @@ const schema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    is_active: {
+      type: String,
+      required: true,
+      default: "active",
+    },
     access_policy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "access_policy",
@@ -51,4 +56,4 @@ const schema = new mongoose.Schema(
 
 const Admin = mongoose.model(tableName, schema);
 
-export { Admin };
+module.exports = Admin;

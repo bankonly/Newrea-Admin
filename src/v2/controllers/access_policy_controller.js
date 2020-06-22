@@ -2,11 +2,12 @@
 const Res = require("./response_controller");
 
 /** Helpers */
+const { deleteIsActive } = require("../helpers/query_builder");
 const { isEmptyObj, validateObjectId } = require("../helpers/Global");
 
 /** Models */
-const { AccessPolicy } = require("../models/access_policy");
-const { Admin } = require("../models/admin");
+const AccessPolicy = require("../models/access_policy");
+const Admin = require("../models/admin");
 
 /** Providers */
 const AccProvider = require("../providers/access_policy_provider");
@@ -127,11 +128,16 @@ export const updateAccessPolicy = async (req, res) => {
 export const deleteAccessPolicy = async (req, res) => {
   const response = new Res(res);
   try {
-    const delAcc = await AccProvider._deleteAccessPolicy(
-      req.params.accp_id,
-      req.is_super_admin
-    );
-    return response.success(delAcc);
+    const isValid = validateObjectId(req.params.accp_id);
+
+    /** Check validator */
+    if (!isEmptyObj(isValid)) return response.badRequest({ data: isValid });
+    
+    const delAcc = await deleteIsActive(AccessPolicy, req.params.accp_id);
+    if (!delAcc) {
+      return response.badRequest({ msg: "can not delete" });
+    }
+    return response.success({ msg: "deleted" });
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
