@@ -13,7 +13,7 @@ import { isIdExist, deleteIsActive } from "../helpers/query_builder";
 
 /** Models */
 
-/** Providers */
+/** Provider s */
 import { saveImageExpress } from "../providers/file_provider";
 
 /** Configs */
