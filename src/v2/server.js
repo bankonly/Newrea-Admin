@@ -16,13 +16,12 @@ app_config(app);
 import setup_router from "./routes/setup";
 setup_router(app);
 
-
 /* LOAD IMAGE PATH */
-app.use("/public", express.static(__dirname + "/public"));
+app.use("/images", express.static(__dirname + "../../../img"));
 
 try {
   /* RUN PROGRAM BASE ON ENV PORT */
-  app.listen(process.env.APP_PORT, error =>
+  app.listen(process.env.APP_PORT, (error) =>
     console.log("CONNECTED TO ", process.env.APP_PORT)
   );
 } catch (error) {

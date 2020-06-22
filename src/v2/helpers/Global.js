@@ -88,11 +88,14 @@ export const isString = (value) => {
   return true;
 };
 
-
 /** validate */
-export const isEmpty = (value,method = "string") => {
+export const isEmpty = (value, method = "string") => {
   if (value == null || !value) return false;
   if (typeof value !== method) return false;
   return true;
 };
 
+/** is array */
+export const isArray = (value) => {
+  return Array.isArray(value) ? true : false;
+};

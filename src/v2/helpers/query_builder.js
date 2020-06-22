@@ -22,3 +22,10 @@ export const getData = (model, id = null, many = false) => {
     return model.findOne({ _id: id });
   }
 };
+
+export const deleteIsActive = (model, id, is_active = "in_active") => {
+  return model.updateOne(
+    { _id: id, is_active: "active" },
+    { $set: { is_active: is_active } }
+  );
+};

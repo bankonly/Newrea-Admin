@@ -6,10 +6,9 @@ import fileupload from "express-fileupload";
 export default (app) => {
   // passport initialize
   app.use(passport.initialize());
-  
+
   // allow cors origin
   app.use(cors());
-
   
   // parse application/x-www-form-urlencoded
   app.use(bodyParser.urlencoded({ extended: false }));
@@ -19,4 +18,5 @@ export default (app) => {
 
 
   app.use(fileupload())
+
 };
