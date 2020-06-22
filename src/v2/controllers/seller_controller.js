@@ -4,6 +4,10 @@ const sellerModel = require("../models/seller");
 
 const crypto = require("crypto-js");
 
+const config = require("./../configs/constant").default;
+
+const { uploadImage } = require("./../providers/file_provider");
+
 // get all sellers
 exports.getSellerList = async (req, res) => {
   const response = new Res(res);
@@ -40,6 +44,16 @@ exports.findSellerByID = async (req, res) => {
 // create new  seller
 exports.createSeller = async (req, res) => {
   const response = new Res(res);
+  const uploadStt = uploadImage({
+    req,
+    path: config.imgPath.seller,
+    file: req.files.img,
+  });
+  if (uploadStt.status && uploadStt.code === 200) {
+    req.body.img = uploadStt.data.imageName;
+  }
+  
+  return res.send(uploadStt);
   const SECRET_KEY_PASS = process.env.SECRET_KEY_PASS;
   const sellerData = req.body;
   const encriptedPass = crypto.AES.encrypt(

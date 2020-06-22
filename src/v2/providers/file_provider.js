@@ -29,9 +29,6 @@ export const imageValidate = (imageSize, file) => {
         return Res.badRequest({ msg: "img is should be number" });
       }
     }
-
-    if (!file.img) return Res.badRequest({ msg: "img is required as string" });
-
     return Res.success({});
   } catch (error) {
     return Res.somethingWrong({ error: error });
@@ -124,20 +121,20 @@ export const uploadImage = ({
     const validateImage = imageValidate(imageSize, file);
     if (!validateImage.status) return validateImage;
 
-    if (!constant.image_type_accept.includes(file.img.mimetype.split("/")[1])) {
+    if (!constant.image_type_accept.includes(file.mimetype.split("/")[1])) {
       return Res.badRequest({ msg: "img type not accepted" });
     }
     const fileName = uuid() + Date.now() + fileType;
     req.body.img = fileName;
     createDirIfNotExist(path);
-    fs.writeFileSync(path + fileName, file.img.data);
+    fs.writeFileSync(path + fileName, file.data);
     const resizePath = resizeImage({
       size: imageSize,
       path: path,
       fileName: fileName,
     });
 
-    return Res.success({ msg: "img created" });
+    return Res.success({ data: fileName, msg: "img created" });
   } catch (error) {
     return Res.somethingWrong({ error: error });
   }

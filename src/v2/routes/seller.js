@@ -11,7 +11,9 @@ router.get("/seller/lists", sellerController.getSellerList);
 router.post("/seller/findSeller/:sellerID", sellerController.findSellerByID);
 router.post(
   "/seller/createSeller",
-  [validator.createValidator, checkImgUpload, uploadImage],
+  [
+    // validator.createValidator, 
+    checkImgUpload],
   sellerController.createSeller
 );
 router.delete(
