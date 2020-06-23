@@ -9,6 +9,10 @@ import Res from "../../controllers/response_controller";
 exports.createValidator = async (req, res, next) => {
   const response = new Res(res);
   const data = req.body;
+  if (typeof data.category_id === "string") {
+    data.category_id = data.category_id.split(",");
+  }
+
   data.pass = randomPassword();
   try {
     // check valid ObjectId
@@ -35,7 +39,7 @@ exports.createValidator = async (req, res, next) => {
     // check category is exist?
     let notValidCategorys = [];
     data.category_id.map((e) => {
-      if (!e.toString().includes(categorysIDArray)) {
+      if (!categorysIDArray.toString().includes(e)) {
         notValidCategorys.push(e);
       }
     });
@@ -47,7 +51,6 @@ exports.createValidator = async (req, res, next) => {
     }
 
     // validate user_name is unique?
-
     const reqUserName = data.user_name.toLowerCase();
     const sellerUserName = await sellerModel.findOne({
       user_name: reqUserName,
@@ -60,9 +63,11 @@ exports.createValidator = async (req, res, next) => {
       }
       // for update seller
       else {
-        if (sellerUserName._id.toString() !== req.params.id) {
+        if (sellerUserName._id.toString() !== req.params.sellerID.toString()) {
           return response.badRequest({
-            msg: `user name '${reqUserName}' aleady exist`,
+            msg: `user name '${sellerUserName._id.toString()}' => ${
+              req.params.sellerID
+            } aleady exist`,
           });
         }
       }

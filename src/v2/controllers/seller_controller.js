@@ -136,8 +136,19 @@ exports.updateSeller = async (req, res) => {
 // edit  seller images
 exports.updateSellerImages = async (req, res) => {
   const response = new Res(res);
+  const acceptKey = ["img", "logo"];
+  const fileKeys = Object.keys(req.files);
+  let invalidKey = [];
+  fileKeys.map((e) => {
+    if (!acceptKey.includes(e)) {
+      invalidKey.push(`not allowed key ${e}`);
+    }
+  });
+
+  if (invalidKey.length > 0) {
+    return response.badRequest({ data: invalidKey, msg: "not allowed keys" });
+  }
   const sellerID = req.params.sellerID;
-  const sellerData = req.body;
   try {
     let foundSeller = await sellerModel.findById(sellerID).select("img logo");
     if (!foundSeller) {
@@ -152,59 +163,62 @@ exports.updateSellerImages = async (req, res) => {
     let newLogo = "";
     let removeFileStatus = {
       logo: {
-        small: "upload new file not success",
-        big: "upload new file not success",
-        original: "upload new file not success",
+        small: "not upload new file",
+        big: "not upload new file",
+        original: "not upload new file",
       },
       img: {
-        small: "upload new file not success",
-        big: "upload new file not success",
-        original: "upload new file not success",
+        small: "not upload new file",
+        big: "not upload new file",
+        original: "not upload new file",
       },
     };
     // upload images
-    const uploadSttImg = uploadImage({
-      req,
-      path: config.imgPath.seller,
-      file: req.files.img,
-    });
-    if (uploadSttImg.status && uploadSttImg.code === 200) {
-      newImg = uploadSttImg.data;
-      removeFileStatus.img.original = await removeFile(
-        config.imgPath.seller,
-        imgOldName
-      );
-      removeFileStatus.img.small = await removeFile(
-        `${config.imgPath.seller}/200x200`,
-        imgOldName
-      );
-      removeFileStatus.img.big = await removeFile(
-        `${config.imgPath.seller}/800x800`,
-        imgOldName
-      );
+    if (req.files.img) {
+      const uploadSttImg = uploadImage({
+        req,
+        path: config.imgPath.seller,
+        file: req.files.img,
+      });
+      if (uploadSttImg.status && uploadSttImg.code === 200) {
+        newImg = uploadSttImg.data;
+        removeFileStatus.img.original = await removeFile(
+          config.imgPath.seller,
+          imgOldName
+        );
+        removeFileStatus.img.small = await removeFile(
+          `${config.imgPath.seller}/200x200`,
+          imgOldName
+        );
+        removeFileStatus.img.big = await removeFile(
+          `${config.imgPath.seller}/800x800`,
+          imgOldName
+        );
+      }
     }
-    const uploadSttLogo = uploadImage({
-      req,
-      path: config.imgPath.seller,
-      file: req.files.logo,
-    });
-    if (uploadSttLogo.status && uploadSttLogo.code === 200) {
-      newLogo = uploadSttLogo.data;
-      removeFileStatus.logo.original = await removeFile(
-        config.imgPath.seller,
-        logoOldName
-      );
-      removeFileStatus.logo.small = await removeFile(
-        `${config.imgPath.seller}/200x200`,
-        logoOldName
-      );
-      removeFileStatus.logo.big = await removeFile(
-        `${config.imgPath.seller}/800x800`,
-        logoOldName
-      );
-    } else {
-      // remove just uploaded image
+    if (req.files.logo) {
+      const uploadSttLogo = uploadImage({
+        req,
+        path: config.imgPath.seller,
+        file: req.files.logo,
+      });
+      if (uploadSttLogo.status && uploadSttLogo.code === 200) {
+        newLogo = uploadSttLogo.data;
+        removeFileStatus.logo.original = await removeFile(
+          config.imgPath.seller,
+          logoOldName
+        );
+        removeFileStatus.logo.small = await removeFile(
+          `${config.imgPath.seller}/200x200`,
+          logoOldName
+        );
+        removeFileStatus.logo.big = await removeFile(
+          `${config.imgPath.seller}/800x800`,
+          logoOldName
+        );
+      }
     }
+
     // end upload image
 
     // save image name to database
