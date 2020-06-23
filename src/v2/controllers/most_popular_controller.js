@@ -28,7 +28,7 @@ export async function saveMostPopular(req, res) {
     if (!isUpload.status) return response.badRequest(isUpload);
 
     // create new data
-    const isCreate = await MostPopular.create(req.params);
+    const isCreate = await MostPopular.create(req.body);
     if (!isCreate) return response.badRequest({ msg: "can not create" });
     return response.success({ data: isCreate });
   } catch (error) {
@@ -69,7 +69,7 @@ export async function updateMostPopular(req, res) {
     // create new data
     const isUpdate = await MostPopular.updateOne(
       { _id: req.params.mos_id },
-      { $set: req.params }
+      { $set: req.body }
     );
     if (!isUpdate) return response.badRequest({ msg: "can not update" });
     return response.success({ msg: "updated" });

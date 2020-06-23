@@ -163,9 +163,6 @@ export async function changePassword(req, res) {
       confirm_password: req.body.confirm_password,
     };
 
-    if (!Helpers.validateObjectId(req.auth._id)) {
-      return response.badRequest({ data: "invalid id" });
-    }
     // Validate BodyData
     const isValidData = AdminProvider.validateChangePwd(bodyData);
     if (!Helpers.isEmptyObj(isValidData))

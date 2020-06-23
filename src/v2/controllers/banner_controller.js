@@ -1,11 +1,40 @@
 const Res = require("./response_controller");
+const FileProvider = require("../providers/file_provider");
+const BannerProvider = require("../providers/banner_provider");
+const Helpers = require("../helpers/Global");
+const constant = require("../configs/constant");
+const QB = require("../helpers/query_builder");
+const Banner = require("../models/main_banner");
 
 // save most popular
 export async function saveBanner(req, res) {
   // define response
-  const response = new ResCtl(res);
+  const response = new Res(res);
   try {
-    return response.success({});
+    // validate save data
+    const isValid = BannerProvider.validate_add(req);
+    if (!Helpers.isEmptyObj(isValid)) {
+      return response.badRequest({ data: isValid });
+    }
+
+    // upload img
+    const isUpload = FileProvider.uploadImage({
+      req: req,
+      path: constant.imgPath.banner,
+      file: req.files.img,
+    });
+    if (!isUpload.status) {
+      return response.badRequest(isUpload);
+    }
+
+    const saveData = {
+      img: req.body.img,
+      start_date: req.body.start_date,
+      end_date: req.body.end_date,
+    };
+    const isSave = await Banner.create(saveData);
+    if (!isSave) return response.badRequest({ msg: "can not update" });
+    return response.success({ data: isSave });
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
@@ -14,9 +43,42 @@ export async function saveBanner(req, res) {
 // update most popular
 export async function updateBanner(req, res) {
   // define response
-  const response = new ResCtl(res);
+  const response = new Res(res);
   try {
-    return response.success({ msg: "updated" });
+    if (!Helpers.validateObjectId(req.params.banner_id)) {
+      return response.badRequest({ msg: "invalid Id" });
+    }
+    // validate save data
+    const isValid = BannerProvider.validate_add(req, false);
+    if (!Helpers.isEmptyObj(isValid)) {
+      return response.badRequest({ data: isValid });
+    }
+    var saveData = {
+      start_date: req.body.start_date,
+      end_date: req.body.end_date,
+    };
+
+    const isId = await QB.isIdActive(Banner, req.params.banner_id);
+    if (!isId) return response.notFound({ msg: "no data" });
+
+    // upload img
+    if (Helpers.isFile(req.files)) {
+      const isUpload = FileProvider.uploadImage({
+        req: req,
+        path: constant.imgPath.banner,
+        file: req.files.img,
+      });
+      if (!isUpload.status) {
+        return response.badRequest(isUpload);
+      }
+      isId.img = req.body.img;
+    }
+
+    isId.start_date = req.body.start_date;
+    isId.end_date = req.body.end_date;
+
+    if (!isId.save()) return response.badRequest({ msg: "can not update" });
+    return response.success({ data: isId });
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
@@ -25,9 +87,13 @@ export async function updateBanner(req, res) {
 // get all most popular
 export async function getAllBanner(req, res) {
   // define response
-  const response = new ResCtl(res);
+  const response = new Res(res);
   try {
-    return response.success({});
+    const data = await QB.fetch({
+      model: Banner,
+      adminType: req.is_super_admin,
+    });
+    return response.success(data);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
@@ -36,9 +102,14 @@ export async function getAllBanner(req, res) {
 // get most popular
 export async function getBanner(req, res) {
   // define response
-  const response = new ResCtl(res);
+  const response = new Res(res);
   try {
-    return response.success({});
+    const data = await QB.fetch({
+      model: Banner,
+      adminType: req.is_super_admin,
+      id: req.params.banner_id,
+    });
+    return response.success(data);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
@@ -47,9 +118,14 @@ export async function getBanner(req, res) {
 // delete most popular
 export async function deleteBanner(req, res) {
   // define response
-  const response = new ResCtl(res);
+  const response = new Res(res);
   try {
-    return response.success({ msg: "deleted" });
+    const isSet = await QB.setActive(
+      Banner,
+      req.params.banner_id,
+      req.body.is_active
+    );
+    return response.success(isSet);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
