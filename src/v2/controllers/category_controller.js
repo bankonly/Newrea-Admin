@@ -121,21 +121,12 @@ export async function deleteCategory(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
-    // Check validator
-    if (!Helpers.validateObjectId(req.params.cat_id)) {
-      return response.badRequest({ data: "invalid id" });
-    }
-
-    const isId = await QB.isIdExist(Category, req.params.cat_id);
-    if (!isId || isId.is_active == "in_active") {
-      return response.notFound({ msg: "no data" });
-    }
-
-    const delAcc = await QB.deleteIsActive(Category, req.params.cat_id);
-    if (!delAcc) {
-      return response.badRequest({ msg: "can not delete" });
-    }
-    return response.success({ msg: "deleted" });
+    const isSet = await QB.setActive(
+      Category,
+      req.params.cat_id,
+      req.body.is_active
+    );
+    return response.success(isSet);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }

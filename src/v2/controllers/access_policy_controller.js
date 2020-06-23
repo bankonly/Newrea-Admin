@@ -119,24 +119,12 @@ export async function updateAccessPolicy(req, res) {
 export async function deleteAccessPolicy(req, res) {
   const response = new Res(res);
   try {
-    // Check validator
-    if (!Helpers.validateObjectId(req.params.accp_id)) {
-      return response.badRequest({ data: "invalid id" });
-    }
-
-    const isId = await AccessPolicy.findById(req.params.accp_id);
-    if (!isId || isId.is_active == "in_active") {
-      return response.notFound({ msg: "no data" });
-    }
-
-    const delAcc = await QueryBuilder.deleteIsActive(
+    const isSet = await QueryBuilder.setActive(
       AccessPolicy,
-      req.params.accp_id
+      req.params.accp_id,
+      req.body.is_active
     );
-    if (!delAcc) {
-      return response.badRequest({ msg: "can not delete" });
-    }
-    return response.success({ msg: "deleted" });
+    return response.success(isSet);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }

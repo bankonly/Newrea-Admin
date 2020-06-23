@@ -96,23 +96,12 @@ export async function getAdminById(req, res) {
 export async function deleteAdmin(req, res) {
   const response = new Res(res);
   try {
-    // Check validator
-    if (!Helpers.validateObjectId(req.params.admin_id)) {
-      return response.badRequest({ data: "invalid id" });
-    }
-
-    const isId = await QueryBuilder.isIdExist(Admin, req.params.admin_id);
-    if (!isId || isId.is_active == "in_active")
-      return response.notFound({ msg: "no data" });
-
-    const delAcc = await QueryBuilder.deleteIsActive(
+    const isSet = await QueryBuilder.setActive(
       Admin,
-      req.params.admin_id
+      req.params.admin_id,
+      req.body.is_active
     );
-    if (!delAcc) {
-      return response.badRequest({ msg: "can not delete" });
-    }
-    return response.success({ msg: "deleted" });
+    return response.success(isSet);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
