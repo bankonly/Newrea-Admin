@@ -1,6 +1,6 @@
 import Res from "../controllers/default_res_controller";
 
-/** Helpers */
+// Helpers 
 import { validateObjectId } from "../helpers/Global";
 
 export const cm_delete = async (model, id) => {

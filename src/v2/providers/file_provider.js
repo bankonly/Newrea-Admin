@@ -1,24 +1,16 @@
-import multer from "multer";
-import fs from "fs";
-import uuid from "uuid";
-import constant from "../configs/constant";
-import sharp from "sharp";
-import formidable from "formidable";
+const multer = require("multer");
+const fs = require("fs");
+const uuid = require("uuid");
+const constant = require("../configs/constant");
+const sharp = require("sharp");
+const formidable = require("formidable");
+const Helpers = require("../helpers/Global")
 
-/** helpers */
-import {
-  isEmptyObj,
-  isEmpty,
-  validateObjectId,
-  isString,
-  isArray,
-} from "../helpers/Global";
+// Controllers
+const Res = require("../controllers/default_res_controller");
 
-/** Controllers */
-import Res from "../controllers/default_res_controller";
-
-/** validate image */
-export const imageValidate = (imageSize, file) => {
+// validate image
+export function imageValidate(imageSize, file) {
   try {
     if (!Array.isArray(imageSize)) {
       return Res.badRequest({ msg: "img is should be array" });
@@ -33,9 +25,9 @@ export const imageValidate = (imageSize, file) => {
   } catch (error) {
     return Res.somethingWrong({ error: error });
   }
-};
+}
 
-export const createDirIfNotExist = (path) => {
+export function createDirIfNotExist(path) {
   try {
     if (!fs.existsSync(path)) {
       fs.mkdirSync(path);
@@ -43,11 +35,11 @@ export const createDirIfNotExist = (path) => {
   } catch (error) {
     return new Error(error);
   }
-};
+}
 
-export const resizeImage = ({ size, path, fileName }) => {
+export function resizeImage({ size, path, fileName }) {
   try {
-    if (!isArray(size)) {
+    if (!Helpers.isArray(size)) {
       return new Error("size should be array");
     }
     var removePath = [];
@@ -56,11 +48,11 @@ export const resizeImage = ({ size, path, fileName }) => {
       const newFile = newPath + fileName;
       const destination = path + fileName;
 
-      /** check if new dir is not exist */
+      // check if new dir is not exist
       createDirIfNotExist(newPath);
-      /** store remove path if validate error */
+      // store remove path if validate error
       sharp(destination)
-        .resize(size[i])
+        .resize(size[i], size[i])
         .toFile(newFile, (e, info) => {
           if (e) {
             return new Error(e.message);
@@ -72,52 +64,37 @@ export const resizeImage = ({ size, path, fileName }) => {
   } catch (error) {
     return new Error(error);
   }
-};
+}
 
-/** remove one file */
-export const removeFile = (path) => {
+// remove one file
+export function removeFile(path) {
   try {
-    while (true) {
-      if (fs.existsSync(path)) {
-        fs.unlinkSync(path);
-        break;
-      }
-    }
   } catch (error) {
     return new Error(error);
   }
-};
+}
 
-/** remove image */
-export const removeFileMany = (path) => {
+// remove image
+export function removeFileMany(path) {
   try {
     if (!isArray(path)) {
       return new Error("remove path should be array");
     }
-
-    path.forEach((value) => {
-      while (true) {
-        if (!fs.existsSync(value)) {
-          fs.unlink(value);
-          break;
-        }
-        console.log("REMOVED");
-      }
-    });
+    path.forEach((value) => {});
   } catch (error) {
     return new Error(error);
   }
-};
+}
 
-export const uploadImage = ({
+export function uploadImage({
   req,
   path,
   imageSize = [800, 200],
   file,
   fileType = ".jpg",
-}) => {
+}) {
   try {
-    /** validate image before save */
+    // validate image before save
     const validateImage = imageValidate(imageSize, file);
     if (!validateImage.status) return validateImage;
 
@@ -138,4 +115,4 @@ export const uploadImage = ({
   } catch (error) {
     return Res.somethingWrong({ error: error });
   }
-};
+}

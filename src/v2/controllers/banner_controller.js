@@ -1,76 +1,56 @@
-/** Modules */
+const Res = require("./response_controller");
 
-import ResCtl from "./response_controller";
-
-/** Helpers */
-import {
-  isString,
-  isEmptyObj,
-  validateObjectId,
-  isEmpty,
-} from "../helpers/Global";
-import { isIdExist, deleteIsActive } from "../helpers/query_builder";
-
-/** Models */
-
-/** Provider s */
-import { uploadImage } from "../providers/file_provider";
-
-/** Configs */
-import constant from "../configs/constant";
-
-/** save most popular */
-export const saveBanner = async (req, res, next) => {
-  /** define response */
+// save most popular
+export async function saveBanner(req, res) {
+  // define response
   const response = new ResCtl(res);
   try {
-    const isUpload = uploadImage({ path: constant.imgPath.banner, file: req.files.img,req });
-    return response.success(isUpload);
+    return response.success({});
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
-/** update most popular */
-export const updateBanner = async (req, res, next) => {
-  /** define response */
+// update most popular
+export async function updateBanner(req, res) {
+  // define response
   const response = new ResCtl(res);
   try {
     return response.success({ msg: "updated" });
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
-/** get all most popular */
-export const getAllBanner = async (req, res, next) => {
-  /** define response */
+// get all most popular
+export async function getAllBanner(req, res) {
+  // define response
   const response = new ResCtl(res);
   try {
     return response.success({});
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
-/** get most popular */
-export const getBanner = async (req, res, next) => {
-  /** define response */
+// get most popular
+export async function getBanner(req, res) {
+  // define response
   const response = new ResCtl(res);
   try {
     return response.success({});
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
-/** delete most popular */
-export const deleteBanner = async (req, res, next) => {
-  /** define response */
+// delete most popular
+export async function deleteBanner(req, res) {
+  // define response
   const response = new ResCtl(res);
   try {
     return response.success({ msg: "deleted" });
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}

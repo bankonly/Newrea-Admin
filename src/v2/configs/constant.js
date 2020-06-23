@@ -1,6 +1,6 @@
 import fs from "fs";
 
-export default {
+module.exports = {
   publicPath: "public",
   defaultImgPath: "./public/images/",
   productImgPath: "products/",
@@ -18,9 +18,9 @@ export default {
   token_life_time: process.env.TOKEN_LIFE_TIME,
   image_size_allow: process.env.IMAGE_SIZE_ALLOW,
   imgPath: {
-    category: "./img/categories/",
-    seller: "./img/seller/",
-    most_popular: "./img/most_popular/",
-    banner: "./img/banner/",
+    category: "./../img/categories/",
+    seller: "./../img/seller/",
+    most_popular: "./../img/most_popular/",
+    banner: "./../img/banner/",
   },
 };

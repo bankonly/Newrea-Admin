@@ -2,10 +2,6 @@ import mongoose from "mongoose";
 
 const tableName = "access_policy";
 const schema = new mongoose.Schema(
-  /** ref to admin whcih page admin can access */
-  /** 1 = full control */
-  /** 2 = readonly */
-  /** 3 = hidden */
   {
     name: {
       type: String,
@@ -62,6 +58,11 @@ const schema = new mongoose.Schema(
     is_super_admin: {
       type: Boolean,
       required: true,
+    },
+    is_active: {
+      type: String,
+      required: true,
+      default: "active",
     },
   },
   { collection: tableName, timestamps: true }

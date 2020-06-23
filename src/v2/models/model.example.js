@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 
-/** Import migrtion */
+// Import migrtion 
 import schema_name from "../database/schema/schema_name";
 const { tableName, schema } = schema_name(mongoose);
 
 const ModelName = mongoose.model(tableName, schema);
 
-/** Query Builder */
+// Query Builder 
 class QueryBuilder {
   constructor() {
     this.model = ModelName;

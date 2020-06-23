@@ -1,17 +1,16 @@
-import AccessPolicy from "../../models/access_policy";
-import Admin from "../../models/admin";
+const AccessPolicy = require("../../models/access_policy");
+const Admin = require("../../models/admin");
 
-/** Helpers */
-import Bcrypt from "../../helpers/Bcrypt";
+// Helpers
+const Bcrypt = require("../../helpers/Bcrypt");
 
-export const runSeeder = async (req, res) => {
-  /** Access Policy Data */
+export async function runSeeder(req, res) {
+  // Access Policy Data
   const accessPolicyData = {
     is_super_admin: true,
     name: !req.body.username ? "super_admin" : req.body.username,
   };
-  /** Admin Data */
-  // res.json({msg:"HELEKEI"})
+
   const adminData = [
     {
       name: "super_admin",
@@ -41,4 +40,4 @@ export const runSeeder = async (req, res) => {
   await Admin.create(adminData);
   return res.json("Seeder Created");
 
-};
+}

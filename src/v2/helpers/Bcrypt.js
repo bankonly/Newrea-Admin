@@ -1,13 +1,9 @@
 import bycrypt from "bcrypt";
 
-class BcryptHelper {
-  async hashPassword(password, round = 10) {
-    return await bycrypt.hash(password, round);
-  }
-
-  async verifyPassword(password, hashedPassword) {
-    return await bycrypt.compare(password, hashedPassword);
-  }
+export async function hashPassword(password, round = 10) {
+  return await bycrypt.hash(password, round);
 }
 
-export default new BcryptHelper();
+export async function verifyPassword(password, hashedPassword) {
+  return await bycrypt.compare(password, hashedPassword);
+}

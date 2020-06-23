@@ -30,4 +30,4 @@ const schema = new mongoose.Schema(
 
 const MostPopular = mongoose.model(tableName, schema);
 
-export { MostPopular };
+module.exports = MostPopular;
