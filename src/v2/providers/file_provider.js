@@ -1,3 +1,6 @@
+import { resolve } from "path";
+import { rejects } from "assert";
+
 const multer = require("multer");
 const fs = require("fs");
 const uuid = require("uuid");
@@ -67,9 +70,10 @@ export function resizeImage({ size, path, fileName }) {
 }
 
 // remove one file
-export function removeFile(path, fileName, subFolder = [800, 200]) {
+export function removeFileMany(path, fileName, subFolder = [800, 200]) {
   try {
     if (!isArray(subFolder)) {
+
       return new Error("remove path should be array");
     }
     fs.unlinkSync(path + fileName);
@@ -79,6 +83,27 @@ export function removeFile(path, fileName, subFolder = [800, 200]) {
   } catch (error) {
     return new Error(error);
   }
+}
+
+// remove image all size and original images
+/**
+ *
+ *
+ * @export
+ * @param {*} folderPath
+ * @param {*} fileName
+ */
+export function removeFile(folderPath, fileName) {
+  return new Promise((resolve, rejects) => {
+    fs.unlink(`${folderPath}/${fileName}`, (err) => {
+      if (err) {
+        console.log(err);
+        resolve(false);
+      } else {
+        resolve(true);
+      }
+    });
+  });
 }
 
 export function uploadImage({

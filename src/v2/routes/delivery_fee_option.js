@@ -4,6 +4,10 @@ const router = express.Router();
 
 const deliveryFeeController = require("../controllers/delivery_fee_controller");
 const validator = require("./../middlewares/validations/delivery_fee_option_validator");
+const {
+  checkValidObjectId,
+  deleteValidator,
+} = require("./../middlewares/validations/commonValidator");
 
 router.get("/deliveryFee/lists", deliveryFeeController.getDeliveryFeeList);
 router.post(
@@ -11,13 +15,15 @@ router.post(
   [validator.createValidator],
   deliveryFeeController.createDeliveryFee
 );
+
 router.delete(
   "/deliveryFee/disable/:id",
-  deliveryFeeController.disableDeliveryFee
+  [checkValidObjectId, deleteValidator],
+  deliveryFeeController.enableDisableDliveryFee
 );
 router.put(
   "/deliveryFee/update/:id",
-  [validator.updateValidator],
+  [checkValidObjectId, validator.updateValidator],
   deliveryFeeController.updateDeliveryFee
 );
 

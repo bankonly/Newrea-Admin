@@ -3,7 +3,7 @@ import Res from "./response_controller";
 const deliveryFeeOptionModel = require("../models/delivery_fee_option");
 // get all delivery fee option
 exports.getDeliveryFeeList = async (req, res) => {
-  const response = new Res(res);;
+  const response = new Res(res);
   try {
     const deliveryFeeOption = await deliveryFeeOptionModel.find();
     if (deliveryFeeOption.length > 0) {
@@ -17,7 +17,7 @@ exports.getDeliveryFeeList = async (req, res) => {
 };
 // create new  delivery fee option
 exports.createDeliveryFee = async (req, res) => {
-  const response = new Res(res);;
+  const response = new Res(res);
   const deliveryFeeData = req.body;
   try {
     const delivery = new deliveryFeeOptionModel(deliveryFeeData);
@@ -39,16 +39,16 @@ exports.createDeliveryFee = async (req, res) => {
 };
 
 // create new  delivery fee option
-exports.disableDeliveryFee = async (req, res) => {
-  const response = new Res(res);;
+exports.enableDisableDliveryFee = async (req, res) => {
+  const response = new Res(res);
   const deliveryFeeId = req.params.id;
+  const newData = req.body;
   try {
     let foundDlv = await deliveryFeeOptionModel.findById(deliveryFeeId);
     if (!foundDlv) {
       return response.notFound({});
     }
-    const newValue = foundDlv.is_active === "active" ? "inActive" : "active";
-    foundDlv.is_active = newValue;
+    foundDlv.set(newData);
     if (await foundDlv.save()) {
       response.success({
         data: foundDlv,
@@ -60,7 +60,7 @@ exports.disableDeliveryFee = async (req, res) => {
 };
 // create new  delivery fee option
 exports.updateDeliveryFee = async (req, res) => {
-  const response = new Res(res);;
+  const response = new Res(res);
   const deliveryFeeId = req.params.id;
   const newData = req.body;
   try {
