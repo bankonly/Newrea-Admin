@@ -21,7 +21,7 @@ export function isEmptyObj(obj) {
   return false;
 }
 
-// validate delete userId 
+// validate delete userId
 export function validateObjectId(objectId) {
   if (!objectId || typeof objectId !== "string" || !invalidObjectId(objectId)) {
     return false;
@@ -29,7 +29,7 @@ export function validateObjectId(objectId) {
   return true;
 }
 
-// Multiple validate Object 
+// Multiple validate Object
 export function multipleValidateObj(
   obj,
   deleteObject,
@@ -69,33 +69,58 @@ export function multipleValidateObj(
   return error;
 }
 
-//check valid object 
+//check valid object
 export function isValidObj(obj) {
   if (typeof obj !== "object") return false;
   return true;
 }
 
-// Boolean validate 
+// Boolean validate
 export function isBoolean(value) {
   if (typeof value !== "boolean") return false;
   return true;
 }
 
-// String validate 
+// String validate
 export function isString(value) {
   if (value == null || !value) return false;
   if (typeof value !== "string") return false;
   return true;
 }
 
-// validate 
+// validate
 export function isEmpty(value, method = "string") {
   if (value == null || !value) return false;
   if (typeof value !== method) return false;
   return true;
 }
 
-// is array 
+// is array
 export function isArray(value) {
   return Array.isArray(value) ? true : false;
+}
+
+// is valid date
+export function isDate(date) {
+  date = new Date(date);
+  return date instanceof Date && !isNaN(date);
+}
+
+// is file
+export function isFile(files) {
+  if (!files) return false;
+  if (!files.img) return false;
+  return true;
+}
+
+export function getTimeFromDate(date) {
+  const dt = new Date(date);
+  return dt.getTime();
+}
+
+export function compareBtwDate(start_date, end_date) {
+  const start = getTimeFromDate(start_date);
+  const end = getTimeFromDate(end_date);
+  if (end < start) return false;
+  return true;
 }

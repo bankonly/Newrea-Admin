@@ -69,13 +69,17 @@ export function resizeImage({ size, path, fileName }) {
   }
 }
 
-// remove image
-export function removeFileMany(path) {
+// remove one file
+export function removeFileMany(path, fileName, subFolder = [800, 200]) {
   try {
-    if (!isArray(path)) {
+    if (!isArray(subFolder)) {
+
       return new Error("remove path should be array");
     }
-    path.forEach((value) => {});
+    fs.unlinkSync(path + fileName);
+    for (var i = 0; i < subFolder.length; i++) {
+      fs.unlinkSync(path + subFolder[i] + "x" + subFolder[i] + "/" + fileName);
+    }
   } catch (error) {
     return new Error(error);
   }

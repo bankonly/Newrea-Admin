@@ -17,7 +17,7 @@ import setup_router from "./routes/setup";
 setup_router(app);
 
 // LOAD IMAGE PATH
-app.use("/images", express.static(__dirname + "../../../img"));
+app.use("/images", express.static(__dirname + "../../../../img"));
 
 try {
   // RUN PROGRAM BASE ON ENV PORT

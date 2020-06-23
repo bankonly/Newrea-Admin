@@ -28,7 +28,7 @@ export async function saveMostPopular(req, res) {
     if (!isUpload.status) return response.badRequest(isUpload);
 
     // create new data
-    const isCreate = await MostPopular.create(req.params);
+    const isCreate = await MostPopular.create(req.body);
     if (!isCreate) return response.badRequest({ msg: "can not create" });
     return response.success({ data: isCreate });
   } catch (error) {
@@ -69,7 +69,7 @@ export async function updateMostPopular(req, res) {
     // create new data
     const isUpdate = await MostPopular.updateOne(
       { _id: req.params.mos_id },
-      { $set: req.params }
+      { $set: req.body }
     );
     if (!isUpdate) return response.badRequest({ msg: "can not update" });
     return response.success({ msg: "updated" });
@@ -112,26 +112,12 @@ export async function deleteMostPopular(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
-    // Check if auth is not super admin
-    if (!req.is_super_admin) {
-      return response.notAllowed({ msg: "access denied" });
-    }
-
-    const mos_id = req.params.mos_id;
-    if (!Helpers.isEmpty(mos_id) || !Helpers.validateObjectId(mos_id)) {
-      return response.badRequest({ msg: "invalid id" });
-    }
-
-    const isId = await MostPopular.findById(mos_id);
-    if (!isId || isId.is_active !== "active") {
-      return response.badRequest({ msg: "no data" });
-    }
-
-    const isDel = await QB.deleteIsActive(MostPopular, mos_id);
-    if (!isDel) {
-      return response.badRequest({ msg: "can not delete" });
-    }
-    return response.success({ msg: "deleted" });
+    const isSet = await QB.setActive(
+      MostPopular,
+      req.params.mos_id,
+      req.body.is_active
+    );
+    return response.success(isSet);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }

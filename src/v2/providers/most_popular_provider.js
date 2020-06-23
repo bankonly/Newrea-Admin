@@ -9,7 +9,7 @@ export function validateSaveData(obj, update = false) {
   if (!Helpers.isEmpty(obj.body.title)) error.title = msg;
   if (!Helpers.isEmpty(obj.body.desc)) error.desc = msg;
   if (update) {
-    if (!obj.files.img) error.img = msg;
+    if (!obj.files || !obj.files.img) error.img = msg;
   }
   return error;
 }
