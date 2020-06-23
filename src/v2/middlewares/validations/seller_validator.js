@@ -27,22 +27,22 @@ exports.createValidator = async (req, res, next) => {
   }
   // check validator categorys is exist in database?
   //   get all category id lavel1
-  // const categorysID = await categoryModel
-  //   .find({ parent_id: null })
-  //   .select("_id");
-  // // check category is exist?
-  // let notValidCategory = [];
-  // data.category_id.map((e) => {
-  //   if (!categorysID.includes(e)) {
-  //     notValidCategory.push(e);
-  //   }
-  // });
-  // if (notValidCategory.length > 0) {
-  //   return response.badRequest({
-  //     data: notValidCategory,
-  //     msg: `categories not valid`,
-  //   });
-  // }
+  const categorysID = await categoryModel
+    .find({ parent_id: null })
+    .select("_id");
+  // check category is exist?
+  let notValidCategory = [];
+  data.category_id.map((e) => {
+    if (!categorysID.includes(e)) {
+      notValidCategory.push(e);
+    }
+  });
+  if (notValidCategory.length > 0) {
+    return response.badRequest({
+      data: notValidCategory,
+      msg: `categories not valid`,
+    });
+  }
 
   // validate user_name is unique?
   const reqUserName = data.user_name.toLowerCase();
@@ -81,6 +81,16 @@ exports.createValidator = async (req, res, next) => {
   } catch (err) {
     return response.badRequest({ data: err });
   }
+};
+exports.checkValidObjectId = (req, res, next) => {
+  const response = new Res(res);
+  const key = Object.keys(req.params)[0];
+  if (!mongoose.Types.ObjectId.isValid(req.params[key])) {
+    return response.badRequest({
+      msg: `ObjectId ${req.params[key]} is not valid`,
+    });
+  }
+  next();
 };
 
 function randomPassword() {
