@@ -6,7 +6,6 @@ const crypto = require("crypto-js");
 
 const config = require("./../configs/constant");
 
-
 const { uploadImage } = require("./../providers/file_provider");
 
 // get all sellers
@@ -87,7 +86,7 @@ exports.createSeller = async (req, res) => {
 };
 
 // disable  seller
-exports.disableSeller = async (req, res) => {
+exports.enableDisableSeller = async (req, res) => {
   const response = new Res(res);
   const sellerID = req.params.sellerID;
   try {
@@ -95,8 +94,7 @@ exports.disableSeller = async (req, res) => {
     if (!foundSeller) {
       return response.notFound({ data: sellerID, msg: "seller not found" });
     }
-    const newValue = foundSeller.is_active === "active" ? "inActive" : "active";
-    foundSeller.is_active = newValue;
+    foundSeller.set(req.body);
     if (await foundSeller.save()) {
       return response.success({ data: foundSeller });
     } else {

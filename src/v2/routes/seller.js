@@ -7,7 +7,8 @@ const validator = require("./../middlewares/validations/seller_validator");
 const { checkImgUpload } = require("./../middlewares/validations/img_file");
 const {
   checkValidObjectId,
-} = require("./../middlewares/validations/seller_validator");
+  deleteValidator,
+} = require("./../middlewares/validations/commonValidator");
 
 router.get("/seller/lists", sellerController.getSellerList);
 router.post("/seller/findSeller/:sellerID", sellerController.findSellerByID);
@@ -23,8 +24,8 @@ router.post(
 );
 router.delete(
   "/seller/disableSeller/:sellerID",
-  [checkValidObjectId],
-  sellerController.disableSeller
+  [checkValidObjectId, deleteValidator],
+  sellerController.enableDisableSeller
 );
 router.put(
   "/seller/updateSeller/:sellerID",
