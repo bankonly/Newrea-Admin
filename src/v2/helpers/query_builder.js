@@ -47,7 +47,12 @@ export function deleteIsActive(model, id, is_active = "in_active") {
   return model.updateOne({ _id: id }, { $set: { is_active: is_active } });
 }
 
-export async function fetch({ model, id = null, adminType = false }) {
+export async function fetch({
+  model,
+  id = null,
+  adminType = false,
+  populate = null,
+}) {
   try {
     var data = null;
     var condition = {};
@@ -64,6 +69,10 @@ export async function fetch({ model, id = null, adminType = false }) {
       data = model.findOne(condition);
     } else {
       data = model.find(condition);
+    }
+
+    if (populate !== null) {
+      data = data.populate(populate);
     }
 
     const resData = await data.select("-__v");
