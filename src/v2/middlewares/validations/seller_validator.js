@@ -9,7 +9,6 @@ import Res from "../../controllers/response_controller";
 exports.createValidator = async (req, res, next) => {
   const response = new Res(res);
   const data = req.body;
-  data.category_id = ["5ef06720a91e602e1c2a010e"]
   data.pass = randomPassword();
 
   // check valid ObjectId
@@ -38,12 +37,12 @@ exports.createValidator = async (req, res, next) => {
       notValidCategory.push(e);
     }
   });
-  // if (notValidCategory.length > 0) {
-  //   return response.badRequest({
-  //     data: notValidCategory,
-  //     msg: `categories not valid`,
-  //   });
-  // }
+  if (notValidCategory.length > 0) {
+    return response.badRequest({
+      data: notValidCategory,
+      msg: `categories not valid`,
+    });
+  }
 
   // validate user_name is unique?
   const reqUserName = data.user_name.toLowerCase();
