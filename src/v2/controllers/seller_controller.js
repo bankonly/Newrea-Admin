@@ -6,7 +6,7 @@ const crypto = require("crypto-js");
 
 const config = require("./../configs/constant");
 
-const { uploadImage } = require("./../providers/file_provider");
+const { uploadImage, removeFile } = require("./../providers/file_provider");
 
 // get all sellers
 exports.getSellerList = async (req, res) => {
@@ -44,6 +44,8 @@ exports.findSellerByID = async (req, res) => {
 // create new  seller
 exports.createSeller = async (req, res) => {
   const response = new Res(res);
+
+  // upload images
   const uploadSttImg = uploadImage({
     req,
     path: config.imgPath.seller,
@@ -55,13 +57,15 @@ exports.createSeller = async (req, res) => {
   const uploadSttLogo = uploadImage({
     req,
     path: config.imgPath.seller,
-    file: req.files.img,
+    file: req.files.logo,
   });
   if (uploadSttLogo.status && uploadSttLogo.code === 200) {
     req.body.logo = uploadSttLogo.data;
   } else {
     // remove just uploaded image
   }
+  // end upload image
+
   const SECRET_KEY_PASS = process.env.SECRET_KEY_PASS;
   const sellerData = req.body;
   const encriptedPass = crypto.AES.encrypt(
@@ -105,7 +109,7 @@ exports.enableDisableSeller = async (req, res) => {
   }
 };
 
-// edit  seller
+// update  seller
 exports.updateSeller = async (req, res) => {
   const response = new Res(res);
   const sellerID = req.params.sellerID;
@@ -120,6 +124,98 @@ exports.updateSeller = async (req, res) => {
       return response.success({
         data: foundSeller,
         msg: "update seller successfully",
+      });
+    } else {
+      return response.somethingWrong({});
+    }
+  } catch (ex) {
+    return response.somethingWrong({ error: ex });
+  }
+};
+
+// edit  seller images
+exports.updateSellerImages = async (req, res) => {
+  const response = new Res(res);
+  const sellerID = req.params.sellerID;
+  const sellerData = req.body;
+  try {
+    let foundSeller = await sellerModel.findById(sellerID).select("img logo");
+    if (!foundSeller) {
+      return response.notFound({ data: sellerID, msg: "seller not found" });
+    }
+
+    // get old image name
+    const imgOldName = foundSeller.img;
+    const logoOldName = foundSeller.logo;
+
+    let newImg = "";
+    let newLogo = "";
+    let removeFileStatus = {
+      logo: {
+        small: "upload new file not success",
+        big: "upload new file not success",
+        original: "upload new file not success",
+      },
+      img: {
+        small: "upload new file not success",
+        big: "upload new file not success",
+        original: "upload new file not success",
+      },
+    };
+    // upload images
+    const uploadSttImg = uploadImage({
+      req,
+      path: config.imgPath.seller,
+      file: req.files.img,
+    });
+    if (uploadSttImg.status && uploadSttImg.code === 200) {
+      newImg = uploadSttImg.data;
+      removeFileStatus.img.original = await removeFile(
+        config.imgPath.seller,
+        imgOldName
+      );
+      removeFileStatus.img.small = await removeFile(
+        `${config.imgPath.seller}/200x200`,
+        imgOldName
+      );
+      removeFileStatus.img.big = await removeFile(
+        `${config.imgPath.seller}/800x800`,
+        imgOldName
+      );
+    }
+    const uploadSttLogo = uploadImage({
+      req,
+      path: config.imgPath.seller,
+      file: req.files.logo,
+    });
+    if (uploadSttLogo.status && uploadSttLogo.code === 200) {
+      newLogo = uploadSttLogo.data;
+      removeFileStatus.logo.original = await removeFile(
+        config.imgPath.seller,
+        logoOldName
+      );
+      removeFileStatus.logo.small = await removeFile(
+        `${config.imgPath.seller}/200x200`,
+        logoOldName
+      );
+      removeFileStatus.logo.big = await removeFile(
+        `${config.imgPath.seller}/800x800`,
+        logoOldName
+      );
+    } else {
+      // remove just uploaded image
+    }
+    // end upload image
+
+    // save image name to database
+    foundSeller.set({
+      img: newImg,
+      logo: newLogo,
+    });
+    if (await foundSeller.save()) {
+      return response.success({
+        data: [foundSeller, removeFileStatus],
+        msg: "update seller images successfully",
       });
     } else {
       return response.somethingWrong({});

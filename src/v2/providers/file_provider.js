@@ -1,10 +1,13 @@
+import { resolve } from "path";
+import { rejects } from "assert";
+
 const multer = require("multer");
 const fs = require("fs");
 const uuid = require("uuid");
 const constant = require("../configs/constant");
 const sharp = require("sharp");
 const formidable = require("formidable");
-const Helpers = require("../helpers/Global")
+const Helpers = require("../helpers/Global");
 
 // Controllers
 const Res = require("../controllers/default_res_controller");
@@ -66,14 +69,6 @@ export function resizeImage({ size, path, fileName }) {
   }
 }
 
-// remove one file
-export function removeFile(path) {
-  try {
-  } catch (error) {
-    return new Error(error);
-  }
-}
-
 // remove image
 export function removeFileMany(path) {
   try {
@@ -84,6 +79,27 @@ export function removeFileMany(path) {
   } catch (error) {
     return new Error(error);
   }
+}
+
+// remove image all size and original images
+/**
+ *
+ *
+ * @export
+ * @param {*} folderPath
+ * @param {*} fileName
+ */
+export function removeFile(folderPath, fileName) {
+  return new Promise((resolve, rejects) => {
+    fs.unlink(`${folderPath}/${fileName}`, (err) => {
+      if (err) {
+        console.log(err);
+        resolve(false);
+      } else {
+        resolve(true);
+      }
+    });
+  });
 }
 
 export function uploadImage({

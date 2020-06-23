@@ -33,4 +33,15 @@ router.put(
   sellerController.updateSeller
 );
 
+router.put(
+  "/seller/updateSellerIamges/:sellerID",
+  [
+    checkValidObjectId,
+    checkImgUpload,
+    //
+    //
+  ],
+  sellerController.updateSellerImages
+);
+
 module.exports = router;
