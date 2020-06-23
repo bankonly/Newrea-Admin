@@ -1,20 +1,14 @@
-/** Controllers */
-import Res from "./response_controller";
+// Files Import Models,Controller ...
+const Res = require("./response_controller");
+const AdminProvider = require("../providers/admin_provider");
+const AccessPolicyProvider = require("../providers/access_policy_provider");
+const Admin = require("../models/admin");
+const AccessPolicy = require("../models/access_policy");
+const Helpers = require("../helpers/Global");
+const QueryBuilder = require("../helpers/query_builder");
 
-/** Providers */
-import AdminProvider from "../providers/admin_provider";
-import AccessPolicyProvider from "../providers/access_policy_provider";
-
-/** Models */
-import Admin from "../models/admin";
-import AccessPolicy from "../models/access_policy";
-
-/** Helpers */
-import { isEmptyObj, validateObjectId } from "../helpers/Global";
-import { deleteIsActive, isIdExist } from "../helpers/query_builder";
-
-/** Admin Registeration */
-export const register = async (req, res) => {
+// Admin Registeration
+export async function register(req, res) {
   const response = new Res(res);
   try {
     const saveData = {
@@ -27,27 +21,26 @@ export const register = async (req, res) => {
     };
 
     const createData = { ...saveData };
-    /** Validate Request Data */
+    // Validate Request Data
     const isValidData = AdminProvider.validateRegisterObj(saveData);
 
-    /** Check validator */
-    if (!isEmptyObj(isValidData))
+    // Check validator
+    if (!Helpers.isEmptyObj(isValidData))
       return response.badRequest({ data: isValidData });
 
-    /** register admin */
+    // register admin
     const registerAdmin = await AdminProvider.createNewAdmin(createData);
     return response.success(registerAdmin);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
-/** Login Admin */
-export const login = async (req, res) => {
+// Login Admin
+export async function login(req, res) {
   const response = new Res(res);
   try {
-    /** prepare save data */
-
+    // prepare save data
     const loginData = {
       author: req.body.author,
       password: req.body.password,
@@ -55,8 +48,8 @@ export const login = async (req, res) => {
 
     const isValidData = AdminProvider.validateLoginObj(loginData);
 
-    /** Check validator */
-    if (!isEmptyObj(isValidData))
+    // Check validator
+    if (!Helpers.isEmptyObj(isValidData))
       return response.badRequest({ data: isValidData });
 
     const isLoggedIn = await AdminProvider.login(loginData);
@@ -64,10 +57,10 @@ export const login = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
-/** get admin list */
-export const getAdminList = async (req, res) => {
+// get admin list
+export async function getAdminList(req, res) {
   const response = new Res(res);
   try {
     const adminData = await AdminProvider.getAdmin({
@@ -77,16 +70,16 @@ export const getAdminList = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
-/** get admin list */
-export const getAdminById = async (req, res) => {
+// get admin list
+export async function getAdminById(req, res) {
   const response = new Res(res);
   try {
-    const isValid = validateObjectId(req.params.admin_id);
-
-    // /** Check validator */
-    if (!isEmptyObj(isValid)) return response.badRequest({ data: isValid });
+    // Check validator
+    if (!Helpers.validateObjectId(req.params.admin_id)) {
+      return response.badRequest({ data: "invalid id" });
+    }
 
     const adminData = await AdminProvider.getAdmin({
       adminId: req.params.admin_id,
@@ -97,21 +90,25 @@ export const getAdminById = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
-/** delete admin */
-export const deleteAdmin = async (req, res) => {
+// delete admin
+export async function deleteAdmin(req, res) {
   const response = new Res(res);
   try {
-    const isValid = validateObjectId(req.params.admin_id);
+    // Check validator
+    if (!Helpers.validateObjectId(req.params.admin_id)) {
+      return response.badRequest({ data: "invalid id" });
+    }
 
-    /** Check validator */
-    if (!isEmptyObj(isValid)) return response.badRequest({ data: isValid });
+    const isId = await QueryBuilder.isIdExist(Admin, req.params.admin_id);
+    if (!isId || isId.is_active == "in_active")
+      return response.notFound({ msg: "no data" });
 
-    const isId = await isIdExist(Admin, req.params.admin_id);
-    if (!isId || isId.is_active == "in_active") return response.notFound({ msg: "no user" });
-
-    const delAcc = await deleteIsActive(Admin, req.params.admin_id);
+    const delAcc = await QueryBuilder.deleteIsActive(
+      Admin,
+      req.params.admin_id
+    );
     if (!delAcc) {
       return response.badRequest({ msg: "can not delete" });
     }
@@ -119,10 +116,10 @@ export const deleteAdmin = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
-/** Update Admin by Id */
-export const updateAdmin = async (req, res) => {
+// Update Admin by Id
+export async function updateAdmin(req, res) {
   const response = new Res(res);
   try {
     const saveData = {
@@ -133,19 +130,19 @@ export const updateAdmin = async (req, res) => {
     };
 
     const updatedata = { ...saveData };
-    const isValid = validateObjectId(req.params.admin_id);
+    // Check validator
+    if (!Helpers.validateObjectId(req.params.admin_id)) {
+      return response.badRequest({ data: "invalid id" });
+    }
 
-    /** Check validator */
-    if (!isEmptyObj(isValid)) return response.badRequest({ data: isValid });
-
-    /** Validate Request Data */
+    // Validate Request Data
     const isValidData = AdminProvider.validateUpdateObj(saveData);
 
-    /** Check validator */
-    if (!isEmptyObj(isValidData))
+    // Check validator
+    if (!Helpers.isEmptyObj(isValidData))
       return response.badRequest({ data: isValidData });
 
-    /** register admin */
+    // register admin
     const registerAdmin = await AdminProvider.updateAdmin(
       updatedata,
       req.params.admin_id
@@ -154,10 +151,10 @@ export const updateAdmin = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
-/** Change Password */
-export const changePassword = async (req, res) => {
+// Change Password
+export async function changePassword(req, res) {
   const response = new Res(res);
   try {
     const bodyData = {
@@ -166,16 +163,15 @@ export const changePassword = async (req, res) => {
       confirm_password: req.body.confirm_password,
     };
 
-    /** Check valid objectId */
-    const isValid = validateObjectId(req.auth._id);
-
-    /** Validate BodyData */
+    if (!Helpers.validateObjectId(req.auth._id)) {
+      return response.badRequest({ data: "invalid id" });
+    }
+    // Validate BodyData
     const isValidData = AdminProvider.validateChangePwd(bodyData);
-    // return response.success({data:isEmptyObj(isValid)})
-    if (!isEmptyObj(isValidData))
+    if (!Helpers.isEmptyObj(isValidData))
       return response.success({ data: isValidData });
 
-    /** call change password function */
+    // call change password function
     const changePwd = await AdminProvider.changePassword(
       bodyData,
       req.auth._id
@@ -184,14 +180,14 @@ export const changePassword = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
-/** who am i */
-export const whoami = async (req, res) => {
+// who am i
+export async function whoami(req, res) {
   const response = new Res(res);
   try {
     return response.success({ data: req.auth });
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}

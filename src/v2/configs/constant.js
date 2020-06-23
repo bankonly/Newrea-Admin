@@ -1,6 +1,6 @@
 import fs from "fs";
 
-export default {
+module.exports = {
   publicPath: "public",
   defaultImgPath: "./public/images/",
   productImgPath: "products/",
