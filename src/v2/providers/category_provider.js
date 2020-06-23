@@ -11,7 +11,7 @@ export function validateSaveData(obj) {
   var error = {};
   var msg = "field is required";
   if (!obj.body.name) error.name = msg;
-  if (!obj.files.img) error.img = msg;
+  if (!obj.files || !obj.files.img) error.img = msg;
   return error;
 }
 
