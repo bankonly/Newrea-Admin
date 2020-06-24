@@ -40,6 +40,7 @@ export async function saveMostPopular(req, res) {
 export async function updateMostPopular(req, res) {
   // define response
   const response = new ResCtl(res);
+  var removeImgPath = null;
   try {
     if (!Helpers.validateObjectId(req.params.mos_id)) {
       return response.badRequest({ msg: "invalid most popular id" });
@@ -58,6 +59,7 @@ export async function updateMostPopular(req, res) {
       if (!req.files.img) {
         return response.badRequest({ msg: "img is required" });
       }
+      removeImgPath = isId.img;
       const isUpload = FileProvider.uploadImage({
         path: constant.imgPath.most_popular,
         file: req.files.img,
@@ -72,6 +74,14 @@ export async function updateMostPopular(req, res) {
       { $set: req.body }
     );
     if (!isUpdate) return response.badRequest({ msg: "can not update" });
+
+    // remove img if is not null
+    if (removeImgPath !== null) {
+      FileProvider.removeFileMany({
+        path: constant.imgPath.most_popular,
+        fileName: removeImgPath,
+      });
+    }
     return response.success({ msg: "updated" });
   } catch (error) {
     return response.somethingWrong({ error: error });

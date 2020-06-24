@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const tableName = "admin";
 const schema = new mongoose.Schema(
@@ -44,6 +44,14 @@ const schema = new mongoose.Schema(
       type: String,
       required: true,
       default: "active",
+    },
+    date_of_birth: {
+      type: String,
+      default: null,
+    },
+    profile_img: {
+      type: String,
+      default: null,
     },
     access_policy: {
       type: mongoose.Schema.Types.ObjectId,
