@@ -5,7 +5,7 @@ const Driver_cancel_reason = new Schema(
       type: String,
       required: true
     },
-    cancel_by: {
+    used_by: {
       type: String,
       required: true
     },
