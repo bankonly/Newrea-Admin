@@ -107,9 +107,9 @@ export function isDate(date) {
 }
 
 // is file
-export function isFile(files) {
+export function isFile(files,field = null) {
   if (!files) return false;
-  if (!files.img) return false;
+  if (!files[field]) return false;
   return true;
 }
 

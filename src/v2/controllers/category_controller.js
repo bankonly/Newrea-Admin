@@ -44,6 +44,7 @@ export async function saveCategory(req, res) {
 export async function updateCategory(req, res) {
   // define response
   const response = new ResCtl(res);
+  var removeImgPath = null;
   try {
     // Check if auth is not super admin
     if (!req.is_super_admin)
@@ -68,11 +69,14 @@ export async function updateCategory(req, res) {
 
     // save data
     isCatID.name = req.body.name;
-
+    
     if (req.files) {
       if (!req.files.img) {
         return response.badRequest({ msg: "img is required" });
       }
+      // remove file
+      removeImgPath = isCatID.img;
+      
       const isUpload = FileProvider.uploadImage({
         req: req,
         path: constant.imgPath.category,
@@ -82,7 +86,15 @@ export async function updateCategory(req, res) {
       if (!isUpload.status) return response.badRequest(isUpload);
     }
 
-    if (await isCatID.save()) return response.success({ data: "updated" });
+    if (isCatID.save()) {
+      if (removeImgPath !== null) {
+        FileProvider.removeFileMany({
+          path: constant.imgPath.category,
+          fileName: removeImgPath,
+        });
+      }
+      return response.success({ data: "updated" });
+    }
     return response.badRequest({ msg: "can not update" });
   } catch (error) {
     return response.somethingWrong({ error: error });

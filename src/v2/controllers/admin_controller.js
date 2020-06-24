@@ -6,6 +6,8 @@ const Admin = require("../models/admin");
 const AccessPolicy = require("../models/access_policy");
 const Helpers = require("../helpers/Global");
 const QueryBuilder = require("../helpers/query_builder");
+const File = require("../providers/file_provider");
+const constant = require("../configs/constant");
 
 // Admin Registeration
 export async function register(req, res) {
@@ -18,6 +20,7 @@ export async function register(req, res) {
       phone_number: req.body.phone_number,
       access_policy_id: req.body.access_policy_id,
       confirm_password: req.body.confirm_password,
+      date_of_birth: req.body.date_of_birth,
     };
 
     const createData = { ...saveData };
@@ -116,6 +119,7 @@ export async function updateAdmin(req, res) {
       email: req.body.email,
       access_policy_id: req.body.access_policy_id,
       phone_number: req.body.phone_number,
+      date_of_birth: req.body.date_of_birth,
     };
 
     const updatedata = { ...saveData };
@@ -173,6 +177,36 @@ export async function whoami(req, res) {
   const response = new Res(res);
   try {
     return response.success({ data: req.auth });
+  } catch (error) {
+    return response.somethingWrong({ error: error });
+  }
+}
+
+// update profile image
+export async function profile(req, res) {
+  const response = new Res(res);
+  try {
+    //  validate body data
+    const isValid = AdminProvider.validateProfile(req);
+    if (!Helpers.isEmptyObj(isValid)) {
+      return response.badRequest({ data: isValid });
+    }
+
+    // upload image
+    const isUpload = File.uploadImage({
+      req,
+      file: req.files.img,
+      path: constant.imgPath.admin,
+    });
+
+    if (!isUpload.status) return response.badRequest(isUpload);
+
+    const isUpdate = await AdminProvider.updateProfile({
+      admin_id: req.auth._id,
+      img: req.body.img,
+    });
+
+    return response.success(isUpdate);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
