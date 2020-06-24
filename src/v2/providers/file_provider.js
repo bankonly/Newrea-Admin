@@ -70,17 +70,25 @@ export function resizeImage({ size, path, fileName }) {
 }
 
 // remove one file
-export function removeFileMany(path, fileName, subFolder = [800, 200]) {
+export function removeFileMany({ path, fileName, subFolder = [800, 200] }) {
   try {
-    if (!isArray(subFolder)) {
-
+    if (!Helpers.isArray(subFolder)) {
       return new Error("remove path should be array");
     }
-    fs.unlinkSync(path + fileName);
-    for (var i = 0; i < subFolder.length; i++) {
-      fs.unlinkSync(path + subFolder[i] + "x" + subFolder[i] + "/" + fileName);
+
+    if (fs.existsSync(path + fileName)) {
+      console.log("me der");
+      fs.unlinkSync(path + fileName);
+      for (var i = 0; i < subFolder.length; i++) {
+        const destination =
+          path + subFolder[i] + "x" + subFolder[i] + "/" + fileName;
+        if (fs.existsSync(destination)) {
+          fs.unlinkSync(destination);
+        }
+      }
     }
   } catch (error) {
+    console.log(error);
     return new Error(error);
   }
 }

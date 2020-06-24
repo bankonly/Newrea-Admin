@@ -1,4 +1,4 @@
-import fs from "fs";
+const fs = require("fs");
 
 module.exports = {
   publicPath: "public",
@@ -22,5 +22,6 @@ module.exports = {
     seller: "./../img/seller/",
     most_popular: "./../img/most_popular/",
     banner: "./../img/banner/",
+    admin:"./../img/admin/"
   },
 };

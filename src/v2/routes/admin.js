@@ -10,6 +10,7 @@ router
   .get("/admin/:admin_id", mdw, AdminCtrl.getAdminById)
   .delete("/admin/:admin_id", mdw, AdminCtrl.deleteAdmin)
   .put("/admin/:admin_id", mdw, AdminCtrl.updateAdmin)
-  .post("/admin/changePassword", AdminCtrl.changePassword);
+  .post("/admin/changePassword", AdminCtrl.changePassword)
+  .post("/admin/profile", AdminCtrl.profile);
 
 export default router;

@@ -9,6 +9,7 @@ import bannerRouter from "./banner";
 import delivery_fee_option from "./delivery_fee_option";
 import featuredStoreRouter from "./featured_store";
 import popular_searchRouter from "./popular_search";
+import reasonRouter from "./reason";
 
 // configs
 import kernel from "../configs/kernel";
@@ -28,6 +29,7 @@ export default (app) => {
     bannerRouter,
     featuredStoreRouter,
     popular_searchRouter,
+    reasonRouter,
   ]);
 
   // unAuthenticate Router
