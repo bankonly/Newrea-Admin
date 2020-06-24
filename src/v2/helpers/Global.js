@@ -37,13 +37,16 @@ export function multipleValidateObj(
   {
     msgNumber = "field should be number and field is required ,maximum is 3",
     msgString = "field should be String and field is required",
+    msgArray = "field is required and should be array",
   }
 ) {
   var msg = null;
   if (checkType == "number") {
     msg = msgNumber;
-  } else {
+  } else if (checkType == "string") {
     msg = msgString;
+  } else {
+    msg = msgArray;
   }
 
   var error = [];
@@ -59,8 +62,12 @@ export function multipleValidateObj(
         ) {
           error.push(`'${element}'` + " " + msg);
         }
-      } else {
+      } else if (checkType == "string") {
         if (typeof obj[element] !== checkType || !obj[element]) {
+          error.push(`'${element}'` + " " + msg);
+        }
+      } else {
+        if (!Array.isArray(obj[element]) || !obj[element]) {
           error.push(`'${element}'` + " " + msg);
         }
       }
@@ -107,7 +114,7 @@ export function isDate(date) {
 }
 
 // is file
-export function isFile(files,field = null) {
+export function isFile(files, field = null) {
   if (!files) return false;
   if (!files[field]) return false;
   return true;
