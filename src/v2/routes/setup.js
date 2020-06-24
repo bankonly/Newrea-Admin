@@ -9,6 +9,8 @@ import bannerRouter from "./banner";
 import delivery_fee_option from "./delivery_fee_option";
 import featuredStoreRouter from "./featured_store";
 import reasonRouter from "./reason";
+import productSellerRouter from "./product_seller";
+import recommedItemRouter from "./recommend_item";
 
 // configs
 import kernel from "../configs/kernel";
@@ -28,6 +30,8 @@ export default (app) => {
     bannerRouter,
     featuredStoreRouter,
     reasonRouter,
+    productSellerRouter,
+    recommedItemRouter,
   ]);
 
   // unAuthenticate Router
