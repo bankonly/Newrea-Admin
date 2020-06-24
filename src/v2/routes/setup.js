@@ -8,6 +8,7 @@ import mostPopularRouter from "./most_popular";
 import bannerRouter from "./banner";
 import delivery_fee_option from "./delivery_fee_option";
 import featuredStoreRouter from "./featured_store";
+import reasonRouter from "./reason";
 
 // configs
 import kernel from "../configs/kernel";
@@ -26,6 +27,7 @@ export default (app) => {
     delivery_fee_option,
     bannerRouter,
     featuredStoreRouter,
+    reasonRouter,
   ]);
 
   // unAuthenticate Router

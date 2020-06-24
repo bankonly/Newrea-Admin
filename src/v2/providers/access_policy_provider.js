@@ -1,9 +1,5 @@
 const Res = require("../controllers/default_res_controller");
-
-// Helpers
 const Helpers = require("../helpers/Global");
-
-// Models
 const AccessPolicy = require("../models/access_policy");
 
 // validate create data
