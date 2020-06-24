@@ -11,7 +11,7 @@ exports.checkImgUpload = async (req, res, next) => {
   for (let i = 0; i < imgNameReq.length; i++) {
     if (!acceptType.includes(req.files[imgNameReq[i]].mimetype)) {
       return response.badRequest({
-        msg: `image extension must be ${acceptType}`,
+        msg: `image extension must be types ${acceptType}`,
       });
     }
   }

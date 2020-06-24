@@ -53,6 +53,8 @@ exports.createSeller = async (req, res) => {
   });
   if (uploadSttImg.status && uploadSttImg.code === 200) {
     req.body.img = uploadSttImg.data;
+  } else {
+    throw new Error("can not upload image cover");
   }
   const uploadSttLogo = uploadImage({
     req,
@@ -62,7 +64,7 @@ exports.createSeller = async (req, res) => {
   if (uploadSttLogo.status && uploadSttLogo.code === 200) {
     req.body.logo = uploadSttLogo.data;
   } else {
-    // remove just uploaded image
+    throw new Error("can not upload image logo");
   }
   // end upload image
 
