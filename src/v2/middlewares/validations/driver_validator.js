@@ -17,7 +17,7 @@ exports.createValidator = async (req, res, next) => {
       first_name: Joi.string().required(),
       last_name: Joi.string().required(),
       password: Joi.string().required(),
-      phone_number: Joi.string().required(),
+      phone_number: JJoi.string().min(8).max(10).required(),
       dri_status: Joi.string().valid("true", "false").required(),
       is_working: Joi.string().valid("true", "false").required(),
       is_active: Joi.string().valid("active", "inactive").allow(""),
@@ -47,7 +47,7 @@ exports.updateValidator = async (req, res, next) => {
       user_name: Joi.string().required(),
       first_name: Joi.string().required(),
       last_name: Joi.string().required(),
-      phone_number: Joi.string().required(),
+      phone_number: Joi.string().min(8).max(10).required(),
       dri_status: Joi.string().valid("true", "false").required(),
     });
     await schema.validateAsync(data);

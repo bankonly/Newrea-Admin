@@ -16,7 +16,6 @@ export async function saveCategory(req, res) {
     if (!Helpers.isEmptyObj(isValid)) {
       return response.badRequest({ data: isValid });
     }
-
     // name check
     const isName = await Category.findOne({ name: req.body.name });
     if (isName !== null) {
@@ -33,7 +32,6 @@ export async function saveCategory(req, res) {
     // cal save function from provider
     const isSave = await Category.create(req.body);
     if (!isSave) return response.badRequest({ msg: "can not add" });
-
     return response.success({ data: isSave });
   } catch (error) {
     return response.somethingWrong({ error: error });
@@ -69,14 +67,14 @@ export async function updateCategory(req, res) {
 
     // save data
     isCatID.name = req.body.name;
-    
+
     if (req.files) {
       if (!req.files.img) {
         return response.badRequest({ msg: "img is required" });
       }
       // remove file
       removeImgPath = isCatID.img;
-      
+
       const isUpload = FileProvider.uploadImage({
         req: req,
         path: constant.imgPath.category,
@@ -108,6 +106,18 @@ export async function getAllCategory(req, res) {
   try {
     const catData = await CatProvider.fetch(null, req.is_super_admin);
     return response.success(catData);
+  } catch (error) {
+    return response.somethingWrong({ error: error });
+  }
+}
+
+// get child category
+export async function getChildCategory(req, res) {
+  // define response
+  const response = new ResCtl(res);
+  try {
+    const catData = await Category.find({ parent_id: req.params.parent_id });
+    return response.success({ data: catData });
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
