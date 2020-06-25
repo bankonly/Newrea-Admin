@@ -92,27 +92,49 @@ exports.createValidator = async (req, res, next) => {
   }
 
   try {
-    const schema = Joi.object({
-      category_id: Joi.array().min(1),
-      user_name: Joi.string().min(3).required(),
-      name: Joi.string().min(2).required(),
-      pass: Joi.string().min(4).required(),
-      phone: Joi.string().min(8).max(10).required(),
-      location: Joi.array()
-        .max(1)
-        .items(
-          Joi.object({
-            latitude: Joi.string().min(5).required(),
-            longitude: Joi.string().min(5).required(),
-          })
-        )
-        .required(),
-      address: Joi.string().min(5).max(200).allow(""),
-      is_active: Joi.string().valid("active", "inactive").allow(""),
-      delivery_fee_option_id: Joi.string().required(),
-      com: Joi.number().min(0).max(100).required(),
-      is_online: Joi.string().allow(""),
-    });
+    let schema;
+    if (req.method === "POST") {
+      schema = Joi.object({
+        category_id: Joi.array().min(1),
+        user_name: Joi.string().min(3).required(),
+        name: Joi.string().min(2).required(),
+        pass: Joi.string().min(4).required(),
+        phone: Joi.string().min(8).max(10).required(),
+        location: Joi.array()
+          .max(1)
+          .items(
+            Joi.object({
+              latitude: Joi.string().min(5).required(),
+              longitude: Joi.string().min(5).required(),
+            })
+          )
+          .required(),
+        address: Joi.string().min(5).max(200).allow(""),
+        is_active: Joi.string().valid("active", "inactive").allow(""),
+        delivery_fee_option_id: Joi.string().required(),
+        com: Joi.number().min(0).max(100).required(),
+        is_online: Joi.string().allow(""),
+      });
+    } else {
+      schema = Joi.object({
+        category_id: Joi.array().min(1),
+        user_name: Joi.string().min(3).required(),
+        name: Joi.string().min(2).required(),
+        pass: Joi.string().min(4).required(),
+        phone: Joi.string().min(8).max(10).required(),
+        location: Joi.array()
+          .max(1)
+          .items(
+            Joi.object({
+              latitude: Joi.string().min(5).required(),
+              longitude: Joi.string().min(5).required(),
+            })
+          ),
+        address: Joi.string().min(5).max(200).allow(""),
+        delivery_fee_option_id: Joi.string().required(),
+        com: Joi.number().min(0).max(100).required(),
+      });
+    }
     await schema.validateAsync(data);
     next();
   } catch (err) {

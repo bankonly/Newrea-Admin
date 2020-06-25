@@ -24,6 +24,7 @@ module.exports = {
     banner: "./../img/banner/",
     admin: "./../img/admin/",
     brand: "./../img/brand/",
-    categories:"./../img/categories/"
+    categories:"./../img/categories/",
+    driver: "./../img/driver/",
   },
 };
