@@ -11,6 +11,7 @@ import featuredStoreRouter from "./featured_store";
 import reasonRouter from "./reason";
 import productSellerRouter from "./product_seller";
 import recommedItemRouter from "./recommend_item";
+import subCateoryRouter from "./categories";
 
 // configs
 import kernel from "../configs/kernel";
@@ -32,6 +33,7 @@ export default (app) => {
     reasonRouter,
     productSellerRouter,
     recommedItemRouter,
+    subCateoryRouter,
   ]);
 
   // unAuthenticate Router

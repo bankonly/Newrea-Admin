@@ -1,3 +1,5 @@
+import { array, object } from "@hapi/joi";
+
 const Res = require("./response_controller");
 const File = require("../providers/file_provider");
 const SubCatProvider = require("../providers/sub_category_provider");
@@ -11,6 +13,14 @@ export async function saveSubCategory(req, res) {
   // define response
   const response = new Res(res);
   try {
+    const isValid = await SubCatProvider.validate(req);
+    if (!Helpers.isEmptyObj(isValid)) {
+      return response.badRequest({ data: isValid });
+    }
+
+    const isValidId = await SubCatProvider.validateProductSeller(req);
+    if (!isValid.status) return response.badRequest(isValidId);
+
     return response.success({});
   } catch (error) {
     return response.somethingWrong({ error: error });
@@ -37,7 +47,7 @@ export async function getAllSubCategory(req, res) {
       model: Banner,
       adminType: req.is_super_admin,
     });
-    return response.success({data});
+    return response.success({ data });
   } catch (error) {
     return response.somethingWrong({ error: error });
   }

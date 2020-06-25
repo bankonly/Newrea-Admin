@@ -131,3 +131,36 @@ export function compareBtwDate(start_date, end_date) {
   if (end < start) return false;
   return true;
 }
+
+export async function isSplitArrayObjectId({ array, split }) {
+  let error = false;
+  const arrayNum = Object.keys(array);
+  for (let i = 0; i < arrayNum.length; i++) {
+    let element = arrayNum[i];
+    // console.log(element)
+    const arr = array[element].split(split);
+    if (!isArray(arr) || !isString(split)) return false;
+    if (arr.length == 2) {
+      if (arr[1] == "" || arr[1] == null) return false;
+    }
+    for (var f = 0; f < arr.length; f++) {
+      if (!invalidObjectId(arr[f])) {
+        return false;
+      }
+    }
+  }
+}
+
+export function isFoundObjectId({ body, del = [], found = [] }) {
+  let notFound = [];
+  Object.keys(body).forEach((val, index) => {
+    if (del.includes(val)) {
+      delete body[val];
+    } else {
+      if (!found.includes(body[val])) {
+        notFound.push(val + " = " + body[val]);
+      }
+    }
+  });
+  return notFound;
+}

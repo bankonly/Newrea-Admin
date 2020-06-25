@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const tableName = "category";
 const schema = new mongoose.Schema(
