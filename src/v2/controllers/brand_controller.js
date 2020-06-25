@@ -83,11 +83,12 @@ exports.updateBrandLogo = async (req, res) => {
   const response = new Res(res);
   const paramID = req.params.id;
   try {
-    let foundBrand = await brandModel.findById(paramID);
+    // select logo old name from database
+    let foundBrand = await brandModel.findById(paramID).select("logo");
     if (!foundBrand) {
       return response.notFound({
         data: foundBrand,
-        msg: "brand not found",
+        msg: `brand id ${paramID} not found`,
       });
     }
     const oldLogoName = foundBrand.logo;
@@ -106,14 +107,17 @@ exports.updateBrandLogo = async (req, res) => {
       });
       if (uploadSttLogo.status && uploadSttLogo.code === 200) {
         newLogoName = uploadSttLogo.data;
+        // remove original logo and store the status
         removeFileStatus.original = await removeFile(
           config.imgPath.brand,
           oldLogoName
         );
+        // remove small logo and store the status
         removeFileStatus.small = await removeFile(
           `${config.imgPath.brand}/200x200`,
           oldLogoName
         );
+        // remove big logo and store the status
         removeFileStatus.big = await removeFile(
           `${config.imgPath.brand}/800x800`,
           oldLogoName
