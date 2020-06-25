@@ -13,6 +13,7 @@ import reasonRouter from "./reason";
 import brandRouter from "./brand";
 import productSellerRouter from "./product_seller";
 import recommedItemRouter from "./recommend_item";
+import driverRouter from "./driver";
 
 // configs
 import kernel from "../configs/kernel";
@@ -36,6 +37,7 @@ export default (app) => {
     brandRouter,
     productSellerRouter,
     recommedItemRouter,
+    driverRouter,
   ]);
 
   // unAuthenticate Router

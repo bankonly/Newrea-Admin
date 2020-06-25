@@ -22,7 +22,7 @@ app.use("/images", express.static(__dirname + "../../../../img"));
 try {
   // RUN PROGRAM BASE ON ENV PORT
   app.listen(process.env.APP_PORT, (error) =>
-    console.log("CONNECTED TO ", process.env.APP_PORT)
+    console.log(`SERVER IS RUNNUNG ON PORT '${process.env.APP_PORT}'`)
   );
 } catch (error) {
   console.log(log.red(error.message));
