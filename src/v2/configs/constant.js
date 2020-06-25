@@ -22,6 +22,7 @@ module.exports = {
     seller: "./../img/seller/",
     most_popular: "./../img/most_popular/",
     banner: "./../img/banner/",
-    admin:"./../img/admin/"
+    admin: "./../img/admin/",
+    brand: "./../img/brand/",
   },
 };

@@ -11,7 +11,7 @@ exports.createValidator = async (req, res, next) => {
   const data = req.body;
   // convert category id
   if (typeof data.category_id === "string") {
-    data.category_id = data.category_id.split(",");
+    data.category_id = data.category_id.replace(/[\[\]"]/g, "").split(",");
   }
   // convert location to array object
   if (typeof data.location === "string") {
