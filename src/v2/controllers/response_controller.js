@@ -109,8 +109,8 @@ class ResponseController {
     });
   }
 
-  // outPut
-  outPut({ data = {}, msg = "success", status = true, code = 200 }) {
+  // render
+  render({ data = {}, msg = "success", status = true, code = 200 }) {
     return this.res.json({
       message: msg,
       status: status,
@@ -119,7 +119,7 @@ class ResponseController {
     });
   }
 
-  // outPut
+  // render
   somethingWrong({
     data = {},
     msg = "something wrong",
@@ -135,6 +135,16 @@ class ResponseController {
       data: data,
     });
   }
+
+  invalidObjectId({ data = {}, msg = "invalid object id", status = true, code = 400 }) {
+    return this.res.json({
+      message: msg,
+      status: status,
+      code: code,
+      data: data,
+    });
+  }
+
 }
 
 module.exports = ResponseController;

@@ -151,16 +151,37 @@ export async function isSplitArrayObjectId({ array, split }) {
   }
 }
 
-export function isFoundObjectId({ body, del = [], found = [] }) {
+export function isFoundObjectId({ body, select = [], found = [] }) {
   let notFound = [];
   Object.keys(body).forEach((val, index) => {
-    if (del.includes(val)) {
-      delete body[val];
-    } else {
-      if (!found.includes(body[val])) {
-        notFound.push(val + " = " + body[val]);
+    if (select.includes(val)) {
+      const objectId = body[val].split(",");
+      if (objectId.length > 1) {
+        objectId.forEach((value) => {
+          if (!found.includes(value)) {
+            notFound.push(val + " = " + value);
+          }
+        });
+      } else {
+        if (!found.includes(objectId[0])) {
+          notFound.push(val + " = " + objectId[0]);
+        }
       }
     }
   });
   return notFound;
 }
+
+export const convert = (bodyArray) => {
+  let productSellerArr = [];
+  Object.keys(bodyArray).forEach((value) => {
+    if (bodyArray[value].length > 1) {
+      bodyArray[value].forEach((subVal) => {
+        productSellerArr.push(subVal);
+      });
+    } else {
+      productSellerArr.push(bodyArray[value][0]);
+    }
+  });
+  return productSellerArr;
+};

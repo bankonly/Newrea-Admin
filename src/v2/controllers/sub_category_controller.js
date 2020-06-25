@@ -13,15 +13,39 @@ export async function saveSubCategory(req, res) {
   // define response
   const response = new Res(res);
   try {
+    // validate comming id
     const isValid = await SubCatProvider.validate(req);
     if (!Helpers.isEmptyObj(isValid)) {
       return response.badRequest({ data: isValid });
     }
 
-    const isValidId = await SubCatProvider.validateProductSeller(req);
-    if (!isValid.status) return response.badRequest(isValidId);
+    // validate object id and store save data
+    const isValidId = await SubCatProvider.validateProductSeller(req, {});
+    if (!isValidId.status) return response.badRequest(isValidId);
 
-    return response.success({});
+    const isUpload = File.uploadImage({
+      path: constant.imgPath.categories,
+      file: req.files.img,
+      req,
+    });
+
+    if (!isUpload.status) return response.badRequest(isUpload);
+
+    const { data } = isValidId;
+
+    // store image file
+    data.img = isUpload.data;
+
+    // save
+    const isCreate = await SubCategory.create(data);
+    if (!isCreate) return response.badRequest({ msg: "failed to create" });
+    const resData = await QB.fetch({
+      model: SubCategory,
+      id: isCreate._id.toString(),
+      adminType: req.is_super_admin,
+      populate: SubCatProvider.defaultPopulate,
+    });
+    return response.success(resData);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
@@ -32,7 +56,52 @@ export async function updateSubCategory(req, res) {
   // define response
   const response = new Res(res);
   try {
-    return response.success({});
+    // find id and validate
+    if (!Helpers.validateObjectId(req.params.cats_id)) {
+      return response.invalidObjectId({});
+    }
+
+    const isId = SubCategory.findById(req.params.cats_id);
+
+    // get respoonse sub data
+    const subData = await isId;
+    if (!subData) return response.notFound({ msg: "in not found" });
+
+    // validate comming id
+    const isValid = await SubCatProvider.validate(req, false);
+    if (!Helpers.isEmptyObj(isValid)) {
+      return response.badRequest({ data: isValid });
+    }
+
+    // validate object id and store save data
+    const isValidId = await SubCatProvider.validateProductSeller(req, {
+      model: subData,
+    });
+    if (!isValidId.status) return response.render(isValidId);
+
+    if (Helpers.isFile(req.files, "img")) {
+      const isUpload = File.uploadImage({
+        path: constant.imgPath.categories,
+        file: req.files.img,
+        req,
+      });
+
+      if (!isUpload.status) return response.render(isUpload);
+      // store image file
+      data.img = isUpload.data;
+    }
+
+    const { data } = isValidId;
+
+    if (!data.save()) return response.badRequest({ msg: "failed to update" });
+    console.log(data._id)
+    const resData = await QB.fetch({
+      model: SubCategory,
+      id: req.params.cats_id,
+      adminType: req.is_super_admin,
+      populate: SubCatProvider.defaultPopulate,
+    });
+    return response.success(resData);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
@@ -44,10 +113,11 @@ export async function getAllSubCategory(req, res) {
   const response = new Res(res);
   try {
     const data = await QB.fetch({
-      model: Banner,
+      model: SubCategory,
       adminType: req.is_super_admin,
+      populate: SubCatProvider.defaultPopulate,
     });
-    return response.success({ data });
+    return response.success(data);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
@@ -58,10 +128,25 @@ export async function getSubCategory(req, res) {
   // define response
   const response = new Res(res);
   try {
+    const populate = [
+      {
+        path: "recommend_store",
+        select: "-com -__v",
+      },
+      {
+        path: "clearance_item",
+        select: "-_id -__v",
+      },
+      {
+        path:
+          "new_arrivals cat_id popular_item brand accessories recommend_store clearance_item",
+      },
+    ];
     const data = await QB.fetch({
-      model: Banner,
+      model: SubCategory,
       adminType: req.is_super_admin,
-      id: req.params.banner_id,
+      id: req.params.cats_id,
+      populate: SubCatProvider.defaultPopulate,
     });
     return response.success(data);
   } catch (error) {
@@ -75,8 +160,8 @@ export async function deleteSubCategory(req, res) {
   const response = new Res(res);
   try {
     const isSet = await QB.setActive(
-      Banner,
-      req.params.banner_id,
+      SubCategory,
+      req.params.cats_id,
       req.body.is_active
     );
     return response.success(isSet);

@@ -4,6 +4,8 @@ const { isDate, compareBtwDate } = require("../helpers/Global");
 const Helpers = require("../helpers/Global");
 const ProductSeller = require("../models/product_seller").default;
 const Category = require("../models/category");
+const Brand = require("../models/brand");
+const Seller = require("../models/seller");
 
 // validate save data
 export async function validate(obj, update = true) {
@@ -35,49 +37,143 @@ export async function validate(obj, update = true) {
   }
   if (update) {
     if (!Helpers.isFile(obj.files, "img")) {
-      error.img = msg = " as image";
+      error.img = msg + " as image";
     }
   }
   return error;
 }
 
-export async function validateProductSeller(req) {
+export async function validateProductSeller(req, { model = null }) {
   try {
     const body = { ...req.body };
 
-    const proSellerArray = [
-      body.new_arrivals,
-      body.popular_item,
-      body.clearance_item,
-      body.accessories,
-    ];
+    const proSellerArray = {
+      new_arrivals: body.new_arrivals.split(","),
+      popular_item: body.popular_item.split(","),
+      clearance_item: body.clearance_item.split(","),
+      accessories: body.accessories.split(","),
+    };
+    const catArray = { cat_id: body.cat_id.split(",") };
+    const brandArray = { brand: body.brand.split(",") };
+    const sellerArray = { recommend_store: body.recommend_store.split(",") };
+
+    const newArrivalArr = Helpers.convert(proSellerArray);
+    const newCatArray = Helpers.convert(catArray);
+    const newBrandArray = Helpers.convert(brandArray);
+    const newSellerArray = Helpers.convert(sellerArray);
 
     let error = {};
-    let msg = "not found";
+    let msg = "id not found";
+    // return (error.some = "");
 
     // find seller id if exist
     const isNewArrival = await ProductSeller.find({
-      _id: { $in: proSellerArray },
-    }).select("_id");
-
-    // convert object from _id to one array
-    const found = isNewArrival.map((value) => value._id.toString());
-    const notFoundId = Helpers.isFoundObjectId({
-      body: body,
-      del: ["recommend_store", "title", "cat_id", "brand", "desc"],
-      found: found,
+      _id: { $in: newArrivalArr },
     });
-    if (notFoundId.length !== 0) error.notFound = notFoundId;
+    const isNewCatArray = await Category.find({ _id: { $in: newCatArray } });
+    const isNewBrandArray = await Brand.find({
+      _id: { $in: newBrandArray },
+    });
+    const isNewSellerArray = await Seller.find({
+      _id: { $in: newSellerArray },
+    });
 
-    const isCat = await Category.findById(req.body.cat_id);
-    if (!isCat) error.cat_id = msg;
+    // arrival data check
+    const foundArrival = isNewArrival.map((v) => v._id.toString());
+    const foundCatArray = isNewCatArray.map((v) => v._id.toString());
+    const foundBrandArray = isNewBrandArray.map((v) => v._id.toString());
+    const foundSellerArray = isNewSellerArray.map((v) => v._id.toString());
+
+    const selectArrival = [
+      "new_arrivals",
+      "popular_item",
+      "clearance_item",
+      "accessories",
+    ];
+    const notFoundArrival = Helpers.isFoundObjectId({
+      body: body,
+      select: selectArrival,
+      found: foundArrival,
+    });
+    const notFoundCatArray = Helpers.isFoundObjectId({
+      body: body,
+      select: ["cat_id"],
+      found: foundCatArray,
+    });
+    const notFoundBrandArray = Helpers.isFoundObjectId({
+      body: body,
+      select: ["brand"],
+      found: foundBrandArray,
+    });
+    const notFoundSellerArray = Helpers.isFoundObjectId({
+      body: body,
+      select: ["recommend_store"],
+      found: foundSellerArray,
+    });
+
+    if (notFoundArrival.length !== 0) {
+      error.notFound = notFoundArrival;
+    }
+    if (notFoundCatArray.length !== 0) {
+      error.notFoundCat = notFoundCatArray;
+    }
+    if (notFoundBrandArray.length !== 0) {
+      error.notFoundBrand = notFoundBrandArray;
+    }
+    if (notFoundSellerArray.length !== 0) {
+      error.notFoundSeller = notFoundSellerArray;
+    }
 
     if (!Helpers.isEmptyObj(error)) {
       return Res.badRequest({ data: error });
     }
 
-    return Res.success({});
+    let respData = null;
+
+    const saveData = {
+      new_arrivals: req.body.new_arrivals.split(","),
+      cat_id: req.body.cat_id.split(","),
+      popular_item: req.body.popular_item.split(","),
+      brand: req.body.brand.split(","),
+      accessories: req.body.accessories.split(","),
+      recommend_store: req.body.recommend_store.split(","),
+      clearance_item: req.body.clearance_item.split(","),
+      title: req.body.title,
+      desc: req.body.desc,
+    };
+
+    if (model) {
+      model.new_arrivals = req.body.new_arrivals.split(",");
+      model.cat_id = req.body.cat_id.split(",");
+      model.popular_item = req.body.popular_item.split(",");
+      model.brand = req.body.brand.split(",");
+      model.accessories = req.body.accessories.split(",");
+      model.recommend_store = req.body.recommend_store.split(",");
+      model.clearance_item = req.body.clearance_item.split(",");
+      model.title = req.body.title;
+      model.desc = req.body.desc;
+      respData = model;
+    } else {
+      respData = saveData;
+    }
+    return Res.success({ data: respData });
   } catch (error) {
     return Res.somethingWrong({ error: error });
   }
 }
+
+export const defaultPopulate = [
+  {
+    path: "recommend_store",
+    select: "-com",
+  },
+  {
+    path: "clearance_item",
+    select: "-_id",
+  },
+  {
+    path:
+      "new_arrivals cat_id popular_item brand accessories recommend_store clearance_item",
+    select: "-__v",
+  },
+];

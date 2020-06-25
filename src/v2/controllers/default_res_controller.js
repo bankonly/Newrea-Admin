@@ -138,7 +138,7 @@ export function notAllowed({
   };
 }
 
-export function outPut({
+export function render({
   data = {},
   msg = "success",
   status = true,
