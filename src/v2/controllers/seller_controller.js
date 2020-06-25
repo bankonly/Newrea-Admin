@@ -68,6 +68,7 @@ exports.createSeller = async (req, res) => {
   }
   // end upload image
 
+  // encryp password
   const SECRET_KEY_PASS = process.env.SECRET_KEY_PASS;
   const sellerData = req.body;
   const encriptedPass = crypto.AES.encrypt(
