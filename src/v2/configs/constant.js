@@ -18,12 +18,13 @@ module.exports = {
   token_life_time: process.env.TOKEN_LIFE_TIME,
   image_size_allow: process.env.IMAGE_SIZE_ALLOW,
   imgPath: {
-    category: "./../img/categories/",
+    category: "./../img/category/",
     seller: "./../img/seller/",
     most_popular: "./../img/most_popular/",
     banner: "./../img/banner/",
     admin: "./../img/admin/",
     brand: "./../img/brand/",
+    categories:"./../img/categories/",
     driver: "./../img/driver/",
   },
 };

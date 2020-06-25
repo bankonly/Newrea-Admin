@@ -13,6 +13,7 @@ import reasonRouter from "./reason";
 import brandRouter from "./brand";
 import productSellerRouter from "./product_seller";
 import recommedItemRouter from "./recommend_item";
+import subCateoryRouter from "./categories";
 import driverRouter from "./driver";
 
 // configs
@@ -37,6 +38,7 @@ export default (app) => {
     brandRouter,
     productSellerRouter,
     recommedItemRouter,
+    subCateoryRouter,
     driverRouter,
   ]);
 
