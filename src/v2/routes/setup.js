@@ -8,7 +8,9 @@ import mostPopularRouter from "./most_popular";
 import bannerRouter from "./banner";
 import delivery_fee_option from "./delivery_fee_option";
 import featuredStoreRouter from "./featured_store";
+import popular_searchRouter from "./popular_search";
 import reasonRouter from "./reason";
+import brandRouter from "./brand";
 import productSellerRouter from "./product_seller";
 import recommedItemRouter from "./recommend_item";
 import subCateoryRouter from "./categories";
@@ -30,7 +32,9 @@ export default (app) => {
     delivery_fee_option,
     bannerRouter,
     featuredStoreRouter,
+    popular_searchRouter,
     reasonRouter,
+    brandRouter,
     productSellerRouter,
     recommedItemRouter,
     subCateoryRouter,

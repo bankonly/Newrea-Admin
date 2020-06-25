@@ -9,8 +9,24 @@ import Res from "../../controllers/response_controller";
 exports.createValidator = async (req, res, next) => {
   const response = new Res(res);
   const data = req.body;
+  // convert category id
   if (typeof data.category_id === "string") {
-    data.category_id = data.category_id.split(",");
+    data.category_id = data.category_id.replace(/[\[\]"]/g, "").split(",");
+  }
+  // convert location to array object
+  if (typeof data.location === "string") {
+    let locationData = data.location.split(",");
+    if (locationData.length !== 2) {
+      return response.badRequest({
+        msg: `location '${data.location}' is not valid`,
+      });
+    }
+    data.location = [
+      {
+        latitude: locationData[0],
+        longitude: locationData[1],
+      },
+    ];
   }
 
   data.pass = randomPassword();
@@ -36,7 +52,7 @@ exports.createValidator = async (req, res, next) => {
       .select("_id");
     // convert object to array
     const categorysIDArray = categorysID.map((e) => e._id);
-    // check category is exist?
+    // check categorys is exist?
     let notValidCategorys = [];
     data.category_id.map((e) => {
       if (!categorysIDArray.toString().includes(e)) {
@@ -65,9 +81,7 @@ exports.createValidator = async (req, res, next) => {
       else {
         if (sellerUserName._id.toString() !== req.params.sellerID.toString()) {
           return response.badRequest({
-            msg: `user name '${sellerUserName._id.toString()}' => ${
-              req.params.sellerID
-            } aleady exist`,
+            msg: `user name '${reqUserName}' already exist`,
           });
         }
       }
@@ -88,12 +102,13 @@ exports.createValidator = async (req, res, next) => {
         .max(1)
         .items(
           Joi.object({
-            latitude: Joi.string(),
-            longitude: Joi.string(),
+            latitude: Joi.string().min(5).required(),
+            longitude: Joi.string().min(5).required(),
           })
-        ),
+        )
+        .required(),
       address: Joi.string().min(5).max(200).allow(""),
-      is_active: Joi.string().valid("active", "inActive").allow(""),
+      is_active: Joi.string().valid("active", "inactive").allow(""),
       delivery_fee_option_id: Joi.string().required(),
       com: Joi.number().min(0).max(100).required(),
       is_online: Joi.string().allow(""),
