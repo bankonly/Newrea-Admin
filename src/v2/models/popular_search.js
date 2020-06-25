@@ -8,7 +8,7 @@ const SellerSchema = new Schema({
   },
   is_active: {
     type: String,
-    enum: ["active", "inActive"],
+    enum: ["active", "inactive"],
     default: "active",
   },
   created_date: {

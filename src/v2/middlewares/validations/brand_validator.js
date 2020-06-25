@@ -14,7 +14,7 @@ exports.createValidator = async (req, res, next) => {
     const schema = Joi.object({
       name: Joi.string().required(),
       desc: Joi.string().allow(""),
-      is_active: Joi.string().valid("active", "inActive").allow(""),
+      is_active: Joi.string().valid("active", "inactive").allow(""),
     });
     await schema.validateAsync(data);
     next();

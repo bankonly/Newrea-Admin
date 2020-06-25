@@ -14,7 +14,7 @@ exports.createValidator = async (req, res, next) => {
     const schema = Joi.object({
       name: Joi.string().min(2).max(50).required(),
       percen: Joi.number().positive().required(),
-      is_active: Joi.string().valid("active", "inActive").required(),
+      is_active: Joi.string().valid("active", "inactive").required(),
     });
     await schema.validateAsync(data);
     next();
@@ -28,7 +28,7 @@ exports.deleteValidator = async (req, res, next) => {
   const response = new Res(res);
   try {
     const schema = Joi.object({
-      is_active: Joi.string().valid("active", "inActive").required(),
+      is_active: Joi.string().valid("active", "inactive").required(),
     });
     await schema.validateAsync(req.body);
     next();

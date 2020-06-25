@@ -108,7 +108,7 @@ exports.createValidator = async (req, res, next) => {
         )
         .required(),
       address: Joi.string().min(5).max(200).allow(""),
-      is_active: Joi.string().valid("active", "inActive").allow(""),
+      is_active: Joi.string().valid("active", "inactive").allow(""),
       delivery_fee_option_id: Joi.string().required(),
       com: Joi.number().min(0).max(100).required(),
       is_online: Joi.string().allow(""),
