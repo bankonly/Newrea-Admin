@@ -29,7 +29,7 @@ router.delete(
 );
 router.put(
   "/brand/updateImg/:id",
-  [checkValidObjectId],
+  [checkValidObjectId, checkImgUpload],
   brandController.updateBrandLogo
 );
 module.exports = router;

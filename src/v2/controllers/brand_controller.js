@@ -81,12 +81,7 @@ exports.updateBrand = async (req, res) => {
 // update brand logo
 exports.updateBrandLogo = async (req, res) => {
   const response = new Res(res);
-  // there is image request?
-  if (!req.files.logo) {
-    return response.badRequest({ msg: "logo is require" });
-  }
   const paramID = req.params.id;
-  const reqBody = req.body;
   try {
     let foundBrand = await brandModel.findById(paramID);
     if (!foundBrand) {
@@ -95,11 +90,43 @@ exports.updateBrandLogo = async (req, res) => {
         msg: "brand not found",
       });
     }
-    foundBrand.set(reqBody);
+    const oldLogoName = foundBrand.logo;
+    let newLogoName = "";
+    let removeFileStatus = {
+      original: "nothing change",
+      small: "nothing change",
+      big: "nothing change",
+    };
+    // upload image
+    if (req.files.logo) {
+      const uploadSttLogo = uploadImage({
+        req,
+        path: config.imgPath.brand,
+        file: req.files.logo,
+      });
+      if (uploadSttLogo.status && uploadSttLogo.code === 200) {
+        newLogoName = uploadSttLogo.data;
+        removeFileStatus.original = await removeFile(
+          config.imgPath.brand,
+          oldLogoName
+        );
+        removeFileStatus.small = await removeFile(
+          `${config.imgPath.brand}/200x200`,
+          oldLogoName
+        );
+        removeFileStatus.big = await removeFile(
+          `${config.imgPath.brand}/800x800`,
+          oldLogoName
+        );
+      }
+    } else {
+      return response.badRequest({ msg: "logo is require" });
+    }
+    foundBrand.logo = newLogoName;
     if (await foundBrand.save()) {
       return response.success({
-        data: foundBrand,
-        msg: "update brand successfully",
+        msg: "update brand logo successfully",
+        data: [foundBrand, { remove_file_status: removeFileStatus }],
       });
     } else {
       return response.somethingWrong({});
