@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+const { Schema, model } = require("mongoose");
 const ProductSeller = new Schema(
   {
     product_master_id: {
@@ -49,6 +49,6 @@ const ProductSeller = new Schema(
   }
 );
 
-const productSellers = model("product_seller", ProductSeller);
+const productSellers = model("product_seller", ProductSeller,'product_seller');
 
 export default productSellers;
