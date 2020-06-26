@@ -104,13 +104,9 @@ export async function getAllCategory(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
-    const populate = {
-      path: "parent_id",
-    };
     const catData = await QB.fetch({
       model: Category,
-      adminType: req.is_super_admin,
-      populate: populate,
+      adminType: req.is_super_admin
     });
     return response.success(catData);
   } catch (error) {
@@ -135,14 +131,10 @@ export async function getCategory(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
-    const populate = {
-      path: "parent_id",
-    };
     const catData = await QB.fetch({
       model: Category,
       adminType: req.is_super_admin,
       id: req.params.cat_id,
-      populate: populate,
     });
     return response.success(catData);
   } catch (error) {
