@@ -14,6 +14,7 @@ import brandRouter from "./brand";
 import productSellerRouter from "./product_seller";
 import recommedItemRouter from "./recommend_item";
 import subCateoryRouter from "./categories";
+import driverRouter from "./driver";
 
 // configs
 import kernel from "../configs/kernel";
@@ -38,6 +39,7 @@ export default (app) => {
     productSellerRouter,
     recommedItemRouter,
     subCateoryRouter,
+    driverRouter,
   ]);
 
   // unAuthenticate Router
