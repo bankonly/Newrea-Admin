@@ -16,6 +16,8 @@ export async function validate(obj, update = true) {
 
   if (!Helpers.isEmpty(body.title)) error.title = msg;
   if (!Helpers.isEmpty(body.desc)) error.desc = msg;
+  if (!Helpers.isEmpty(body.banner) || !Helpers.validateObjectId(body.banner))
+    error.banner = msg + " as objectId";
   if (!Helpers.isEmpty(body.new_arrivals)) error.new_arrivals = arrayMsg;
   if (!Helpers.isEmpty(body.cat_id)) error.cat_id = arrayMsg;
   if (!Helpers.isEmpty(body.popular_item)) error.popular_item = arrayMsg;
@@ -26,6 +28,7 @@ export async function validate(obj, update = true) {
 
   delete body.title;
   delete body.desc;
+  delete body.banner;
 
   const isValid = await Helpers.isSplitArrayObjectId({
     array: body,
@@ -77,13 +80,12 @@ export async function validateProductSeller(req, { model = null }) {
     const isNewSellerArray = await Seller.find({
       _id: { $in: newSellerArray },
     });
-
     // arrival data check
     const foundArrival = isNewArrival.map((v) => v._id.toString());
     const foundCatArray = isNewCatArray.map((v) => v._id.toString());
     const foundBrandArray = isNewBrandArray.map((v) => v._id.toString());
     const foundSellerArray = isNewSellerArray.map((v) => v._id.toString());
-
+    
     const selectArrival = [
       "new_arrivals",
       "popular_item",
@@ -95,6 +97,7 @@ export async function validateProductSeller(req, { model = null }) {
       select: selectArrival,
       found: foundArrival,
     });
+    console.log(notFoundArrival)
     const notFoundCatArray = Helpers.isFoundObjectId({
       body: body,
       select: ["cat_id"],
@@ -124,6 +127,9 @@ export async function validateProductSeller(req, { model = null }) {
       error.notFoundSeller = notFoundSellerArray;
     }
 
+    const isBand = await Banner.findById(req.body.banner);
+    if (!isBand) error.banner = msg;
+
     if (!Helpers.isEmptyObj(error)) {
       return Res.badRequest({ data: error });
     }
@@ -140,6 +146,7 @@ export async function validateProductSeller(req, { model = null }) {
       clearance_item: req.body.clearance_item.split(","),
       title: req.body.title,
       desc: req.body.desc,
+      banner:req.body.banner
     };
 
     if (model) {
@@ -152,6 +159,7 @@ export async function validateProductSeller(req, { model = null }) {
       model.clearance_item = req.body.clearance_item.split(",");
       model.title = req.body.title;
       model.desc = req.body.desc;
+      model.banner = req.body.banner
       respData = model;
     } else {
       respData = saveData;
@@ -173,7 +181,7 @@ export const defaultPopulate = [
   },
   {
     path:
-      "new_arrivals cat_id popular_item brand accessories recommend_store clearance_item",
+      "new_arrivals cat_id popular_item brand accessories recommend_store clearance_item banner",
     select: "-__v",
   },
 ];

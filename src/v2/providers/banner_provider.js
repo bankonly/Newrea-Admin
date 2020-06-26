@@ -1,6 +1,6 @@
 const Res = require("../controllers/default_res_controller");
 const Banner = require("../models/main_banner");
-const { isDate, compareBtwDate } = require("../helpers/Global");
+const { isDate, compareBtwDate, isEmpty } = require("../helpers/Global");
 
 // validate save data
 export function validate_add(obj, update = true) {
@@ -20,6 +20,8 @@ export function validate_add(obj, update = true) {
     error.end_date = "invalid date";
     error.start_date = "invalid date";
   }
+
+  if (!isEmpty(obj.body.name)) error.name = msg;
 
   if (update) {
     if (!obj.files || !obj.files.img) {

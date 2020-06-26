@@ -126,6 +126,10 @@ export function uploadImage({
     const validateImage = imageValidate(imageSize, file);
     if (!validateImage.status) return validateImage;
 
+    if (file.size > constant.image_size_allow) {
+      return Res.badRequest({ msg: "file is to large" });
+    }
+
     if (!constant.image_type_accept.includes(file.mimetype.split("/")[1])) {
       return Res.badRequest({ msg: "img type not accepted" });
     }
@@ -144,3 +148,50 @@ export function uploadImage({
     return Res.somethingWrong({ error: error });
   }
 }
+
+export const uploadImageMany = ({
+  req,
+  path,
+  imageSize = [800, 200],
+  file,
+  fileType = ".jpg",
+}) => {
+  try {
+    console.log(file);
+    if (!Helpers.isArray(file)) {
+      return Res.badRequest({ msg: "file should be array" });
+    }
+
+    let imgList = [];
+    for (let i = 0; i < file.length; i++) {
+      if (file[i].size > constant.image_size_allow) {
+        return Res.badRequest({ msg: "file is to large" });
+      }
+
+      // validate image before save
+      const validateImage = imageValidate(imageSize, file);
+      if (!validateImage.status) return validateImage;
+
+      if (
+        !constant.image_type_accept.includes(file[i].mimetype.split("/")[1])
+      ) {
+        return Res.badRequest({ msg: "img type not accepted" });
+      }
+      const fileName = uuid() + Date.now() + fileType;
+      createDirIfNotExist(path);
+      fs.writeFileSync(path + fileName, file[i].data);
+      resizeImage({
+        size: imageSize,
+        path: path,
+        fileName: fileName,
+      });
+      imgList.push(fileName);
+    }
+    if (imgList.length > 0) {
+      return Res.success({ data: imgList, msg: "img created" });
+    }
+    return Res.badRequest({ msg: "img upload failed" });
+  } catch (error) {
+    return Res.somethingWrong({ error: error });
+  }
+};
