@@ -65,7 +65,7 @@ export async function updateSubCategory(req, res) {
 
     // get respoonse sub data
     const subData = await isId;
-    if (!subData) return response.notFound({ msg: "in not found" });
+    if (!subData) return response.notFound({ msg: "id not found" });
 
     // validate comming id
     const isValid = await SubCatProvider.validate(req, false);
@@ -93,7 +93,7 @@ export async function updateSubCategory(req, res) {
 
     const { data } = isValidId;
 
-    if (!data.save()) return response.badRequest({ msg: "failed to update" });
+    if (!await data.save()) return response.badRequest({ msg: "failed to update" });
     const resData = await QB.fetch({
       model: SubCategory,
       id: req.params.cats_id,

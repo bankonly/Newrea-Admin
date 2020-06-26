@@ -22,6 +22,14 @@ export async function saveCategory(req, res) {
       return response.badRequest({ msg: "Name is already exist" });
     }
 
+    if (req.body.parent_id) {
+      if (!Helpers.validateObjectId(req.body.parent_id)) {
+        return response.invalidObjectId({});
+      }
+      const isParentId = await Category.findById(req.body.parent_id);
+      if (!isParentId) return response.notFound({ data: req.body.parent_id });
+    }
+
     const isUpload = FileProvider.uploadImage({
       req: req,
       path: constant.imgPath.category,
@@ -59,10 +67,21 @@ export async function updateCategory(req, res) {
     if (isCatID == null) {
       return response.notFound({ msg: "Id is not exist" });
     }
+
     // name check
     const isName = await Category.findOne({ name: req.body.name });
     if (isName !== null && isName.name !== isCatID.name) {
       return response.badRequest({ msg: "Name is already exist" });
+    }
+
+    if (req.body.parent_id) {
+      if (!Helpers.validateObjectId(req.body.parent_id)) {
+        return response.invalidObjectId({});
+      }
+      const isParentId = await Category.findById(req.body.parent_id);
+      if (!isParentId) return response.notFound({ data: req.body.parent_id });
+
+      isCatID.parent_id = req.body.parent_id;
     }
 
     // save data
@@ -136,7 +155,6 @@ export async function getCategory(req, res) {
   const response = new ResCtl(res);
   try {
     const condition = {
-      parent_id: null,
       _id: req.params.cat_id,
     };
     const catData = await QB.fetch({
