@@ -183,7 +183,7 @@ export async function getAdmin({ adminId = null, is_super_admin }) {
     };
 
     if (!is_super_admin) {
-      condition.is_active = "in_active";
+      condition.is_active = "inactive";
     }
 
     const join = {
