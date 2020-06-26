@@ -1,7 +1,5 @@
 import { mode } from "crypto-js";
-
 const Helpers = require("./Global");
-
 const Res = require("../controllers/default_res_controller");
 
 export async function updateOne(model, id, updateData) {
@@ -43,7 +41,7 @@ export function getData(model, id = null, many = false) {
   }
 }
 
-export function deleteIsActive(model, id, is_active = "in_active") {
+export function deleteIsActive(model, id, is_active = "inactive") {
   return model.updateOne({ _id: id }, { $set: { is_active: is_active } });
 }
 
@@ -52,10 +50,10 @@ export async function fetch({
   id = null,
   adminType = false,
   populate = null,
+  condition = {},
 }) {
   try {
     var data = null;
-    var condition = {};
 
     if (!adminType) {
       condition.is_active = "active";
@@ -65,7 +63,9 @@ export async function fetch({
       if (!Helpers.validateObjectId(id)) {
         return Res.badRequest({ msg: "invalid id" });
       }
-      condition._id = id;
+      if (Helpers.isEmpty(condition)) {
+        condition._id = id;
+      }
       data = model.findOne(condition);
     } else {
       data = model.find(condition);
@@ -91,8 +91,8 @@ export async function fetch({
 export function isValidActive(is_active) {
   var error = {};
   if (!Helpers.isEmpty(is_active)) error.is_active = "is required";
-  else if (is_active !== "active" && is_active !== "in_active") {
-    error.is_active = "allow only active and in_active";
+  else if (is_active !== "active" && is_active !== "inactive") {
+    error.is_active = "allow only active and inactive";
   }
 
   return error;

@@ -94,7 +94,6 @@ export async function updateSubCategory(req, res) {
     const { data } = isValidId;
 
     if (!data.save()) return response.badRequest({ msg: "failed to update" });
-    console.log(data._id)
     const resData = await QB.fetch({
       model: SubCategory,
       id: req.params.cats_id,
@@ -128,20 +127,6 @@ export async function getSubCategory(req, res) {
   // define response
   const response = new Res(res);
   try {
-    const populate = [
-      {
-        path: "recommend_store",
-        select: "-com -__v",
-      },
-      {
-        path: "clearance_item",
-        select: "-_id -__v",
-      },
-      {
-        path:
-          "new_arrivals cat_id popular_item brand accessories recommend_store clearance_item",
-      },
-    ];
     const data = await QB.fetch({
       model: SubCategory,
       adminType: req.is_super_admin,
