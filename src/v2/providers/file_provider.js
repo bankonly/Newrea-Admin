@@ -154,12 +154,16 @@ export const uploadImageMany = ({
   path,
   imageSize = [800, 200],
   file,
-  fileType = ".jpg",
+  fileType = "jpg",
+  size = 5,
 }) => {
   try {
-    console.log(file);
     if (!Helpers.isArray(file)) {
       return Res.badRequest({ msg: "file should be array" });
+    }
+
+    if (file.length > size) {
+      return Res.badRequest({ msg: "too much file allow only " + size });
     }
 
     let imgList = [];
@@ -177,7 +181,7 @@ export const uploadImageMany = ({
       ) {
         return Res.badRequest({ msg: "img type not accepted" });
       }
-      const fileName = uuid() + Date.now() + fileType;
+      const fileName = uuid() + Date.now() + "." + fileType;
       createDirIfNotExist(path);
       fs.writeFileSync(path + fileName, file[i].data);
       resizeImage({
@@ -194,4 +198,20 @@ export const uploadImageMany = ({
   } catch (error) {
     return Res.somethingWrong({ error: error });
   }
+};
+
+export const fileUpload = ({
+  req,
+  path,
+  imageSize = [800, 200],
+  file,
+  fileType = "jpg",
+  size = 5,
+}) => {
+  const option = { path, req, imageSize, file, fileType, size };
+  if (file.length > 1) {
+    return uploadImageMany(option);
+  }
+  delete option.size;
+  return uploadImage(option);
 };
