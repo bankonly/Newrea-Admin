@@ -104,7 +104,14 @@ export async function getAllCategory(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
-    const catData = await CatProvider.fetch(null, req.is_super_admin);
+    const condition = {
+      parent_id: null,
+    };
+    const catData = await QB.fetch({
+      model: Category,
+      adminType: req.is_super_admin,
+      condition: condition,
+    });
     return response.success(catData);
   } catch (error) {
     return response.somethingWrong({ error: error });
@@ -133,10 +140,16 @@ export async function getCategory(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
-    const catData = await CatProvider.fetch(
-      req.params.cat_id,
-      req.is_super_admin
-    );
+    const condition = {
+      parent_id: null,
+      _id: req.params.cat_id,
+    };
+    const catData = await QB.fetch({
+      model: Category,
+      adminType: req.is_super_admin,
+      id: req.params.cat_id,
+      condition: condition,
+    });
     return response.success(catData);
   } catch (error) {
     return response.somethingWrong({ error: error });

@@ -128,20 +128,6 @@ export async function getSubCategory(req, res) {
   // define response
   const response = new Res(res);
   try {
-    const populate = [
-      {
-        path: "recommend_store",
-        select: "-com -__v",
-      },
-      {
-        path: "clearance_item",
-        select: "-_id -__v",
-      },
-      {
-        path:
-          "new_arrivals cat_id popular_item brand accessories recommend_store clearance_item",
-      },
-    ];
     const data = await QB.fetch({
       model: SubCategory,
       adminType: req.is_super_admin,
