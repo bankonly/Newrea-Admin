@@ -104,9 +104,13 @@ export async function getAllCategory(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
+    const condition = {
+      parent_id: null,
+    };
     const catData = await QB.fetch({
       model: Category,
-      adminType: req.is_super_admin
+      adminType: req.is_super_admin,
+      condition: condition,
     });
     return response.success(catData);
   } catch (error) {
@@ -131,10 +135,15 @@ export async function getCategory(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
+    const condition = {
+      parent_id: null,
+      _id: req.params.cat_id,
+    };
     const catData = await QB.fetch({
       model: Category,
       adminType: req.is_super_admin,
       id: req.params.cat_id,
+      condition: condition,
     });
     return response.success(catData);
   } catch (error) {
