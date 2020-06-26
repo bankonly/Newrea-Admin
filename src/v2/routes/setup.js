@@ -15,6 +15,10 @@ import productSellerRouter from "./product_seller";
 import recommedItemRouter from "./recommend_item";
 import subCateoryRouter from "./categories";
 import driverRouter from "./driver";
+import orderRouter from "./order";
+import customerRouter from "./customer";
+import customerAddressRouter from "./customer_address";
+import currencyRouter from "./currency";
 
 // configs
 import kernel from "../configs/kernel";
@@ -40,6 +44,10 @@ export default (app) => {
     recommedItemRouter,
     subCateoryRouter,
     driverRouter,
+    orderRouter,
+    customerRouter,
+    customerAddressRouter,
+    currencyRouter,
   ]);
 
   // unAuthenticate Router
