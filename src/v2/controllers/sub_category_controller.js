@@ -94,7 +94,7 @@ export async function updateSubCategory(req, res) {
     const { data } = isValidId;
 
     if (!data.save()) return response.badRequest({ msg: "failed to update" });
-    console.log(data._id)
+    console.log(data._id);
     const resData = await QB.fetch({
       model: SubCategory,
       id: req.params.cats_id,

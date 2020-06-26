@@ -116,7 +116,12 @@ export async function getChildCategory(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
-    const catData = await Category.find({ parent_id: req.params.parent_id });
+    const catData = await Category.find({
+      parent_id: "5ea50b1bb7694256ddfb289f",
+    }).populate({
+      path: "parent_id",
+      select:"-parent_id"
+    });
     return response.success({ data: catData });
   } catch (error) {
     return response.somethingWrong({ error: error });

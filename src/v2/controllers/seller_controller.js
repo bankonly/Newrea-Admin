@@ -161,9 +161,9 @@ exports.updateSellerImages = async (req, res) => {
     // get old image name
     const imgOldName = foundSeller.img;
     const logoOldName = foundSeller.logo;
+    let newImg = foundSeller.img;
+    let newLogo = foundSeller.logo;
 
-    let newImg = "";
-    let newLogo = "";
     let removeFileStatus = {
       logo: {
         small: "not upload new file",
@@ -176,7 +176,7 @@ exports.updateSellerImages = async (req, res) => {
         original: "not upload new file",
       },
     };
-    // upload images
+    // upload image cover
     if (req.files.img) {
       const uploadSttImg = uploadImage({
         req,
@@ -199,6 +199,7 @@ exports.updateSellerImages = async (req, res) => {
         );
       }
     }
+    // upload logo
     if (req.files.logo) {
       const uploadSttLogo = uploadImage({
         req,
@@ -235,7 +236,9 @@ exports.updateSellerImages = async (req, res) => {
         msg: "update seller images successfully",
       });
     } else {
-      return response.somethingWrong({});
+      return res.send("what");
+
+      // return response.somethingWrong({});
     }
   } catch (ex) {
     return response.somethingWrong({ error: ex });
