@@ -21,7 +21,7 @@ export function validate_add(obj, update = true) {
     error.start_date = "invalid date";
   }
 
-  if (!isEmpty(obj.body.name)) error.name = msg;
+  if (!isEmpty(obj.body.name)) error.name = "field required";
 
   if (update) {
     if (!obj.files || !obj.files.img) {
@@ -31,3 +31,5 @@ export function validate_add(obj, update = true) {
 
   return error;
 }
+
+
