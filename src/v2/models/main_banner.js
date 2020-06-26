@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const tableName = "main_banner";
 const schema = new mongoose.Schema(
@@ -8,11 +8,13 @@ const schema = new mongoose.Schema(
       ref: "seller",
       default: null,
     },
-    img: {
-      type: String,
-    },
+    img: [],
     start_date: {
       type: Date,
+      required: true,
+    },
+    name: {
+      type: String,
       required: true,
     },
     end_date: {

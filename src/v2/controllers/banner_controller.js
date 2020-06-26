@@ -18,7 +18,7 @@ export async function saveBanner(req, res) {
     }
 
     // upload img
-    const isUpload = FileProvider.uploadImage({
+    const isUpload = FileProvider.uploadImageMany({
       req: req,
       path: constant.imgPath.banner,
       file: req.files.img,
@@ -27,10 +27,14 @@ export async function saveBanner(req, res) {
       return response.badRequest(isUpload);
     }
 
+    const isName = await Banner.findOne({ name: req.body.name });
+    if (isName) return response.duplicated({ data: isName.name });
+
     const saveData = {
-      img: req.body.img,
+      img: isUpload.data,
       start_date: req.body.start_date,
       end_date: req.body.end_date,
+      name: req.body.name,
     };
     const isSave = await Banner.create(saveData);
     if (!isSave) return response.badRequest({ msg: "can not update" });
@@ -56,14 +60,19 @@ export async function updateBanner(req, res) {
     var saveData = {
       start_date: req.body.start_date,
       end_date: req.body.end_date,
+      name:req.body.name
     };
 
+    const isName = await Banner.findOne({ name: req.body.name });
     const isId = await QB.isIdActive(Banner, req.params.banner_id);
+
     if (!isId) return response.notFound({ msg: "no data" });
+    
+    if (isName && isId.name !== isName.name) return response.duplicated({ data: isName.name });
 
     // upload img
-    if (Helpers.isFile(req.files)) {
-      const isUpload = FileProvider.uploadImage({
+    if (Helpers.isFile(req.files,"img")) {
+      const isUpload = FileProvider.uploadImageMany({
         req: req,
         path: constant.imgPath.banner,
         file: req.files.img,
@@ -71,11 +80,12 @@ export async function updateBanner(req, res) {
       if (!isUpload.status) {
         return response.badRequest(isUpload);
       }
-      isId.img = req.body.img;
+      isId.img = isUpload.data;
     }
 
     isId.start_date = req.body.start_date;
     isId.end_date = req.body.end_date;
+    isId.name = saveData.name
 
     if (!isId.save()) return response.badRequest({ msg: "can not update" });
     return response.success({ data: isId });

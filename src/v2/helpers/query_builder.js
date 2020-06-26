@@ -63,7 +63,7 @@ export async function fetch({
       if (!Helpers.validateObjectId(id)) {
         return Res.badRequest({ msg: "invalid id" });
       }
-      if (Helpers.isEmpty(condition)) {
+      if (!Helpers.isEmpty(condition)) {
         condition._id = id;
       }
       data = model.findOne(condition);
