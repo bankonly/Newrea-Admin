@@ -1,4 +1,5 @@
 const Joi = require("@hapi/joi");
+const password = require("secure-random-password");
 const driverModel = require("../../models/driverModel");
 import Res from "../../controllers/response_controller";
 
@@ -12,12 +13,14 @@ exports.createValidator = async (req, res, next) => {
         msg: `user name for driver '${data.user_name}' aleady exist`,
       });
     }
+    // random password
+    req.body.password = randomPassword();
     const schema = Joi.object({
       user_name: Joi.string().required(),
       first_name: Joi.string().required(),
       last_name: Joi.string().required(),
       password: Joi.string().required(),
-      phone_number: JJoi.string().min(8).max(10).required(),
+      phone_number: Joi.string().min(8).max(10).required(),
       dri_status: Joi.string().valid("true", "false").required(),
       is_working: Joi.string().valid("true", "false").required(),
       is_active: Joi.string().valid("active", "inactive").allow(""),
@@ -25,6 +28,7 @@ exports.createValidator = async (req, res, next) => {
     await schema.validateAsync(data);
     next();
   } catch (err) {
+    console.log(err);
     return response.badRequest({ data: err });
   }
 };
@@ -56,3 +60,10 @@ exports.updateValidator = async (req, res, next) => {
     return response.badRequest({ data: err });
   }
 };
+
+function randomPassword() {
+  return password.randomPassword({
+    characters: [password.lower, { characters: password.digits, exactly: 4 }],
+    length: 8,
+  });
+}
