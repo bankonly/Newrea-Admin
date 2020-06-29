@@ -108,7 +108,7 @@ var OrderSchema = new Schema(
     },
     payment_method_id: {
       type: Schema.Types.ObjectId,
-      ref: "payment_method",
+      ref: "PaymentMethod",
       required: true,
     },
     deleted_at: {

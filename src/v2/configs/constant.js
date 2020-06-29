@@ -20,8 +20,8 @@ module.exports = {
   imgPath: {
     category: "./../img/category/",
     seller: {
-      profile: "./../img/seller/profile",
-      logo: "./../img/seller/logo",
+      profile: "./../img/seller/profile/",
+      logo: "./../img/seller/logo/",
     },
     most_popular: "./../img/most_popular/",
     banner: "./../img/main_banner/",
