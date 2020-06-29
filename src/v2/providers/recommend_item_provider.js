@@ -21,4 +21,8 @@ export function validate(obj, update = false) {
 
 export const default_populate = {
   path: "product_seller_id",
+  select: "_id name",
+  populate: {
+    path: "product_option_id",
+  },
 };
