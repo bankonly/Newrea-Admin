@@ -47,3 +47,4 @@ exports.updateValidator = async (req, res, next) => {
     return response.badRequest({ data: err });
   }
 };
+
