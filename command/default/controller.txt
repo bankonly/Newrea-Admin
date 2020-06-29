@@ -1,0 +1,77 @@
+
+const Res = require("./response_controller");
+const FileProvider = require("../providers/file_provider");
+const ReplaceNameProvider = require("../providers/ReplaceName_provider");
+const Helpers = require("../helpers/Global");
+const constant = require("../configs/constant");
+const QB = require("../helpers/query_builder");
+const ModelName = require("../models/ModelName");
+
+// save
+export async function saveReplaceName(req, res) {
+  // define response
+  const response = new Res(res);
+  try {
+    return response.success({});
+  } catch (error) {
+    return response.somethingWrong({ error: error });
+  }
+}
+
+// update
+export async function updateReplaceName(req, res) {
+  // define response
+  const response = new Res(res);
+  try {
+    return response.success({});
+  } catch (error) {
+    return response.somethingWrong({ error: error });
+  }
+}
+
+// get all
+export async function getAllReplaceName(req, res) {
+  // define response
+  const response = new Res(res);
+  try {
+    // const data = await QB.fetch({
+    //   model: ModelName,
+    //   adminType: req.is_super_admin,
+    // });
+    return response.success(data);
+  } catch (error) {
+    return response.somethingWrong({ error: error });
+  }
+}
+
+// get
+export async function getReplaceName(req, res) {
+  // define response
+  const response = new Res(res);
+  try {
+    // const data = await QB.fetch({
+    //   model: ModelName,
+    //   adminType: req.is_super_admin,
+    //   id: req.params.{ param name },
+    // });
+    return response.success(data);
+  } catch (error) {
+    return response.somethingWrong({ error: error });
+  }
+}
+
+// delete
+export async function deleteReplaceName(req, res) {
+  // define response
+  const response = new Res(res);
+  try {
+    // const isSet = await QB.setActive(
+    //   ModelName,
+    //   req.params.{ param name },
+    //   req.body.is_active
+    // );
+    return response.success(isSet);
+  } catch (error) {
+    return response.somethingWrong({ error: error });
+  }
+}

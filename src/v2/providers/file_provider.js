@@ -1,6 +1,3 @@
-import { resolve } from "path";
-import { rejects } from "assert";
-
 const multer = require("multer");
 const fs = require("fs");
 const uuid = require("uuid");
@@ -77,13 +74,41 @@ export function removeFileMany({ path, fileName, subFolder = [800, 200] }) {
     }
 
     if (fs.existsSync(path + fileName)) {
-      console.log("me der");
       fs.unlinkSync(path + fileName);
       for (var i = 0; i < subFolder.length; i++) {
         const destination =
           path + subFolder[i] + "x" + subFolder[i] + "/" + fileName;
         if (fs.existsSync(destination)) {
           fs.unlinkSync(destination);
+        }
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    return new Error(error);
+  }
+}
+
+// remove one file
+export function removeFilesMany({
+  path,
+  fileName = [],
+  subFolder = [800, 200],
+}) {
+  try {
+    if (!Helpers.isArray(subFolder) && !Helpers.isArray(fileName)) {
+      return new Error("remove path should be array");
+    }
+    for (let i = 0; i < fileName.length; i++) {
+      if (fs.existsSync(path + fileName[i])) {
+        console.log("me der");
+        fs.unlinkSync(path + fileName[i]);
+        for (var f = 0; f < subFolder.length; f++) {
+          const destination =
+            path + subFolder[f] + "x" + subFolder[f] + "/" + fileName[i];
+          if (fs.existsSync(destination)) {
+            fs.unlinkSync(destination);
+          }
         }
       }
     }
@@ -119,7 +144,7 @@ export function uploadImage({
   path,
   imageSize = [800, 200],
   file,
-  fileType = ".jpg",
+  fileType = "jpg",
 }) {
   try {
     // validate image before save
@@ -133,7 +158,7 @@ export function uploadImage({
     if (!constant.image_type_accept.includes(file.mimetype.split("/")[1])) {
       return Res.badRequest({ msg: "img type not accepted" });
     }
-    const fileName = uuid() + Date.now() + fileType;
+    const fileName = uuid() + Date.now() + "." + fileType;
     req.body.img = fileName;
     createDirIfNotExist(path);
     fs.writeFileSync(path + fileName, file.data);
@@ -214,4 +239,13 @@ export const fileUpload = ({
   }
   delete option.size;
   return uploadImage(option);
+};
+
+export const remove = ({ path, fileName, subFolder = [800, 200] }) => {
+  const option = { path, fileName, subFolder };
+  if (Helpers.isArray(fileName)) {
+    removeFilesMany(option);
+  } else {
+    removeFileMany(option)
+  }
 };

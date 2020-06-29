@@ -136,17 +136,11 @@ export async function getAllCategory(req, res) {
     return response.somethingWrong({ error: error });
   }
 }
-
-// get child category
-export async function getChildCategory(req, res) {
+// get all category populate
+export async function getAllCategorys(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
-    // const catData = await Category.find({
-    //   parent_id: req.params.parent_id,
-    // })
-    // .populate("parent_id")
-    // .select("-parent_id");
     const catData = await Category.find()
       .populate({
         path: "parent_id",
@@ -157,6 +151,22 @@ export async function getChildCategory(req, res) {
         },
       })
       .select(" name img -_id");
+    return response.success({ data: catData });
+  } catch (error) {
+    return response.somethingWrong({ error: error });
+  }
+}
+
+// get child category
+export async function getChildCategory(req, res) {
+  // define response
+  const response = new ResCtl(res);
+  try {
+    const catData = await Category.find({
+      parent_id: req.params.parent_id,
+    })
+      .populate("parent_id")
+      .select("-parent_id");
     return response.success({ data: catData });
   } catch (error) {
     return response.somethingWrong({ error: error });

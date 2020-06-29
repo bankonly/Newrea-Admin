@@ -15,6 +15,12 @@ import productSellerRouter from "./product_seller";
 import recommedItemRouter from "./recommend_item";
 import subCateoryRouter from "./categories";
 import driverRouter from "./driver";
+import orderRouter from "./order";
+import customerRouter from "./customer";
+import customerAddressRouter from "./customer_address";
+import currencyRouter from "./currency";
+import paymentMethodRouter from "./paymentMethod";
+import deliveryTypeRouter from "./delivery_type";
 
 // configs
 import kernel from "../configs/kernel";
@@ -40,6 +46,12 @@ export default (app) => {
     recommedItemRouter,
     subCateoryRouter,
     driverRouter,
+    orderRouter,
+    customerRouter,
+    customerAddressRouter,
+    currencyRouter,
+    paymentMethodRouter,
+    deliveryTypeRouter,
   ]);
 
   // unAuthenticate Router
