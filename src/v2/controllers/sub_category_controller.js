@@ -87,13 +87,19 @@ export async function updateSubCategory(req, res) {
       });
 
       if (!isUpload.status) return response.render(isUpload);
+      console.log(isId.img)
+      File.remove({
+        path: constant.imgPath.categories,
+        fileName: isId.img,
+      });
       // store image file
       data.img = isUpload.data;
     }
 
     const { data } = isValidId;
 
-    if (!await data.save()) return response.badRequest({ msg: "failed to update" });
+    if (!(await data.save()))
+      return response.badRequest({ msg: "failed to update" });
     const resData = await QB.fetch({
       model: SubCategory,
       id: req.params.cats_id,

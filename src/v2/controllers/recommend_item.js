@@ -16,7 +16,7 @@ export async function saveRecommendItem(req, res) {
     }
 
     // check prodyuct seller id is exist or not
-    const idProSellerId = ProSeller.findById(req.body.product_seller_id);
+    const idProSellerId = await ProSeller.findById(req.body.product_seller_id);
     if (!idProSellerId) {
       return response.notFound({ msg: "no product seller" });
     }
@@ -24,7 +24,13 @@ export async function saveRecommendItem(req, res) {
     const createData = { product_seller_id: req.body.product_seller_id };
     const isCreate = await RecommendItem.create(createData);
     if (!isCreate) return response.badRequest({ msg: "cannot create" });
-    return response.success({ data: isCreate });
+    const resp = await QB.fetch({
+      model: RecommendItem,
+      id: isCreate._id.toString(),
+      adminType: req.is_super_admin,
+      populate: RecProvider.default_populate,
+    });
+    return response.success(resp);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
@@ -45,14 +51,20 @@ export async function updateRecommendItem(req, res) {
     if (!isId) return response.badRequest({});
 
     // check prodyuct seller id is exist or not
-    const idProSellerId = ProSeller.findById(req.body.product_seller_id);
+    const idProSellerId = await ProSeller.findById(req.body.product_seller_id);
     if (!idProSellerId) {
       return response.notFound({ msg: "no product seller" });
     }
 
     isId.product_seller_id = req.body.product_seller_id;
     if (!isId.save()) return response.badRequest({ msg: "cannot update" });
-    return response.success({ data: isId });
+    const resp = await QB.fetch({
+      model: RecommendItem,
+      id: isId._id.toString(),
+      adminType: req.is_super_admin,
+      populate: RecProvider.default_populate,
+    });
+    return response.success(resp);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
@@ -66,6 +78,7 @@ export async function getAllRecommendItem(req, res) {
     const data = await QB.fetch({
       model: RecommendItem,
       adminType: req.is_super_admin,
+      populate: RecProvider.default_populate,
     });
     return response.success(data);
   } catch (error) {
@@ -82,6 +95,7 @@ export async function getRecommendItem(req, res) {
       model: RecommendItem,
       adminType: req.is_super_admin,
       id: req.params.rec_id,
+      populate: RecProvider.default_populate,
     });
     return response.success(data);
   } catch (error) {
