@@ -2,6 +2,11 @@ const Res = require("./response_controller");
 const QB = require("../helpers/query_builder");
 const ProductSeller = require("../models/product_seller").default;
 
+const default_populate = {
+  path: "product_master_id",
+  select: "_id name",
+};
+
 // get all most popular
 export async function getAllProductSeller(req, res) {
   // define response
@@ -10,9 +15,7 @@ export async function getAllProductSeller(req, res) {
     const data = await QB.fetch({
       model: ProductSeller,
       adminType: req.is_super_admin,
-      populate: {
-        path: "product_master_id",
-      },
+      populate: default_populate,
     });
     return response.success(data);
   } catch (error) {
@@ -29,9 +32,7 @@ export async function getProductSeller(req, res) {
       model: ProductSeller,
       adminType: req.is_super_admin,
       id: req.params.pro_seller_id,
-      populate: {
-        path: "product_master_id",
-      },
+      populate: default_populate,
     });
     return response.success(data);
   } catch (error) {
