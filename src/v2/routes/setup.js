@@ -20,6 +20,7 @@ import customerRouter from "./customer";
 import customerAddressRouter from "./customer_address";
 import currencyRouter from "./currency";
 import paymentMethodRouter from "./paymentMethod";
+import deliveryTypeRouter from "./delivery_type";
 
 // configs
 import kernel from "../configs/kernel";
@@ -50,6 +51,7 @@ export default (app) => {
     customerAddressRouter,
     currencyRouter,
     paymentMethodRouter,
+    deliveryTypeRouter,
   ]);
 
   // unAuthenticate Router

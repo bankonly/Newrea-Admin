@@ -17,6 +17,9 @@ export async function saveBanner(req, res) {
       return response.badRequest({ data: isValid });
     }
 
+    const isName = await Banner.findOne({ name: req.body.name });
+    if (isName) return response.duplicated({ data: isName.name });
+
     let option = {
       req: req,
       path: constant.imgPath.banner,
@@ -24,14 +27,11 @@ export async function saveBanner(req, res) {
     };
 
     const isUpload = FileProvider.fileUpload(option);
-    
+
     // upload img
     if (!isUpload.status) {
       return response.badRequest(isUpload);
     }
-
-    const isName = await Banner.findOne({ name: req.body.name });
-    if (isName) return response.duplicated({ data: isName.name });
 
     const saveData = {
       img: isUpload.data,
@@ -79,7 +79,7 @@ export async function updateBanner(req, res) {
       let option = {
         req: req,
         path: constant.imgPath.banner,
-        file: req.files.img,
+        file: req.files.img
       };
 
       const isUpload = FileProvider.fileUpload(option);
@@ -87,6 +87,11 @@ export async function updateBanner(req, res) {
       if (!isUpload.status) {
         return response.badRequest(isUpload);
       }
+      FileProvider.remove({
+        path: constant.imgPath.banner,
+        fileName: isId.img,
+      });
+
       isId.img = isUpload.data;
     }
 
