@@ -2,10 +2,13 @@ const Res = require("./response_controller");
 const QB = require("../helpers/query_builder");
 const ProductSeller = require("../models/product_seller").default;
 
-const default_populate = {
-  path: "product_master_id",
-  select: "_id name",
-};
+const default_populate = [
+  {
+    path: "product_master_id",
+    select: "_id name",
+  },
+  { path: "product_option_id" },
+];
 
 // get all most popular
 export async function getAllProductSeller(req, res) {
