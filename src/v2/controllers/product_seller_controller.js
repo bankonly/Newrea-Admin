@@ -10,6 +10,9 @@ export async function getAllProductSeller(req, res) {
     const data = await QB.fetch({
       model: ProductSeller,
       adminType: req.is_super_admin,
+      populate: {
+        path: "product_master_id",
+      },
     });
     return response.success(data);
   } catch (error) {
@@ -26,6 +29,9 @@ export async function getProductSeller(req, res) {
       model: ProductSeller,
       adminType: req.is_super_admin,
       id: req.params.pro_seller_id,
+      populate: {
+        path: "product_master_id",
+      },
     });
     return response.success(data);
   } catch (error) {
