@@ -1,29 +1,29 @@
 var mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-var CurrencySchema = new Schema({
+var CurrencySchema = new Schema(
+  {
     name: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
+      uppercase: true,
     },
     symbol: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     is_active: {
-        type: Boolean,
-        default: true,
-        required: true
+      type: String,
+      enum: ["active", "inactive"],
+      default: "active",
     },
-    deleted_at: {
-        type: Date,
-        default: null
-    }
-}, {
+  },
+  {
     timestamps: {
-        createdAt: 'created_at',
-        updatedAt: 'updated_at'
+      createdAt: "created_at",
+      updatedAt: "updated_at",
     },
-});
+  }
+);
 
-module.exports = mongoose.model("currency", CurrencySchema, 'currency');
+module.exports = mongoose.model("currency", CurrencySchema, "currency");
