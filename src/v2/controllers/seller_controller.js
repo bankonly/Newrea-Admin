@@ -48,7 +48,7 @@ exports.createSeller = async (req, res) => {
   // upload images
   const uploadSttImg = uploadImage({
     req,
-    path: config.imgPath.seller,
+    path: config.imgPath.seller.profile,
     file: req.files.img,
   });
   if (uploadSttImg.status && uploadSttImg.code === 200) {
@@ -58,7 +58,7 @@ exports.createSeller = async (req, res) => {
   }
   const uploadSttLogo = uploadImage({
     req,
-    path: config.imgPath.seller,
+    path: config.imgPath.seller.logo,
     file: req.files.logo,
   });
   if (uploadSttLogo.status && uploadSttLogo.code === 200) {
@@ -180,21 +180,21 @@ exports.updateSellerImages = async (req, res) => {
     if (req.files.img) {
       const uploadSttImg = uploadImage({
         req,
-        path: config.imgPath.seller,
+        path: config.imgPath.seller.profile,
         file: req.files.img,
       });
       if (uploadSttImg.status && uploadSttImg.code === 200) {
         newImg = uploadSttImg.data;
         removeFileStatus.img.original = await removeFile(
-          config.imgPath.seller,
+          config.imgPath.seller.profile,
           imgOldName
         );
         removeFileStatus.img.small = await removeFile(
-          `${config.imgPath.seller}/200x200`,
+          `${config.imgPath.seller.profile}/200x200`,
           imgOldName
         );
         removeFileStatus.img.big = await removeFile(
-          `${config.imgPath.seller}/800x800`,
+          `${config.imgPath.seller.profile}/800x800`,
           imgOldName
         );
       }
@@ -203,21 +203,21 @@ exports.updateSellerImages = async (req, res) => {
     if (req.files.logo) {
       const uploadSttLogo = uploadImage({
         req,
-        path: config.imgPath.seller,
+        path: config.imgPath.seller.logo,
         file: req.files.logo,
       });
       if (uploadSttLogo.status && uploadSttLogo.code === 200) {
         newLogo = uploadSttLogo.data;
         removeFileStatus.logo.original = await removeFile(
-          config.imgPath.seller,
+          config.imgPath.seller.logo,
           logoOldName
         );
         removeFileStatus.logo.small = await removeFile(
-          `${config.imgPath.seller}/200x200`,
+          `${config.imgPath.seller.logo}/200x200`,
           logoOldName
         );
         removeFileStatus.logo.big = await removeFile(
-          `${config.imgPath.seller}/800x800`,
+          `${config.imgPath.seller.logo}/800x800`,
           logoOldName
         );
       }

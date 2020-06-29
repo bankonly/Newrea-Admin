@@ -19,6 +19,7 @@ import orderRouter from "./order";
 import customerRouter from "./customer";
 import customerAddressRouter from "./customer_address";
 import currencyRouter from "./currency";
+import paymentMethodRouter from "./paymentMethod";
 
 // configs
 import kernel from "../configs/kernel";
@@ -48,6 +49,7 @@ export default (app) => {
     customerRouter,
     customerAddressRouter,
     currencyRouter,
+    paymentMethodRouter,
   ]);
 
   // unAuthenticate Router
