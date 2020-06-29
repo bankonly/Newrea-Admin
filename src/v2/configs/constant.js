@@ -24,7 +24,7 @@ module.exports = {
       logo: "./../img/seller/logo",
     },
     most_popular: "./../img/most_popular/",
-    banner: "./../img/banner/",
+    banner: "./../img/main_banner/",
     admin: "./../img/admin/",
     brand: "./../img/brand/",
     categories: "./../img/categories/",
