@@ -19,12 +19,15 @@ module.exports = {
   image_size_allow: process.env.IMAGE_SIZE_ALLOW,
   imgPath: {
     category: "./../img/category/",
-    seller: "./../img/seller/",
+    seller: {
+      profile: "./../img/seller/profile",
+      logo: "./../img/seller/logo",
+    },
     most_popular: "./../img/most_popular/",
     banner: "./../img/banner/",
     admin: "./../img/admin/",
     brand: "./../img/brand/",
-    categories:"./../img/categories/",
+    categories: "./../img/categories/",
     driver: "./../img/driver/",
   },
 };

@@ -13,7 +13,7 @@ exports.getOrders = async (req, res) => {
         "cus_id",
         "address_id",
         "currency_id",
-        "delivery_type_id",
+        "delivery_fee_id",
         "payment_method_id",
       ]);
     if (foundOrder.length > 0) {

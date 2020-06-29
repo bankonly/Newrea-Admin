@@ -100,7 +100,7 @@ var OrderSchema = new Schema(
     },
     delivery_fee_id: {
       type: Schema.Types.ObjectId,
-      ref: "DeliveryFee",
+      ref: "delivery_fee_option",
     },
     delivery_type_id: {
       type: Schema.Types.ObjectId,
@@ -108,7 +108,7 @@ var OrderSchema = new Schema(
     },
     payment_method_id: {
       type: Schema.Types.ObjectId,
-      ref: "PaymentMethod",
+      ref: "payment_method",
       required: true,
     },
     deleted_at: {
