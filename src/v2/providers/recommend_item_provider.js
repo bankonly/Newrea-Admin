@@ -18,3 +18,7 @@ export function validate(obj, update = false) {
   }
   return error;
 }
+
+export const default_populate = {
+  path: "product_seller_id",
+};
