@@ -16,9 +16,9 @@ var DeliveryTypeSchema = new Schema({
         required: true
     },
     is_active: {
-        type: Boolean,
-        default: true,
-        required: true
+        type: String,
+        default: "active",
+        enum:["active","inactive"]
     },
     deleted_at: {
         type: Date,
