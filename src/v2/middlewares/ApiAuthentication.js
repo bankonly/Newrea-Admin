@@ -5,12 +5,18 @@ import CONSTANT from "../configs/constant";
 
 export default async (req, res, next) => {
   const response = new Res(res);
-  try {
-    const authorization = req.headers.authorization;
-    if (!authorization) {
-      return response.unAuthorized({});
-    }
 
+  let authorization = req.headers.authorization.split(" ");
+  if (authorization.length > 1) {
+    authorization = authorization[1];
+  } else {
+    authorization = authorization[0];
+  }
+  if (!authorization) {
+    return response.unAuthorized({});
+  }
+  
+  try {
     const decoded = Jwt.verify(authorization, process.env.SECRET_KEY);
     const userData = await Admin.findOne({
       _id: decoded.userId,
@@ -33,6 +39,10 @@ export default async (req, res, next) => {
     req.is_super_admin = userData.access_policy.is_super_admin;
     return next();
   } catch (error) {
+    const errorResponse = error.message;
+    if (errorResponse == "jwt expired") {
+      console.log("EXPIRED");
+    }
     console.log(error.message);
     return response.unAuthorized({});
   }
