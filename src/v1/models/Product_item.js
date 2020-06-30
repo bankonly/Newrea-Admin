@@ -1,4 +1,5 @@
-import { Schema, model } from "mongoose";
+var mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 const Product_items = new Schema(
   {
@@ -12,22 +13,22 @@ const Product_items = new Schema(
       ref: "customer",
       required: true,
     },
-    pd_item_status: {
+    order_status_id: {
       type: Schema.Types.ObjectId,
       ref: "order_status",
-      required: true,
+      // required: true,
     },
     items: [
       {
         seller_id: {
           type: Schema.Types.ObjectId,
           ref: "seller",
-          required: true,
+          // required: true,
         },
         order_status_id: {
           type: Schema.Types.ObjectId,
           ref: "order_status",
-          required: true,
+          // required: true,
         },
         distance: {
           type: Number,
@@ -35,26 +36,26 @@ const Product_items = new Schema(
         total_delivery: {
           type: Number,
         },
-        total_price: {
-          type: Number,
-          required: true,
-        },
+        // total_price: {
+        //   type: Number,
+        //   required: true,
+        // },
         option: [
           {
+            option_title: [],
+            option_detail: [],
             product_seller_id: {
               type: Schema.Types.ObjectId,
               ref: "product_seller",
             },
+            option_id: {
+              type: Schema.Types.ObjectId,
+              ref: "products_option",
+            },
             pd_name: {
               type: String,
             },
-            pd_bran: {
-              type: String,
-            },
-            color: {
-              type: String,
-            },
-            size: {
+            pd_brand: {
               type: String,
             },
             price: {
@@ -66,8 +67,10 @@ const Product_items = new Schema(
             pd_img: {
               type: String,
             },
-            delivery_date: {
-              type: String,
+            pd_discount: {
+              type: Schema.Types.ObjectId,
+              ref: "flash_deal",
+              default: null,
             },
           },
         ],
@@ -87,5 +90,6 @@ const Product_items = new Schema(
   }
 );
 
-const Product_item = model("product_item", Product_items);
-export default Product_item;
+module.exports = mongoose.model("product_item", Product_items, "product_item");
+// const Product_item = model("product_item", Product_items);
+// export default Product_item;

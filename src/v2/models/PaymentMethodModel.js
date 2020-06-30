@@ -22,7 +22,7 @@ var PaymentMethodSchema = new Schema(
 );
 
 module.exports = mongoose.model(
-  "PaymentMethod",
+  "payment_method",
   PaymentMethodSchema,
   "payment_method"
 );

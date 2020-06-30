@@ -185,16 +185,17 @@ exports.updateSellerImages = async (req, res) => {
       });
       if (uploadSttImg.status && uploadSttImg.code === 200) {
         newImg = uploadSttImg.data;
+        // remove old file
         removeFileStatus.img.original = await removeFile(
           config.imgPath.seller.profile,
           imgOldName
         );
         removeFileStatus.img.small = await removeFile(
-          `${config.imgPath.seller.profile}/200x200`,
+          `${config.imgPath.seller.profile}200x200/`,
           imgOldName
         );
         removeFileStatus.img.big = await removeFile(
-          `${config.imgPath.seller.profile}/800x800`,
+          `${config.imgPath.seller.profile}800x800/`,
           imgOldName
         );
       }
@@ -208,16 +209,17 @@ exports.updateSellerImages = async (req, res) => {
       });
       if (uploadSttLogo.status && uploadSttLogo.code === 200) {
         newLogo = uploadSttLogo.data;
+        // remove old file
         removeFileStatus.logo.original = await removeFile(
           config.imgPath.seller.logo,
           logoOldName
         );
         removeFileStatus.logo.small = await removeFile(
-          `${config.imgPath.seller.logo}/200x200`,
+          `${config.imgPath.seller.logo}200x200/`,
           logoOldName
         );
         removeFileStatus.logo.big = await removeFile(
-          `${config.imgPath.seller.logo}/800x800`,
+          `${config.imgPath.seller.logo}800x800/`,
           logoOldName
         );
       }
@@ -236,9 +238,7 @@ exports.updateSellerImages = async (req, res) => {
         msg: "update seller images successfully",
       });
     } else {
-      return res.send("what");
-
-      // return response.somethingWrong({});
+      return response.somethingWrong({});
     }
   } catch (ex) {
     return response.somethingWrong({ error: ex });
