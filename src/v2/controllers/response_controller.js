@@ -1,4 +1,4 @@
-import constant from "../configs/constant";
+const constant = require("../configs/constant");
 
 class ResponseController {
   constructor(res) {
