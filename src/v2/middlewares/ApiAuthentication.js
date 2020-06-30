@@ -41,9 +41,8 @@ export default async (req, res, next) => {
   } catch (error) {
     const errorResponse = error.message;
     if (errorResponse == "jwt expired") {
-      console.log("EXPIRED");
+      // console.log("EXPIRED");
     }
-    console.log(error.message);
     return response.unAuthorized({});
   }
 };

@@ -12,6 +12,7 @@ module.exports = {
   mailPassword: process.env.MAIL_PASSWORD,
   mailService: process.env.MAIL_SERVICE,
   READ_STORAGE_PATH: "./storages/",
+  ENV_APP:process.env.ENV_APP,
   TYPE_WRITE: "utf-8",
   PRIVATE_KEY: fs.readFileSync("./private.key", "UTF-8"),
   JWT_ALGORITHMS: process.env.JWT_ALGORITHMS,
