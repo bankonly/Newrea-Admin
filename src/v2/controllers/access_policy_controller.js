@@ -51,6 +51,12 @@ export async function createNewAccessPolicy(req, res) {
       order: req.body.order,
       seller: req.body.seller,
       return: req.body.return,
+      brand: req.body.brand,
+      categories: req.body.categories,
+      currency: req.body.currency,
+      delivery_type: req.body.delivery_type,
+      delivery_fee: req.body.delivery_fee,
+      payment_method: req.body.payment_method,
     };
 
     // Clone data from validateData
@@ -90,6 +96,12 @@ export async function updateAccessPolicy(req, res) {
       order: req.body.order,
       seller: req.body.seller,
       return: req.body.return,
+      brand: req.body.brand,
+      categories: req.body.categories,
+      currency: req.body.currency,
+      delivery_type: req.body.delivery_type,
+      delivery_fee: req.body.delivery_fee,
+      payment_method: req.body.payment_method,
     };
 
     // Clone data from validateData

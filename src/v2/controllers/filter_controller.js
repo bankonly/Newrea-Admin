@@ -19,7 +19,16 @@ export async function savefilter(req, res) {
     const isName = await filter.findOne({ name: req.body.name });
     if (isName) return response.duplicated({ data: req.body.name });
 
-    const isCreate = await filter.create(req.body);
+    const save_data = {
+      name: req.body.name,
+      price: req.body.price,
+      color: req.body.color,
+      brand: req.body.brand,
+      gender: req.body.gender,
+      size: req.body.size,
+    };
+
+    const isCreate = await filter.create(save_data);
     if (!isCreate) return response.badRequest({ msg: "can not create" });
     return response.success({ data: isCreate });
   } catch (error) {
@@ -47,10 +56,10 @@ export async function updatefilter(req, res) {
 
     isId.name = req.body.name;
     isId.price = req.body.price;
-    isId.size = req.body.size;
     isId.color = req.body.color;
     isId.brand = req.body.brand;
     isId.gender = req.body.gender;
+    isId.size = req.body.size;
 
     if (!(await isId.save())) {
       return response.badRequest({ msg: "can not update" });
