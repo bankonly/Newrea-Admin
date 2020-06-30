@@ -35,7 +35,7 @@ const schema = new mongoose.Schema(
       type: Number,
       default: 1,
     },
-    popular_screen: {
+    popular_search: {
       type: Number,
       default: 1,
     },
