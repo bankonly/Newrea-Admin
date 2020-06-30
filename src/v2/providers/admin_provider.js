@@ -188,7 +188,7 @@ export async function getAdmin({ adminId = null, is_super_admin }) {
 
     const join = {
       path: "access_policy",
-      select: "-_id -createdAt -updatedAt -__v",
+      select: "-createdAt -updatedAt -__v",
     };
     const selected = "-password -__v";
     if (adminId == null) {
