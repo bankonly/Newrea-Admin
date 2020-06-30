@@ -1,5 +1,5 @@
 const Res = require("./response_controller");
-const FileProvider = require("../providers/file_provider");
+const File = require("../providers/file_provider");
 const BannerProvider = require("../providers/banner_provider");
 const Helpers = require("../helpers/Global");
 const constant = require("../configs/constant");
@@ -26,7 +26,7 @@ export async function saveBanner(req, res) {
       file: req.files.img,
     };
 
-    const isUpload = FileProvider.fileUpload(option);
+    const isUpload = File.fileUpload(option);
 
     // upload img
     if (!isUpload.status) {
@@ -71,23 +71,24 @@ export async function updateBanner(req, res) {
 
     if (!isId) return response.notFound({ msg: "no data" });
 
-    if (isName && isId.name !== isName.name)
+    if (isName && isId.name !== isName.name) {
       return response.duplicated({ data: isName.name });
+    }
 
     // upload img
     if (Helpers.isFile(req.files, "img")) {
       let option = {
         req: req,
         path: constant.imgPath.banner,
-        file: req.files.img
+        file: req.files.img,
       };
 
-      const isUpload = FileProvider.fileUpload(option);
+      const isUpload = File.fileUpload(option);
 
       if (!isUpload.status) {
         return response.badRequest(isUpload);
       }
-      FileProvider.remove({
+      File.remove({
         path: constant.imgPath.banner,
         fileName: isId.img,
       });
