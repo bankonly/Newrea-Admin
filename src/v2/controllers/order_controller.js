@@ -72,7 +72,11 @@ exports.getAsignedOrders = async (req, res) => {
   try {
     const foundOrder = await pickupFromSellerModel
       .find({
-        $and: [{ cancel_reason_id: null }, { driver_id: { $ne: null } }],
+        $and: [
+          { order_status_id: "5e47955f155e132ea0625c9f" },
+          { cancel_reason_id: null },
+          { driver_id: { $ne: null } },
+        ],
       })
       .populate([
         {
@@ -141,7 +145,7 @@ exports.asigneToDriver = async (req, res) => {
     if (savedData) {
       return response.success({ data: savedData });
     } else {
-      return response.success({ data: savedData, msg: "no data found" });
+      return response.somethingWrong({ data: savedData });
     }
   } catch (ex) {
     response.somethingWrong({ error: ex });
