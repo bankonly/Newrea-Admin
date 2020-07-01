@@ -80,7 +80,7 @@ export async function updateSubCategory(req, res) {
     if (!isValidId.status) return response.render(isValidId);
 
     if (Helpers.isFile(req.files, "img")) {
-      const isUpload = File.uploadImage({
+      const isUpload = File.fileUpload({
         path: constant.imgPath.categories,
         file: req.files.img,
         req,
@@ -92,7 +92,7 @@ export async function updateSubCategory(req, res) {
         fileName: isId.img,
       });
       // store image file
-      data.img = isUpload.data;
+      isId.img = isUpload.data;
     }
 
     const { data } = isValidId;

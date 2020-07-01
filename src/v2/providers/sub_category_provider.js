@@ -1,3 +1,5 @@
+import { json } from "body-parser";
+
 const Res = require("../controllers/default_res_controller");
 const Banner = require("../models/main_banner");
 const { isDate, compareBtwDate } = require("../helpers/Global");
@@ -13,7 +15,6 @@ export async function validate(obj, update = true) {
   let error = {};
   let msg = "field is required";
   let arrayMsg = "field is required as array id,id...";
-
   if (!Helpers.isEmpty(body.title)) error.title = msg;
   if (!Helpers.isEmpty(body.desc)) error.desc = msg;
   if (!Helpers.isEmpty(body.banner) || !Helpers.validateObjectId(body.banner))
@@ -32,7 +33,6 @@ export async function validate(obj, update = true) {
 
   const isValid = await Helpers.isSplitArrayObjectId({
     array: body,
-    split: ",",
   });
 
   if (!isValid && isValid !== undefined) {
@@ -51,41 +51,33 @@ export async function validateProductSeller(req, { model = null }) {
     const body = { ...req.body };
 
     const proSellerArray = {
-      new_arrivals: body.new_arrivals.split(","),
-      popular_item: body.popular_item.split(","),
-      clearance_item: body.clearance_item.split(","),
-      accessories: body.accessories.split(","),
+      new_arrivals: JSON.parse(body.new_arrivals),
+      popular_item: JSON.parse(body.popular_item),
+      clearance_item: JSON.parse(body.clearance_item),
+      accessories: JSON.parse(body.accessories),
     };
-    const catArray = { cat_id: body.cat_id.split(",") };
-    const brandArray = { brand: body.brand.split(",") };
-    const sellerArray = { recommend_store: body.recommend_store.split(",") };
 
     const newArrivalArr = Helpers.convert(proSellerArray);
-    const newCatArray = Helpers.convert(catArray);
-    const newBrandArray = Helpers.convert(brandArray);
-    const newSellerArray = Helpers.convert(sellerArray);
 
     let error = {};
     let msg = "id not found";
-    // return (error.some = "");
-
     // find seller id if exist
     const isNewArrival = await ProductSeller.find({
       _id: { $in: newArrivalArr },
     });
-    const isNewCatArray = await Category.find({ _id: { $in: newCatArray } });
+    const isNewCatArray = await Category.find({ _id: { $in: JSON.parse(body.cat_id) } });
     const isNewBrandArray = await Brand.find({
-      _id: { $in: newBrandArray },
+      _id: { $in: JSON.parse(body.brand) },
     });
     const isNewSellerArray = await Seller.find({
-      _id: { $in: newSellerArray },
+      _id: { $in: JSON.parse(body.recommend_store) },
     });
     // arrival data check
     const foundArrival = isNewArrival.map((v) => v._id.toString());
     const foundCatArray = isNewCatArray.map((v) => v._id.toString());
     const foundBrandArray = isNewBrandArray.map((v) => v._id.toString());
     const foundSellerArray = isNewSellerArray.map((v) => v._id.toString());
-    
+
     const selectArrival = [
       "new_arrivals",
       "popular_item",
@@ -97,7 +89,6 @@ export async function validateProductSeller(req, { model = null }) {
       select: selectArrival,
       found: foundArrival,
     });
-    console.log(notFoundArrival)
     const notFoundCatArray = Helpers.isFoundObjectId({
       body: body,
       select: ["cat_id"],
@@ -137,29 +128,29 @@ export async function validateProductSeller(req, { model = null }) {
     let respData = null;
 
     const saveData = {
-      new_arrivals: req.body.new_arrivals.split(","),
-      cat_id: req.body.cat_id.split(","),
-      popular_item: req.body.popular_item.split(","),
-      brand: req.body.brand.split(","),
-      accessories: req.body.accessories.split(","),
-      recommend_store: req.body.recommend_store.split(","),
-      clearance_item: req.body.clearance_item.split(","),
+      new_arrivals: JSON.parse(req.body.new_arrivals),
+      cat_id: JSON.parse(req.body.cat_id),
+      popular_item: JSON.parse(req.body.popular_item),
+      brand: JSON.parse(req.body.brand),
+      accessories: JSON.parse(req.body.accessories),
+      recommend_store: JSON.parse(req.body.recommend_store),
+      clearance_item: JSON.parse(req.body.clearance_item),
       title: req.body.title,
       desc: req.body.desc,
-      banner:req.body.banner
+      banner: req.body.banner,
     };
 
     if (model) {
-      model.new_arrivals = req.body.new_arrivals.split(",");
-      model.cat_id = req.body.cat_id.split(",");
-      model.popular_item = req.body.popular_item.split(",");
-      model.brand = req.body.brand.split(",");
-      model.accessories = req.body.accessories.split(",");
-      model.recommend_store = req.body.recommend_store.split(",");
-      model.clearance_item = req.body.clearance_item.split(",");
+      model.new_arrivals = JSON.parse(req.body.new_arrivals);
+      model.cat_id = JSON.parse(req.body.cat_id);
+      model.popular_item = JSON.parse(req.body.popular_item);
+      model.brand = JSON.parse(req.body.brand);
+      model.accessories = JSON.parse(req.body.accessories);
+      model.recommend_store = JSON.parse(req.body.recommend_store);
+      model.clearance_item = JSON.parse(req.body.clearance_item);
       model.title = req.body.title;
       model.desc = req.body.desc;
-      model.banner = req.body.banner
+      model.banner = req.body.banner;
       respData = model;
     } else {
       respData = saveData;
