@@ -35,6 +35,12 @@ export function validate(obj, update = false) {
   if (typeof obj.body.price !== "object") {
     error.price = msg_str + " as object";
   } else {
+    const isprice = Helpers.isKey({
+      arr: obj.body.price,
+      acceptKey: ["min", "max"],
+      type: "object",
+    });
+    if (isprice.length > 0) error.price = isprice;
     if (!Helpers.isEmpty(obj.body.price.min, "number")) {
       error.min = msg_str + msg_num;
     }
@@ -42,39 +48,29 @@ export function validate(obj, update = false) {
       error.max = msg_str + msg_num;
     }
   }
-  if (!Helpers.isArray(obj.body.size) || obj.body.size.length == 0) error.size = msg_str + msg_arr;
-  if (!Helpers.isArray(obj.body.color) || obj.body.color.length == 0) error.color = msg_str + msg_arr;
+  if (!Helpers.isArray(obj.body.size) || obj.body.size.length == 0)
+    error.size = msg_str + msg_arr;
+  if (!Helpers.isArray(obj.body.color) || obj.body.color.length == 0)
+    error.color = msg_str + msg_arr;
 
   // validate inside array of
   const size = obj.body.size;
   const color = obj.body.color;
 
   if (Helpers.isArray(size)) {
-    size.map((value) => {
-      if (!Helpers.isEmpty(value.text)) {
-        error.text = msg_str + msg_as_str;
-      } else {
-        value.text = value.text.toUpperCase();
-      }
+    const isSize = Helpers.isKey({
+      arr: size,
+      acceptKey: ["text", "number"],
     });
-    size.map((value) => {
-      if (!Helpers.isEmpty(value.number, "number")) {
-        error.number = msg_str + msg_num;
-      }
-    });
+    if (isSize.length > 0) error.size = isSize;
   }
 
   if (Helpers.isArray(color)) {
-    color.map((value) => {
-      if (!Helpers.isEmpty(value.color)) {
-        error.color = msg_str + msg_as_str;
-      }
+    const isColor = Helpers.isKey({
+      arr: color,
+      acceptKey: ["color", "value"],
     });
-    color.map((val) => {
-      if (!Helpers.isEmpty(val.value, "number")) {
-        error.value = msg_str + msg_num;
-      }
-    });
+    if (isColor.length > 0) error.color = isColor;
   }
 
   if (update) {
