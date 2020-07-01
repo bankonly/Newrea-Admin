@@ -1,3 +1,5 @@
+const constant = require("../configs/constant");
+
 class ResponseController {
   constructor(res) {
     this.res = res;
@@ -127,7 +129,10 @@ class ResponseController {
     code = 500,
     error,
   }) {
-    console.log(error.message);
+    console.log(error);
+    if (constant.ENV_APP !== "production") {
+      msg = error.message;
+    }
     return this.res.json({
       message: msg,
       status: status,
@@ -136,7 +141,12 @@ class ResponseController {
     });
   }
 
-  invalidObjectId({ data = {}, msg = "invalid object id", status = true, code = 400 }) {
+  invalidObjectId({
+    data = {},
+    msg = "invalid object id",
+    status = true,
+    code = 400,
+  }) {
     return this.res.json({
       message: msg,
       status: status,
@@ -144,7 +154,6 @@ class ResponseController {
       data: data,
     });
   }
-
 }
 
 module.exports = ResponseController;

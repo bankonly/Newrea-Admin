@@ -177,7 +177,7 @@ export async function whoami(req, res) {
   const response = new Res(res);
   try {
     return response.success({ data: req.auth });
-  } catch (error) {
+  } catch (error) { 
     return response.somethingWrong({ error: error });
   }
 }

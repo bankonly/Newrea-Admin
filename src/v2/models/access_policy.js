@@ -35,7 +35,7 @@ const schema = new mongoose.Schema(
       type: Number,
       default: 1,
     },
-    popular_screen: {
+    popular_search: {
       type: Number,
       default: 1,
     },
@@ -52,6 +52,30 @@ const schema = new mongoose.Schema(
       default: 1,
     },
     seller: {
+      type: Number,
+      default: 1,
+    },
+    brand: {
+      type: Number,
+      default: 1,
+    },
+    categories: {
+      type: Number,
+      default: 1,
+    },
+    currency: {
+      type: Number,
+      default: 1,
+    },
+    delivery_type: {
+      type: Number,
+      default: 1,
+    },
+    delivery_fee: {
+      type: Number,
+      default: 1,
+    },
+    payment_method: {
       type: Number,
       default: 1,
     },

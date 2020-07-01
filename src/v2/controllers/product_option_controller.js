@@ -1,13 +1,14 @@
+
 const Res = require("./response_controller");
 const FileProvider = require("../providers/file_provider");
-const product_masterProvider = require("../providers/product_master_provider");
+const product_optionProvider = require("../providers/product_option_provider");
 const Helpers = require("../helpers/Global");
 const constant = require("../configs/constant");
 const QB = require("../helpers/query_builder");
-const Product_master = require("../models/Product_master").default;
+const Product_option = require("../models/Product_option").default;
 
 // save
-export const saveproduct_master = async (req, res) => {
+export async function saveproduct_option(req, res) {
   // define response
   const response = new Res(res);
   try {
@@ -15,10 +16,10 @@ export const saveproduct_master = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // update
-export const updateproduct_master = async (req, res) => {
+export async function updateproduct_option(req, res) {
   // define response
   const response = new Res(res);
   try {
@@ -26,51 +27,51 @@ export const updateproduct_master = async (req, res) => {
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // get all
-export const getAllproduct_master = async (req, res) => {
+export async function getAllproduct_option(req, res) {
   // define response
   const response = new Res(res);
   try {
     const data = await QB.fetch({
-      model: Product_master,
+      model: Product_option,
       adminType: req.is_super_admin,
     });
     return response.success(data);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // get
-export const getproduct_master = async (req, res) => {
+export async function getproduct_option(req, res) {
   // define response
   const response = new Res(res);
   try {
-    // const data = await QB.fetch({
-    //   model: Product_master,
-    //   adminType: req.is_super_admin,
-    //   id: req.params.{ param name },
-    // });
+    const data = await QB.fetch({
+      model: Product_option,
+      adminType: req.is_super_admin,
+      id: req.params.product_option,
+    });
     return response.success(data);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}
 
 // delete
-export const deleteproduct_master = async (req, res) => {
+export async function deleteproduct_option(req, res) {
   // define response
   const response = new Res(res);
   try {
-    // const isSet = await QB.setActive(
-    //   Product_master,
-    //   req.params.{ param name },
-    //   req.body.is_active
-    // );
+    const isSet = await QB.setActive(
+      Product_option,
+      req.params.product_option,
+      req.body.is_active
+    );
     return response.success(isSet);
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
-};
+}

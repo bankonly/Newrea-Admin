@@ -1,7 +1,7 @@
 var mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-var DeliveryTypeSchema = new Schema(
+var FilterSchema = new Schema(
   {
     // Express / Standrad
     name: {
@@ -9,21 +9,29 @@ var DeliveryTypeSchema = new Schema(
       required: true,
     },
     price: {
-      type: Number,
-      required: true,
+      min: {
+        type: Number,
+        required: true,
+      },
+      max: {
+        type: Number,
+        required: true,
+      },
     },
-    time: {
-      type: String,
-      required: true,
+    size: [],
+    color: [],
+    brand: {
+      type: Array,
+      require: true,
+    },
+    gender: {
+      type: Array,
+      require: true,
     },
     is_active: {
       type: String,
       default: "active",
       enum: ["active", "inactive"],
-    },
-    deleted_at: {
-      type: Date,
-      default: null,
     },
   },
   {
@@ -34,8 +42,4 @@ var DeliveryTypeSchema = new Schema(
   }
 );
 
-module.exports = mongoose.model(
-  "DeliveryType",
-  DeliveryTypeSchema,
-  "delivery_type"
-);
+module.exports = mongoose.model("filter", FilterSchema, "filter");

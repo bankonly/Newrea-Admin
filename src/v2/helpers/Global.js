@@ -132,14 +132,13 @@ export function compareBtwDate(start_date, end_date) {
   return true;
 }
 
-export async function isSplitArrayObjectId({ array, split }) {
+export async function isSplitArrayObjectId({ array }) {
   let error = false;
   const arrayNum = Object.keys(array);
   for (let i = 0; i < arrayNum.length; i++) {
     let element = arrayNum[i];
-    // console.log(element)
-    const arr = array[element].split(split);
-    if (!isArray(arr) || !isString(split)) return false;
+    const arr = JSON.parse(array[element])
+    if (!isArray(arr)) return false;
     if (arr.length == 2) {
       if (arr[1] == "" || arr[1] == null) return false;
     }
@@ -155,7 +154,7 @@ export function isFoundObjectId({ body, select = [], found = [] }) {
   let notFound = [];
   Object.keys(body).forEach((val, index) => {
     if (select.includes(val)) {
-      const objectId = body[val].split(",");
+      const objectId = JSON.parse(body[val]);
       if (objectId.length > 1) {
         objectId.forEach((value) => {
           if (!found.includes(value)) {
