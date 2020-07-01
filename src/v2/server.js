@@ -9,6 +9,7 @@ import app_config from "./configs/app";
 import database from "./configs/db";
 
 const app = express();
+
 // LOAD ALL DEFAULT CONFIGURATIONS
 app_config(app);
 
