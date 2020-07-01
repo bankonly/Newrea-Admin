@@ -106,7 +106,10 @@ app.use(
 app.use("/img/bank", express.static(__dirname + "./../../../img/bank"));
 
 // Customer
-app.use("/img/customer", express.static(__dirname + "./../../../img/cus_profile"));
+app.use(
+  "/img/customer",
+  express.static(__dirname + "./../../../img/cus_profile")
+);
 
 // Noti
 app.use("/img/noti", express.static(__dirname + "./../../../img/noti/256x256"));
@@ -130,11 +133,11 @@ import cancel_reason from "../routes/api/cancel_reason";
 import token from "../routes/api/token";
 import report from "../routes/api/report";
 import history_wallet from "../routes/api/history_wallet";
-import like_feed from './../routes/api/like_feed'
-import comment_feed from './../routes/api/comment_feed'
-import popular_product from './../routes/api/popular_product'
-import follower_like_comment from './../routes/api/follower_like_comment'
-import change_password from './../routes/api/change_password'
+import like_feed from "./../routes/api/like_feed";
+import comment_feed from "./../routes/api/comment_feed";
+import popular_product from "./../routes/api/popular_product";
+import follower_like_comment from "./../routes/api/follower_like_comment";
+import change_password from "./../routes/api/change_password";
 
 import Order from "../models/Order";
 import Order_Status from "../models/Order_Status";

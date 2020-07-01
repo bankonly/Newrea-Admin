@@ -1,51 +1,51 @@
-import Res from "../controllers/default_res_controller";
+const Res = require("../controllers/default_res_controller");
 
-/** Models */
-import { Category, CategoryQB } from "../models/category";
+// Models
+const Category = require("../models/category");
 
-/** Providers */
-import { imageUpload } from "./file_provider"
+// helpers
+const Helpers = require("../helpers/Global");
 
-/** validate save data */
-export const validateSaveData = (obj) => {
+// validate save data
+export function validateSaveData(obj) {
   var error = {};
   var msg = "field is required";
-  if (!obj.name) error.name = msg;
+  if (!obj.body.name) error.name = msg;
+  if (!obj.files || !obj.files.img) error.img = msg;
   return error;
-};
+}
 
-/** save category */
-export const _saveCategory = (req,res,saveData) => {
+// // get category
+export async function fetch(cat_id = null, is_super_admin = false) {
   try {
-    return Res.success({ data: null });
+    var catData = null;
+    var condition = {
+      parent_id: null,
+    };
+
+    if (!is_super_admin) {
+      condition.is_active = "active";
+    }
+
+    if (cat_id !== null) {
+      if (!Helpers.validateObjectId(cat_id)) {
+        return Res.badRequest({ msg: "invalid cat_id id" });
+      }
+      condition._id = cat_id;
+      catData = Category.findOne(condition);
+    } else {
+      catData = Category.find(condition);
+    }
+
+    const respCategory = await catData.select("-__v");
+
+    // check if accData no data
+    if (respCategory == null || respCategory.length < 1) {
+      return Res.notFound({ msg: "no category data data" });
+    }
+
+    return Res.success({ data: respCategory });
   } catch (error) {
     return Res.somethingWrong({ error: error });
   }
-};
-
-/** update category */
-export const _updateCategory = () => {
-  try {
-    return Res.success({ data: null });
-  } catch (error) {
-    return Res.somethingWrong({ error: error });
-  }
-};
-
-/** get category */
-export const _getCategory = (cat_id = null) => {
-  try {
-    return Res.success({ data: null });
-  } catch (error) {
-    return Res.somethingWrong({ error: error });
-  }
-};
-
-/** delete category */
-export const _deleteCategory = () => {
-  try {
-    return Res.success({ data: null });
-  } catch (error) {
-    return Res.somethingWrong({ error: error });
-  }
-};
+}

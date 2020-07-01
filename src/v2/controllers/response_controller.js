@@ -1,3 +1,5 @@
+const constant = require("../configs/constant");
+
 class ResponseController {
   constructor(res) {
     this.res = res;
@@ -5,7 +7,7 @@ class ResponseController {
 
   // duplicated
   duplicated({ data = {}, msg = "duplicated", status = false, code = 400 }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -15,7 +17,7 @@ class ResponseController {
 
   // success
   success({ data = {}, msg = "success", status = true, code = 200 }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -25,7 +27,7 @@ class ResponseController {
 
   // deleted
   deleted({ data = {}, msg = "deleted success", status = true, code = 200 }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -35,7 +37,7 @@ class ResponseController {
 
   // updated
   updated({ data = {}, msg = "updated success", status = true, code = 200 }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -44,8 +46,9 @@ class ResponseController {
   }
 
   // created
+
   created({ data = {}, msg = "created success", status = true, code = 200 }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -55,7 +58,7 @@ class ResponseController {
 
   // error
   error({ data = {}, msg = "something wrong", status = false, code = 500 }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -65,7 +68,7 @@ class ResponseController {
 
   // badRequest
   badRequest({ data = {}, msg = "badRequest", status = false, code = 400 }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -75,7 +78,7 @@ class ResponseController {
 
   // notFound
   notFound({ data = {}, msg = "notFound", status = false, code = 404 }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -90,7 +93,7 @@ class ResponseController {
     status = false,
     code = 419,
   }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -100,7 +103,7 @@ class ResponseController {
 
   // notAllowed
   notAllowed({ data = {}, msg = "notAllowed", status = false, code = 405 }) {
-    return this.res.status(code).json({
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -108,9 +111,9 @@ class ResponseController {
     });
   }
 
-  // outPut
-  outPut({ data = {}, msg = "success", status = true, code = 200 }) {
-    return this.res.status(code).json({
+  // render
+  render({ data = {}, msg = "success", status = true, code = 200 }) {
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -118,7 +121,7 @@ class ResponseController {
     });
   }
 
-  // outPut
+  // render
   somethingWrong({
     data = {},
     msg = "something wrong",
@@ -126,8 +129,11 @@ class ResponseController {
     code = 500,
     error,
   }) {
-    console.log(error.message);
-    return this.res.status(code).json({
+    console.log(error);
+    if (constant.ENV_APP !== "production") {
+      msg = error.message;
+    }
+    return this.res.json({
       message: msg,
       status: status,
       code: code,
@@ -135,6 +141,19 @@ class ResponseController {
     });
   }
 
+  invalidObjectId({
+    data = {},
+    msg = "invalid object id",
+    status = true,
+    code = 400,
+  }) {
+    return this.res.json({
+      message: msg,
+      status: status,
+      code: code,
+      data: data,
+    });
+  }
 }
 
-export default (res) => new ResponseController(res);
+module.exports = ResponseController;

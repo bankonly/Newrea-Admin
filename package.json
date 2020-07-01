@@ -7,12 +7,14 @@
     "start": "nodemon bin/dev",
     "clean": "rm -rf dist",
     "build": "npm run clean && mkdir dist && babel src -s -d dist",
-    "prod": "npm run build && node bin/prod"
+    "prod": "npm run build && node bin/prod",
+    "resource": "node command/resource"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@babel/runtime": "^7.7.7",
+    "@hapi/joi": "^17.1.1",
     "axios": "^0.19.2",
     "bcrypt": "^3.0.7",
     "bcryptjs": "^2.4.3",
@@ -35,6 +37,7 @@
     "nodemon": "^1.19.1",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
+    "secure-random-password": "^0.2.1",
     "sharp": "^0.24.0",
     "tunnel-ssh": "^4.1.4",
     "uuid": "^3.4.0",

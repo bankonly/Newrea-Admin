@@ -1,14 +1,13 @@
-import { register, login } from "../controllers/admin_controller";
-
-import { Router } from "express";
+const { register, login } = require("../controllers/admin_controller");
+const { Router } = require("express");
 const router = Router();
+const { runSeeder } = require("../database/seeder/basic_setup");
 
-/** Route For AdminController */
+// Route For AdminController
 router.post("/register", register);
 router.post("/login", login);
 
-/** Seeder */
-import { runSeeder } from "../database/seeder/basic_setup";
+// Seeder
 router.post("/runSeeder", runSeeder);
 
 export default router;

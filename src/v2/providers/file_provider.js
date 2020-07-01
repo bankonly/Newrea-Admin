@@ -1,154 +1,250 @@
-import multer from "multer";
-import fs from "fs";
-import uuid from "uuid";
-import constant from "../configs/constant";
-import sharp from "sharp";
-import formidable from "formidable";
+const multer = require("multer");
+const fs = require("fs");
+const uuid = require("uuid");
+const constant = require("../configs/constant");
+const sharp = require("sharp");
+const formidable = require("formidable");
+const Helpers = require("../helpers/Global");
 
-/** helpers */
-import { isEmptyObj } from "../helpers/Global";
+// Controllers
+const Res = require("../controllers/default_res_controller");
 
-/** Controllers */
-import Res from "../controllers/default_res_controller";
-
-/** validate image */
-export const imageValidate = (fileData, filetype = ".jpg") => {
+// validate image
+export function imageValidate(imageSize, file) {
   try {
-    var error = {};
-    var file = "./" + fileData.path + filetype;
-    fs.rename(fileData.path, file, (err) => {
-      if (err) error.upload = "image upload failed";
-    });
-
-    /** check if image over than define */
-    if (fileData.size > constant.image_size_allow) {
-      error.maxSize = "max size is " + constant.image_size_allow + "bytes";
+    if (!Array.isArray(imageSize)) {
+      return Res.badRequest({ msg: "img is should be array" });
     }
 
-    /** check file type */
-    if (!constant.image_type_accept.includes(fileData.mimetype.split("/")[1])) {
-      error.fileType = "file type is not correct";
+    for (var i = 0; i < imageSize.length; i++) {
+      if (typeof imageSize[i] !== "number") {
+        return Res.badRequest({ msg: "img is should be number" });
+      }
     }
-
-    if (!isEmptyObj(error)) {
-      return Res.badRequest({ data: error });
-    }
-
-    return Res.success({ data: { file: file, fileType: filetype } });
+    return Res.success({});
   } catch (error) {
     return Res.somethingWrong({ error: error });
   }
-};
+}
 
-/** single image upload */
-export const uploadImage = ({
-  path,
-  field,
-  req,
-  res,
-  height = 512,
-  width = 512,
-  maxUpload = 5,
-  fileType = ".jpg",
-}) => {
+export function createDirIfNotExist(path) {
   try {
-    if (!field) return Res.badRequest({ msg: field + " is required" });
-    /** check if path exist and create */
     if (!fs.existsSync(path)) {
       fs.mkdirSync(path);
     }
+  } catch (error) {
+    return new Error(error);
+  }
+}
 
-    /** save image with multi */
-    const upload = multer({ dest: path }).array(field, maxUpload);
-    return new Promise((resolve, reject) => {
-      var response = Res.success({});
-      var error = {};
-      upload(req, res, (err) => {
-        req.body = req.body;
-        if (req.files.length > 5) {
-          error.limit = "limit upload is " + maxUpload;
-          response = Res.badRequest({ data: error });
-        } else if (req.files.length == 0) {
-          error.image = "image can not be null";
-          response = Res.badRequest({ data: error });
-        } else {
-          /** loop image list */
-          req.files.forEach((file, index) => {
-            const resizePath = path;
-            const folderName = width + "x" + height + "/";
-            /** new file name */
-            const newFile = resizePath + folderName + file.filename + fileType;
-            /** rename image */
-            response = imageValidate(file, fileType);
-            if (err || !response.status) {
-              // console.log(path + file.filename + fileType)
-              removeImage(path + file.filename + fileType);
-              response = Res.badRequest(response);
-            } else {
-              /** check if new dir is not exist */
-              if (!fs.existsSync(resizePath + folderName)) {
-                fs.mkdirSync(resizePath + folderName);
-              }
+export function resizeImage({ size, path, fileName }) {
+  try {
+    if (!Helpers.isArray(size)) {
+      return new Error("size should be array");
+    }
+    var removePath = [];
+    for (var i = 0; i < size.length; i++) {
+      const newPath = path + size[i] + "x" + size[i] + "/";
+      const newFile = newPath + fileName;
+      const destination = path + fileName;
 
-              /** call resize func */
-              const isResize = resizeImage({
-                width: width,
-                height: height,
-                oldPath: response.data.file,
-                newPath: newFile,
-              });
-              console.log(response.data);
-              if (!isResize.status) {
-                response = isResize;
-              } else response = Res.success(response);
-            }
-          });
+      // check if new dir is not exist
+      createDirIfNotExist(newPath);
+      // store remove path if validate error
+      sharp(destination)
+        .resize(size[i], size[i])
+        .toFile(newFile, (e, info) => {
+          if (e) {
+            return new Error(e.message);
+          }
+        });
+      removePath.push(newFile);
+    }
+    return removePath;
+  } catch (error) {
+    return new Error(error);
+  }
+}
+
+// remove one file
+export function removeFileMany({ path, fileName, subFolder = [800, 200] }) {
+  try {
+    if (!Helpers.isArray(subFolder)) {
+      return new Error("remove path should be array");
+    }
+
+    if (fs.existsSync(path + fileName)) {
+      fs.unlinkSync(path + fileName);
+      for (var i = 0; i < subFolder.length; i++) {
+        const destination =
+          path + subFolder[i] + "x" + subFolder[i] + "/" + fileName;
+        if (fs.existsSync(destination)) {
+          fs.unlinkSync(destination);
         }
-        /** if save image not success */
-        if (!response.status) {
-          return resolve(response);
-        } else {
-          return resolve(Res.success({ data: req.body }));
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    return new Error(error);
+  }
+}
+
+// remove one file
+export function removeFilesMany({
+  path,
+  fileName = [],
+  subFolder = [800, 200],
+}) {
+  try {
+    if (!Helpers.isArray(subFolder) && !Helpers.isArray(fileName)) {
+      return new Error("remove path should be array");
+    }
+    for (let i = 0; i < fileName.length; i++) {
+      if (fs.existsSync(path + fileName[i])) {
+        fs.unlinkSync(path + fileName[i]);
+        for (var f = 0; f < subFolder.length; f++) {
+          const destination =
+            path + subFolder[f] + "x" + subFolder[f] + "/" + fileName[i];
+          if (fs.existsSync(destination)) {
+            fs.unlinkSync(destination);
+          }
         }
-      });
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    return new Error(error);
+  }
+}
+
+// remove image all size and original images
+/**
+ *
+ *
+ * @export
+ * @param {*} folderPath
+ * @param {*} fileName
+ */
+export function removeFile(folderPath, fileName) {
+  return new Promise((resolve, rejects) => {
+    fs.unlink(`${folderPath}${fileName}`, (err) => {
+      if (err) {
+        console.log(err);
+        resolve(false);
+      } else {
+        resolve(true);
+      }
     });
+  });
+}
+
+export function uploadImage({
+  req,
+  path,
+  imageSize = [800, 200],
+  file,
+  fileType = "jpg",
+}) {
+  try {
+    // validate image before save
+    const validateImage = imageValidate(imageSize, file);
+    if (!validateImage.status) return validateImage;
+
+    if (file.size > constant.image_size_allow) {
+      return Res.badRequest({ msg: "file is to large" });
+    }
+
+    if (!constant.image_type_accept.includes(file.mimetype.split("/")[1])) {
+      return Res.badRequest({ msg: "img type not accepted" });
+    }
+    const fileName = uuid() + Date.now() + "." + fileType;
+    req.body.img = fileName;
+    createDirIfNotExist(path);
+    fs.writeFileSync(path + fileName, file.data);
+    const resizePath = resizeImage({
+      size: imageSize,
+      path: path,
+      fileName: fileName,
+    });
+
+    return Res.success({ data: fileName, msg: "img created" });
+  } catch (error) {
+    return Res.somethingWrong({ error: error });
+  }
+}
+
+export const uploadImageMany = ({
+  req,
+  path,
+  imageSize = [800, 200],
+  file,
+  fileType = "jpg",
+  size = 5,
+}) => {
+  try {
+    if (!Helpers.isArray(file)) {
+      return Res.badRequest({ msg: "file should be array" });
+    }
+
+    if (file.length > size) {
+      return Res.badRequest({ msg: "too much file allow only " + size });
+    }
+
+    let imgList = [];
+    for (let i = 0; i < file.length; i++) {
+      if (file[i].size > constant.image_size_allow) {
+        return Res.badRequest({ msg: "file is to large" });
+      }
+
+      // validate image before save
+      const validateImage = imageValidate(imageSize, file);
+      if (!validateImage.status) return validateImage;
+
+      if (
+        !constant.image_type_accept.includes(file[i].mimetype.split("/")[1])
+      ) {
+        return Res.badRequest({ msg: "img type not accepted" });
+      }
+      const fileName = uuid() + Date.now() + "." + fileType;
+      createDirIfNotExist(path);
+      fs.writeFileSync(path + fileName, file[i].data);
+      resizeImage({
+        size: imageSize,
+        path: path,
+        fileName: fileName,
+      });
+      imgList.push(fileName);
+    }
+    if (imgList.length > 0) {
+      return Res.success({ data: imgList, msg: "img created" });
+    }
+    return Res.badRequest({ msg: "img upload failed" });
   } catch (error) {
     return Res.somethingWrong({ error: error });
   }
 };
 
-export const resizeImage = ({ width, height, oldPath, newPath }) => {
-  try {
-    var response = Res.success({});
-    sharp(oldPath)
-      .resize(width, height)
-      .toFile(newPath, (e, info) => {
-        if (e) response = Res.badRequest({ msg: "imagevalidate error" });
-      });
-    return response;
-  } catch (error) {
-    return Res.somethingWrong({ error: error, msg: "from resize" });
+export const fileUpload = ({
+  req,
+  path,
+  imageSize = [800, 200],
+  file,
+  fileType = "jpg",
+  size = 5,
+}) => {
+  const option = { path, req, imageSize, file, fileType, size };
+  if (Helpers.isArray(file)) {
+    return uploadImageMany(option);
   }
+  delete option.size;
+  return uploadImage(option);
 };
 
-/** save image */
-export const uploadImagev2 = (req, path, multiples = true) => {
-  try {
-    const form = formidable({ multiples: multiples });
-    form.parse(req, (err, fields, files) => {
-      // const oldPath = fi
-      console.log(files.image);
-      console.log(typeof files.image);
-
-      if (multiples) {
-        files.im;
-      }
-    });
-  } catch (error) {
-    return Res.somethingWrong({ error: error, msg: "from resize" });
+export const remove = ({ path, fileName, subFolder = [800, 200] }) => {
+  const option = { path, fileName, subFolder };
+  if (Helpers.isArray(fileName)) {
+    removeFilesMany(option);
+  } else {
+    removeFileMany(option);
   }
-};
-
-export const removeImage = (path) => {
-  fs.unlink(path, (err) => console.log(err));
 };

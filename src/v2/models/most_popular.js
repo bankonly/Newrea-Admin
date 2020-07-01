@@ -1,17 +1,33 @@
 import mongoose from "mongoose";
 
-/** Import migrtion */
-import most_popular_schema from "../database/schema/most_popular_schema";
-const { tableName, schema } = most_popular_schema(mongoose);
+const tableName = "most_popular";
+const schema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    desc: {
+      type: String,
+      default: null,
+    },
+    img: {
+      type: String,
+      required: true,
+    },
+    is_active: {
+      type: String,
+      default: "active",
+      required: true,
+    },
+    created_date: {
+      type: Date,
+      default: Date.now(),
+    },
+  },
+  { collection: tableName }
+);
 
-const Most_Popular = mongoose.model(tableName, schema);
+const MostPopular = mongoose.model(tableName, schema);
 
-/** Query Builder */
-class QueryBuilder {
-  constructor() {
-    this.model = Most_Popular;
-  }
-}
-
-export const Model = Most_Popular;
-export const ModelQB = new QueryBuilder();
+module.exports = MostPopular;

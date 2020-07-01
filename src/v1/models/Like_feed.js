@@ -1,4 +1,5 @@
-import { Schema, model } from "mongoose";
+var mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 const like_feed = new Schema(
     {
@@ -32,5 +33,4 @@ const like_feed = new Schema(
         collection: "like_feed",
     }
 );
-const like_feeds = model("like_feed", like_feed);
-export default like_feeds;
+module.exports = mongoose.model("like_feed", like_feed, 'like_feed');

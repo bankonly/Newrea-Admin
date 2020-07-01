@@ -7,11 +7,13 @@ const connectDatabase = () => {
       `${env.DB_DRIVER}://${env.DB_HOST}:${env.DB_PORT}/${env.DB_NAME}`,
       {
         useNewUrlParser: true,
-        useUnifiedTopology: true
+        useUnifiedTopology: true,
       }
     )
-    .catch(error => console.log(error.message))
-    .then(() => console.log("CONNECTED TO DB"));
+    .catch((error) => console.log(error.message))
+    .then(() =>
+      console.log(`CONNECTED TO DB NAME '${env.DB_NAME}' PORT '${env.DB_PORT}'`)
+    );
 };
 try {
   connectDatabase();

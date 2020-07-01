@@ -1,4 +1,5 @@
-import { Schema, model } from "mongoose";
+var mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 const comment_feed = new Schema(
     {
@@ -17,8 +18,9 @@ const comment_feed = new Schema(
             ref: "shop_feed",
             required: true,
         },
-        comment: {
-            type: String
+        msg: {
+            type: String,
+            required: true,
         },
         is_active: {
             type: String,
@@ -35,5 +37,4 @@ const comment_feed = new Schema(
         collection: "comment_feed",
     }
 );
-const comment_feeds = model("comment_feed", comment_feed);
-export default comment_feeds;
+module.exports = mongoose.model("comment_feed", comment_feed, 'comment_feed');
