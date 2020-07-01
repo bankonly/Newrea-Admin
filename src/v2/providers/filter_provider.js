@@ -14,9 +14,22 @@ export function validate(obj, update = false) {
   if (!Helpers.isEmpty(obj.body.name)) error.name = msg_str;
   if (!Helpers.isArray(obj.body.brand) || obj.body.brand.length == 0) {
     error.brand = msg_str + msg_arr;
+  } else {
+    obj.body.brand.map((value) => {
+      if (!Helpers.isEmpty(value)) {
+        error.brand = msg_str + msg_as_str;
+      }
+    });
   }
+
   if (!Helpers.isArray(obj.body.gender) || obj.body.gender.length == 0) {
     error.gender = msg_str + msg_arr;
+  } else {
+    obj.body.gender.map((value) => {
+      if (!Helpers.isEmpty(value)) {
+        error.gender = msg_str + msg_as_str;
+      }
+    });
   }
 
   if (typeof obj.body.price !== "object") {
@@ -29,8 +42,8 @@ export function validate(obj, update = false) {
       error.max = msg_str + msg_num;
     }
   }
-  if (!Helpers.isArray(obj.body.size)) error.size = msg_str + msg_arr;
-  if (!Helpers.isArray(obj.body.color)) error.color = msg_str + msg_arr;
+  if (!Helpers.isArray(obj.body.size) || obj.body.size.length == 0) error.size = msg_str + msg_arr;
+  if (!Helpers.isArray(obj.body.color) || obj.body.color.length == 0) error.color = msg_str + msg_arr;
 
   // validate inside array of
   const size = obj.body.size;
