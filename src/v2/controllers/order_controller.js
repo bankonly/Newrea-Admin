@@ -70,20 +70,58 @@ exports.getOrders = async (req, res) => {
 exports.getAsignedOrders = async (req, res) => {
   const response = new Res(res);
   try {
-    const foundOrder = await pickupFromSellerModel.find().populate([
-      {
-        path: "driver_id",
-      },
-      {
-        path: "admin_id",
-      },
-      {
-        path: "order_status_id",
-      },
-      {
-        path: "cancel_reason_id",
-      },
-    ]);
+    const foundOrder = await pickupFromSellerModel
+      .find({
+        $and: [{ cancel_reason_id: null }, { driver_id: { $ne: null } }],
+      })
+      .populate([
+        {
+          path: "product_item_id",
+        },
+        {
+          path: "driver_id",
+          // select: "first_name last_name phone_number",
+        },
+        {
+          path: "admin_id",
+          // select: "name",
+        },
+        {
+          path: "order_status_id",
+          // select: "name",
+        },
+      ]);
+    if (foundOrder.length > 0) {
+      return response.success({ data: foundOrder });
+    } else {
+      return response.success({ data: foundOrder, msg: "no data found" });
+    }
+  } catch (ex) {
+    response.somethingWrong({ error: ex });
+  }
+};
+exports.getAllCancelFromDriver = async (req, res) => {
+  const response = new Res(res);
+  try {
+    const foundOrder = await pickupFromSellerModel
+      .find({ cancel_reason_id: { $ne: null } })
+      .populate([
+        {
+          path: "product_item_id",
+        },
+        {
+          path: "driver_id",
+          // select: "first_name last_name phone_number",
+        },
+        {
+          path: "admin_id",
+          // select: "name",
+        },
+        {
+          path: "order_status_id",
+          // select: "name",
+        },
+      ]);
     if (foundOrder.length > 0) {
       return response.success({ data: foundOrder });
     } else {
