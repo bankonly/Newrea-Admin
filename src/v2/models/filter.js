@@ -17,6 +17,11 @@ var FilterSchema = new Schema(
         type: Number,
         required: true,
       },
+      step:{
+        type:Number,
+        required:true,
+        default:1000
+      }
     },
     size: [],
     color: [],
