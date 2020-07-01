@@ -127,7 +127,7 @@ export function removeFilesMany({
  */
 export function removeFile(folderPath, fileName) {
   return new Promise((resolve, rejects) => {
-    fs.unlink(`${folderPath}/${fileName}`, (err) => {
+    fs.unlink(`${folderPath}${fileName}`, (err) => {
       if (err) {
         console.log(err);
         resolve(false);

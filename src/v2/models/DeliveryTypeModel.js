@@ -31,4 +31,4 @@ var DeliveryTypeSchema = new Schema({
     },
 });
 
-module.exports = mongoose.model("DeliveryType", DeliveryTypeSchema, 'delivery_type');
+module.exports = mongoose.model("delivery_type", DeliveryTypeSchema, 'delivery_type');
