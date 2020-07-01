@@ -101,7 +101,6 @@ export function removeFilesMany({
     }
     for (let i = 0; i < fileName.length; i++) {
       if (fs.existsSync(path + fileName[i])) {
-        console.log("me der");
         fs.unlinkSync(path + fileName[i]);
         for (var f = 0; f < subFolder.length; f++) {
           const destination =
@@ -234,7 +233,7 @@ export const fileUpload = ({
   size = 5,
 }) => {
   const option = { path, req, imageSize, file, fileType, size };
-  if (file.length > 1) {
+  if (Helpers.isArray(file)) {
     return uploadImageMany(option);
   }
   delete option.size;
@@ -246,6 +245,6 @@ export const remove = ({ path, fileName, subFolder = [800, 200] }) => {
   if (Helpers.isArray(fileName)) {
     removeFilesMany(option);
   } else {
-    removeFileMany(option)
+    removeFileMany(option);
   }
 };
