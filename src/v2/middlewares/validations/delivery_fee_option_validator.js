@@ -24,20 +24,6 @@ exports.createValidator = async (req, res, next) => {
   }
 };
 
-// exports.deleteValidator = async (req, res, next) => {
-//   const response = new Res(res);
-//   try {
-//     const schema = Joi.object({
-//       is_active: Joi.string().valid("active", "inactive").required(),
-//     });
-//     await schema.validateAsync(req.body);
-//     next();
-//   } catch (err) {
-//     console.log(err);
-//     response.badRequest({ data: err });
-//   }
-// };
-
 exports.updateValidator = async (req, res, next) => {
   const response = new Res(res);
   const data = req.body;
