@@ -104,6 +104,7 @@ export async function updateSubCategory(req, res) {
       id: req.params.cats_id,
       adminType: req.is_super_admin,
       populate: SubCatProvider.defaultPopulate,
+      select:"-img -desc -_id -desc"
     });
     return response.success(resData);
   } catch (error) {
@@ -119,7 +120,7 @@ export async function getAllSubCategory(req, res) {
     const data = await QB.fetch({
       model: SubCategory,
       adminType: req.is_super_admin,
-      populate: SubCatProvider.defaultPopulate,
+      populate: SubCatProvider.defaultPopulate
     });
     return response.success(data);
   } catch (error) {

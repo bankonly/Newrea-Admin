@@ -65,7 +65,9 @@ export async function validateProductSeller(req, { model = null }) {
     const isNewArrival = await ProductSeller.find({
       _id: { $in: newArrivalArr },
     });
-    const isNewCatArray = await Category.find({ _id: { $in: JSON.parse(body.cat_id) } });
+    const isNewCatArray = await Category.find({
+      parent_id: { $nin: JSON.parse(body.cat_id) },
+    });
     const isNewBrandArray = await Brand.find({
       _id: { $in: JSON.parse(body.brand) },
     });
@@ -164,15 +166,38 @@ export async function validateProductSeller(req, { model = null }) {
 export const defaultPopulate = [
   {
     path: "recommend_store",
-    select: "-com",
+    select: "user_name name phone img logo is_online",
   },
   {
-    path: "clearance_item",
-    select: "-_id",
+    path: "brand",
+    select: "desc name logo _id",
   },
   {
-    path:
-      "new_arrivals cat_id popular_item brand accessories recommend_store clearance_item banner",
-    select: "-__v",
+    path: "cat_id",
+    select: "-created_date -parent_id -is_active",
+    // populate:{
+    //   path:"parent_id",
+    //   populate:{
+    //     path:"parent_id"
+    //   }
+    // }
+  },
+  {
+    path: "banner",
+    select: "img _id",
+  },
+  {
+    path: "new_arrivals popular_item accessories clearance_item",
+    select: "price stock",
+    populate: [
+      {
+        path: "product_master_id",
+        select: "img name _id brand desc",
+      },
+      {
+        path:"product_option_id",
+        select:"option_detail"
+      }
+    ],
   },
 ];
