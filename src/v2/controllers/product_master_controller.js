@@ -53,7 +53,7 @@ export const getproduct_master = async (req, res) => {
     //   adminType: req.is_super_admin,
     //   id: req.params.{ param name },
     // });
-    return response.success(data);
+    return response.success({});
   } catch (error) {
     return response.somethingWrong({ error: error });
   }
