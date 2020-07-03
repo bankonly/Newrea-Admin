@@ -35,7 +35,7 @@ exports.asignValidator = async (req, res, next) => {
       .select("order_status_id");
     // return res.json(foundProductItem);
     if (foundProductItem) {
-      req.body.order_status_id = foundProductItem.order_status_id._id; // set req body
+      req.body.order_status_id = foundProductItem.order_status_id._id.toString(); // set req body
       if (foundProductItem.order_status_id.name !== orderStatusReadyToAsign) {
         return response.badRequest({
           data: foundProductItem,
