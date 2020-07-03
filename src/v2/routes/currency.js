@@ -8,21 +8,23 @@ const {
   checkValidObjectId,
   deleteValidator,
 } = require("./../middlewares/validations/commonValidator");
+const { AccessPermission } = require("../middlewares/AccessPermission");
+
 
 router.get("/currency", currencyController.getCurrency);
 router.post(
   "/currency",
-  [validator.createValidator],
+  [AccessPermission,validator.createValidator],
   currencyController.createCurrency
 );
 router.put(
   "/currency/:id",
-  [checkValidObjectId, validator.updateValidator],
+  [AccessPermission,checkValidObjectId, validator.updateValidator],
   currencyController.actionCurrency
 );
 router.delete(
   "/currency/:id",
-  [checkValidObjectId, deleteValidator],
+  [AccessPermission,checkValidObjectId, deleteValidator],
   currencyController.actionCurrency
 );
 

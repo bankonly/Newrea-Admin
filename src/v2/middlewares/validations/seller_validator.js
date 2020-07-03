@@ -12,7 +12,7 @@ exports.createValidator = async (req, res, next) => {
   try {
     const response = new Res(res);
     const data = req.body;
-    // convert category id
+    // convert category_id
     if (typeof data.category_id === "string") {
       data.category_id = data.category_id.replace(/[\[\]"]/g, "").split(",");
     }
@@ -65,6 +65,8 @@ exports.createValidator = async (req, res, next) => {
     const categorysID = await categoryModel
       .find({ parent_id: null })
       .select("_id");
+    // uniqueArray
+    data.category_id = [...new Set(data.category_id)];
     // convert object to array
     const categorysIDArray = categorysID.map((e) => e._id);
     // check categorys is exist?

@@ -146,6 +146,8 @@ exports.asigneToDriver = async (req, res) => {
     const savedData = await newData.save();
     if (savedData) {
       response.success({ data: savedData });
+
+      // update order status after assign to driver
     } else {
       return response.somethingWrong({ data: savedData });
     }
