@@ -1,5 +1,6 @@
 var mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const { getDate } = require("../helpers/Global")
 
 var Categories = new Schema({
     title: {
@@ -63,7 +64,7 @@ var Categories = new Schema({
     },
     created_date: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     }
 });
 

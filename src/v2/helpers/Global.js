@@ -220,3 +220,7 @@ export const isDuplicateArrayMany = (arr) => {
   });
   return duplicate;
 };
+
+export const getDate = () =>{
+  return Date.now()
+}
