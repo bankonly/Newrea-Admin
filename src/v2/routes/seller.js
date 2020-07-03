@@ -9,33 +9,30 @@ const {
   checkValidObjectId,
   deleteValidator,
 } = require("./../middlewares/validations/commonValidator");
+const { AccessPermission } = require("../middlewares/AccessPermission");
 
 router.get("/seller/lists", sellerController.getSellerList);
 router.post("/seller/findSeller/:sellerID", sellerController.findSellerByID);
 router.post(
   "/seller/createSeller",
-  [
-    validator.createValidator,
-    checkImgUpload,
-    //
-    //
-  ],
+  [AccessPermission, validator.createValidator, checkImgUpload],
   sellerController.createSeller
 );
 router.delete(
   "/seller/disableSeller/:sellerID",
-  [checkValidObjectId, deleteValidator],
+  [AccessPermission, checkValidObjectId, deleteValidator],
   sellerController.enableDisableSeller
 );
 router.put(
   "/seller/updateSeller/:sellerID",
-  [checkValidObjectId, validator.createValidator],
+  [AccessPermission, checkValidObjectId, validator.createValidator],
   sellerController.updateSeller
 );
 
 router.put(
   "/seller/updateSellerIamges/:sellerID",
   [
+    AccessPermission,
     checkValidObjectId,
     checkImgUpload,
     //

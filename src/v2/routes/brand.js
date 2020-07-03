@@ -7,6 +7,7 @@ const {
   checkValidObjectId,
   deleteValidator,
 } = require("./../middlewares/validations/commonValidator");
+const { AccessPermission } = require("../middlewares/AccessPermission");
 
 const validator = require("./../middlewares/validations/brand_validator");
 const { checkImgUpload } = require("./../middlewares/validations/img_file");
@@ -14,22 +15,22 @@ const { checkImgUpload } = require("./../middlewares/validations/img_file");
 router.get("/brand", brandController.getBrands);
 router.post(
   "/brand",
-  [validator.createValidator, checkImgUpload],
+  [AccessPermission, validator.createValidator, checkImgUpload],
   brandController.createBrand
 );
 router.put(
   "/brand/:id",
-  [checkValidObjectId, validator.updateValidator],
+  [AccessPermission, checkValidObjectId, validator.updateValidator],
   brandController.updateBrand
 );
 router.delete(
   "/brand/:id",
-  [checkValidObjectId, deleteValidator],
+  [AccessPermission, checkValidObjectId, deleteValidator],
   brandController.updateBrand
 );
 router.put(
   "/brand/updateImg/:id",
-  [checkValidObjectId, checkImgUpload],
+  [AccessPermission, checkValidObjectId, checkImgUpload],
   brandController.updateBrandLogo
 );
 module.exports = router;

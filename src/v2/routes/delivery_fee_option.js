@@ -8,22 +8,23 @@ const {
   checkValidObjectId,
   deleteValidator,
 } = require("./../middlewares/validations/commonValidator");
+const { AccessPermission } = require("../middlewares/AccessPermission");
 
 router.get("/deliveryFee/lists", deliveryFeeController.getDeliveryFeeList);
 router.post(
   "/deliveryFee/create",
-  [validator.createValidator],
+  [AccessPermission, validator.createValidator],
   deliveryFeeController.createDeliveryFee
 );
 
 router.delete(
   "/deliveryFee/disable/:id",
-  [checkValidObjectId, deleteValidator],
+  [AccessPermission, checkValidObjectId, deleteValidator],
   deliveryFeeController.enableDisableDliveryFee
 );
 router.put(
   "/deliveryFee/update/:id",
-  [checkValidObjectId, validator.updateValidator],
+  [AccessPermission, checkValidObjectId, validator.updateValidator],
   deliveryFeeController.updateDeliveryFee
 );
 

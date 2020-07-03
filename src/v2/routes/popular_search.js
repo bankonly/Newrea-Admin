@@ -7,23 +7,24 @@ const {
   checkValidObjectId,
   deleteValidator,
 } = require("./../middlewares/validations/commonValidator");
+const { AccessPermission } = require("../middlewares/AccessPermission");
 
 const validator = require("./../middlewares/validations/popular_search_validator");
 
 router.get("/popularSearch", popularSearchController.getPopularSearch);
 router.post(
   "/popularSearch",
-  [validator.createValidator],
+  [AccessPermission, validator.createValidator],
   popularSearchController.createPopularSearch
 );
 router.put(
   "/popularSearch/:id",
-  [checkValidObjectId, validator.updateValidator],
+  [AccessPermission, checkValidObjectId, validator.updateValidator],
   popularSearchController.updatePopularSearch
 );
 router.delete(
   "/popularSearch/:id",
-  [checkValidObjectId, deleteValidator],
+  [AccessPermission, checkValidObjectId, deleteValidator],
   popularSearchController.updatePopularSearch
 );
 module.exports = router;

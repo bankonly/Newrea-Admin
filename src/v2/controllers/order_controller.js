@@ -10,52 +10,54 @@ const pickupFromSellerModel = require("../models/pickupFromSellerModel");
 exports.getOrders = async (req, res) => {
   const response = new Res(res);
   try {
-    const foundOrder = await productItemModel.find().populate([
-      {
-        path: "order_id",
-        populate: [
-          {
-            path: "cus_id",
-            select:
-              "name email phone profile_img customer_fb_id customer_google_id isConfirmed",
-          },
-          {
-            path: "address_id",
-          },
-          {
-            path: "currency_id",
-            select: "name symbol",
-          },
-          {
-            path: "delivery_fee_id",
-          },
-          {
-            path: "delivery_type_id",
-            select: "name price time",
-          },
-          {
-            path: "payment_method_id",
-            select: "name",
-          },
-        ],
-      },
-      {
-        path: "order_status_id",
-        select: "name",
-      },
-      {
-        path: "items.seller_id",
-        select: "name",
-      },
-      {
-        path: "items.order_status_id",
-        select: "name",
-      },
-      {
-        path: "items.option.product_seller_id",
-        select: "name",
-      },
-    ]);
+    const foundOrder = await productItemModel
+      .find({ order_id: { $ne: null } })
+      .populate([
+        {
+          path: "order_id",
+          populate: [
+            {
+              path: "cus_id",
+              select:
+                "name email phone profile_img customer_fb_id customer_google_id isConfirmed",
+            },
+            {
+              path: "address_id",
+            },
+            {
+              path: "currency_id",
+              select: "name symbol",
+            },
+            {
+              path: "delivery_fee_id",
+            },
+            {
+              path: "delivery_type_id",
+              select: "name price time",
+            },
+            {
+              path: "payment_method_id",
+              select: "name",
+            },
+          ],
+        },
+        {
+          path: "order_status_id",
+          select: "name",
+        },
+        {
+          path: "items.seller_id",
+          select: "name",
+        },
+        {
+          path: "items.order_status_id",
+          select: "name",
+        },
+        {
+          path: "items.option.product_seller_id",
+          select: "name",
+        },
+      ]);
     if (foundOrder.length > 0) {
       return response.success({ data: foundOrder });
     } else {
@@ -72,7 +74,11 @@ exports.getAsignedOrders = async (req, res) => {
   try {
     const foundOrder = await pickupFromSellerModel
       .find({
-        $and: [{ cancel_reason_id: null }, { driver_id: { $ne: null } }],
+        $and: [
+          { order_status_id: "5e47955f155e132ea0625c9f" },
+          { cancel_reason_id: null },
+          { driver_id: { $ne: null } },
+        ],
       })
       .populate([
         {
@@ -139,9 +145,11 @@ exports.asigneToDriver = async (req, res) => {
     const newData = new pickupFromSellerModel(req.body);
     const savedData = await newData.save();
     if (savedData) {
-      return response.success({ data: savedData });
+      response.success({ data: savedData });
+
+      // update order status after assign to driver
     } else {
-      return response.success({ data: savedData, msg: "no data found" });
+      return response.somethingWrong({ data: savedData });
     }
   } catch (ex) {
     response.somethingWrong({ error: ex });

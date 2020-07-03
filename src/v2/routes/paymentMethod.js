@@ -6,23 +6,24 @@ const {
   checkValidObjectId,
   deleteValidator,
 } = require("./../middlewares/validations/commonValidator");
+const { AccessPermission } = require("../middlewares/AccessPermission");
 
 const paymentMethodController = require("./../controllers/payment_method_controller");
 
 router.get("/paymentMethod", paymentMethodController.getPaymentMethods);
 router.post(
   "/paymentMethod",
-  [validator.createValidator],
+  [AccessPermission, validator.createValidator],
   paymentMethodController.createPaymentMethod
 );
 router.put(
   "/paymentMethod/:id",
-  [checkValidObjectId, validator.updateValidator],
+  [AccessPermission, checkValidObjectId, validator.updateValidator],
   paymentMethodController.updatePaymentMethod
 );
 router.delete(
   "/paymentMethod/:id",
-  [checkValidObjectId, deleteValidator],
+  [AccessPermission, checkValidObjectId, deleteValidator],
   paymentMethodController.updatePaymentMethod
 );
 
