@@ -24,6 +24,7 @@ import deliveryTypeRouter from "./delivery_type";
 import productMasterRouter from "./product_master";
 import productOptionRouter from "./product_option";
 import filterRouter from "./filter";
+import dashboardRouter from "./dashboard";
 
 // configs
 import kernel from "../configs/kernel";
@@ -58,6 +59,7 @@ export default (app) => {
     productMasterRouter,
     productOptionRouter,
     filterRouter,
+    dashboardRouter
   ]);
 
   // unAuthenticate Router
