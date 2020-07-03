@@ -19,7 +19,7 @@ const popular_product = new Schema(
         created_date: {
             type: Date,
             required: true,
-            default: Date.now(),
+            default: Date.now,
         },
     },
     {

@@ -27,7 +27,7 @@ const Customer_FB = new Schema({
     },
     created_date: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     }
 }, {
     collection: "customer_fb"

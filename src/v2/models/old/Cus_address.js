@@ -33,7 +33,7 @@ const Cus_address = new Schema({
     },
     created_date: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     }
 },
     {

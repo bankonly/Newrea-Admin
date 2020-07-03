@@ -18,7 +18,7 @@ const CancelReason = new mongoose.Schema(
     created_date: {
       type: Date,
       required: true,
-      default: Date.now(),
+      default: Date.now,
     },
   },
   {
