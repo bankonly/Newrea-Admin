@@ -30,6 +30,10 @@ export async function validate(obj, update = true) {
   delete body.title;
   delete body.desc;
   delete body.banner;
+  delete body.img;
+
+  const duplicate = Helpers.isDuplicateArrayMany(body);
+  if (duplicate.length > 0) error.duplicate = duplicate;
 
   const isValid = await Helpers.isSplitArrayObjectId({
     array: body,
@@ -195,9 +199,9 @@ export const defaultPopulate = [
         select: "img name _id brand desc",
       },
       {
-        path:"product_option_id",
-        select:"option_detail"
-      }
+        path: "product_option_id",
+        select: "option_detail",
+      },
     ],
   },
 ];
