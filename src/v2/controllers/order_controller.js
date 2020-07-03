@@ -12,6 +12,7 @@ exports.getOrders = async (req, res) => {
   try {
     const foundOrder = await productItemModel
       .find({ order_id: { $ne: null } })
+      .sort({ field: "asc", created_date: -1 })
       .populate([
         {
           path: "order_id",
@@ -80,6 +81,7 @@ exports.getAsignedOrders = async (req, res) => {
           { driver_id: { $ne: null } },
         ],
       })
+      .sort({ field: "asc", created_date: -1 })
       .populate([
         {
           path: "product_item_id",
