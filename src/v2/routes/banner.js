@@ -3,6 +3,7 @@ const router = Router();
 const BannerCtrl = require("../controllers/banner_controller");
 const { AccessPermission } = require("../middlewares/AccessPermission");
 const mdw = [AccessPermission];
+
 router
   .get("/banner", BannerCtrl.getAllBanner)
   .get("/banner/:banner_id", BannerCtrl.getBanner)
