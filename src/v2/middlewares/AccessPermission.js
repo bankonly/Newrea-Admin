@@ -13,7 +13,8 @@ export function AccessPermission(req, res, next) {
   const resp = new Res(res);
   try {
     const accessPolicy = req.auth.access_policy;
-    if (permission(req, accessPolicy, "admin", "admin")) return next();
+    if(req.is_super_admin) return next();
+    else if (permission(req, accessPolicy, "admin", "admin")) return next();
     else if (permission(req, accessPolicy, "most_popular", "mostPopular")) return next();
     else if (permission(req, accessPolicy, "featured_stores", "featured_store")) return next();
     else if (permission(req, accessPolicy, "recommended_item", "recommendItem")) return next();
