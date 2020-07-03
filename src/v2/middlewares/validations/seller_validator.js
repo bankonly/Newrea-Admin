@@ -1,36 +1,51 @@
 const Joi = require("@hapi/joi");
 const mongoose = require("mongoose");
 const password = require("secure-random-password");
+const isValidCoordinates = require("is-valid-coordinates");
+
 const sellerModel = require("../../models/seller");
 const categoryModel = require("../../models/category");
 const deliveryFeeOptionModel = require("../../models/delivery_fee_option");
 import Res from "../../controllers/response_controller";
 
 exports.createValidator = async (req, res, next) => {
-  const response = new Res(res);
-  const data = req.body;
-  // convert category id
-  if (typeof data.category_id === "string") {
-    data.category_id = data.category_id.replace(/[\[\]"]/g, "").split(",");
-  }
-  // convert location to array object
-  if (typeof data.location === "string") {
-    let locationData = data.location.split(",");
-    if (locationData.length !== 2) {
+  try {
+    const response = new Res(res);
+    const data = req.body;
+    // convert category_id
+    if (typeof data.category_id === "string") {
+      data.category_id = data.category_id.replace(/[\[\]"]/g, "").split(",");
+    }
+    // convert location to array object
+    if (typeof data.location === "string") {
+      let locationData = data.location.split(",");
+      if (locationData.length !== 2) {
+        return response.badRequest({
+          msg: `location '${data.location}' is not valid`,
+        });
+      }
+      data.location = [
+        {
+          latitude: locationData[0],
+          longitude: locationData[1],
+        },
+      ];
+    }
+    // check valid latitude and longitude
+    if (
+      !isValidCoordinates(
+        parseFloat(data.location[0].longitude),
+        parseFloat(data.location[0].latitude)
+      )
+    ) {
       return response.badRequest({
-        msg: `location '${data.location}' is not valid`,
+        data: { test: parseFloat(data.location[0].latitude) },
+        msg: "latitude and longitude not valid format",
       });
     }
-    data.location = [
-      {
-        latitude: locationData[0],
-        longitude: locationData[1],
-      },
-    ];
-  }
 
-  data.pass = randomPassword();
-  try {
+    data.pass = randomPassword();
+
     // check valid ObjectId
     // check delivery fee option id is monogoose ObjectId?
     if (!mongoose.Types.ObjectId.isValid(data.delivery_fee_option_id)) {
@@ -50,6 +65,8 @@ exports.createValidator = async (req, res, next) => {
     const categorysID = await categoryModel
       .find({ parent_id: null })
       .select("_id");
+    // uniqueArray
+    data.category_id = [...new Set(data.category_id)];
     // convert object to array
     const categorysIDArray = categorysID.map((e) => e._id);
     // check categorys is exist?
@@ -86,12 +103,6 @@ exports.createValidator = async (req, res, next) => {
         }
       }
     }
-  } catch (ex) {
-    console.log(ex);
-    return response.badRequest({ data: ex });
-  }
-
-  try {
     let schema;
     if (req.method === "POST") {
       schema = Joi.object({

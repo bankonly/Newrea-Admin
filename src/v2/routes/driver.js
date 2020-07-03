@@ -7,6 +7,7 @@ const {
   checkValidObjectId,
   deleteValidator,
 } = require("./../middlewares/validations/commonValidator");
+const { AccessPermission } = require("../middlewares/AccessPermission");
 
 const validator = require("./../middlewares/validations/driver_validator");
 const { checkImgUpload } = require("./../middlewares/validations/img_file");
@@ -14,22 +15,22 @@ const { checkImgUpload } = require("./../middlewares/validations/img_file");
 router.get("/driver", driverController.getDrivers);
 router.post(
   "/driver",
-  [validator.createValidator, checkImgUpload],
+  [AccessPermission, validator.createValidator, checkImgUpload],
   driverController.createDriver
 );
 router.put(
   "/driver/:id",
-  [checkValidObjectId, validator.updateValidator],
+  [AccessPermission, checkValidObjectId, validator.updateValidator],
   driverController.updateDriver
 );
 router.delete(
   "/driver/:id",
-  [checkValidObjectId, deleteValidator],
+  [AccessPermission, checkValidObjectId, deleteValidator],
   driverController.updateDriver
 );
 router.put(
   "/driver/updateImg/:id",
-  [checkValidObjectId, checkImgUpload],
+  [AccessPermission, checkValidObjectId, checkImgUpload],
   driverController.updateDriverImg
 );
 module.exports = router;
