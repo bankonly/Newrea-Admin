@@ -13,16 +13,19 @@ const { AccessPermission } = require("../middlewares/AccessPermission");
 
 router.get("/seller/lists", sellerController.getSellerList);
 router.post("/seller/findSeller/:sellerID", sellerController.findSellerByID);
+
 router.post(
   "/seller/createSeller",
   [AccessPermission, validator.createValidator, checkImgUpload],
   sellerController.createSeller
 );
+
 router.delete(
   "/seller/disableSeller/:sellerID",
   [AccessPermission, checkValidObjectId, deleteValidator],
   sellerController.enableDisableSeller
 );
+
 router.put(
   "/seller/updateSeller/:sellerID",
   [AccessPermission, checkValidObjectId, validator.createValidator],
@@ -31,13 +34,7 @@ router.put(
 
 router.put(
   "/seller/updateSellerIamges/:sellerID",
-  [
-    AccessPermission,
-    checkValidObjectId,
-    checkImgUpload,
-    //
-    //
-  ],
+  [AccessPermission, checkValidObjectId, checkImgUpload],
   sellerController.updateSellerImages
 );
 
