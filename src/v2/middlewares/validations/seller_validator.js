@@ -39,13 +39,11 @@ exports.createValidator = async (req, res, next) => {
       )
     ) {
       return response.badRequest({
-        data: { test: parseFloat(data.location[0].latitude) },
+        data: data.location[0],
         msg: "latitude and longitude not valid format",
       });
     }
-
     data.pass = randomPassword();
-
     // check valid ObjectId
     // check delivery fee option id is monogoose ObjectId?
     if (!mongoose.Types.ObjectId.isValid(data.delivery_fee_option_id)) {
