@@ -145,7 +145,7 @@ exports.asigneToDriver = async (req, res) => {
     const newData = new pickupFromSellerModel(req.body);
     const savedData = await newData.save();
     if (savedData) {
-      return response.success({ data: savedData });
+      response.success({ data: savedData });
     } else {
       return response.somethingWrong({ data: savedData });
     }
