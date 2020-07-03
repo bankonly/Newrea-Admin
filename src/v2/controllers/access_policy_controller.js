@@ -50,7 +50,6 @@ export async function createNewAccessPolicy(req, res) {
       name: req.body.name,
       order: req.body.order,
       seller: req.body.seller,
-      return: req.body.return,
       brand: req.body.brand,
       categories: req.body.categories,
       currency: req.body.currency,

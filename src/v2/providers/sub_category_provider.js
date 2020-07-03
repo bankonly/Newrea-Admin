@@ -15,6 +15,7 @@ export async function validate(obj, update = true) {
   let error = {};
   let msg = "field is required";
   let arrayMsg = "field is required as array id,id...";
+  if(!Helpers.isFile(obj.files,"img")) error.img = "field is required as image"
   if (!Helpers.isEmpty(body.title)) error.title = msg;
   if (!Helpers.isEmpty(body.desc)) error.desc = msg;
   if (!Helpers.isEmpty(body.banner) || !Helpers.validateObjectId(body.banner))
@@ -30,6 +31,26 @@ export async function validate(obj, update = true) {
   delete body.title;
   delete body.desc;
   delete body.banner;
+
+  // const new_arrivals = JSON.parse(body.new_arrivals);
+  // const isDuplicateArrayMany = (arr) => {
+  //   let duplicate = [];
+  //   Object.keys(arr).forEach((value, index) => {
+  //     let data = null;
+  //     if (typeof arr[value] == "object" || typeof arr[value] == "string") {
+  //       data = JSON.parse(arr[value]);
+  //     }
+  //     console.log(data)
+  //     const found = data.filter((v, i) => {
+  //       foundIn = data.indexOf(v) !== i
+  //       console.log(found)
+  //     });
+  //     duplicate.push(found);
+  //   });
+  //   return duplicate;
+  // };
+
+  // console.log(isDuplicateArrayMany(body));
 
   const isValid = await Helpers.isSplitArrayObjectId({
     array: body,
@@ -195,9 +216,9 @@ export const defaultPopulate = [
         select: "img name _id brand desc",
       },
       {
-        path:"product_option_id",
-        select:"option_detail"
-      }
+        path: "product_option_id",
+        select: "option_detail",
+      },
     ],
   },
 ];
