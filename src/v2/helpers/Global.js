@@ -204,3 +204,19 @@ export const isKey = ({ arr, acceptKey, msg = " invalid", type = "array" }) => {
   }
   return invalidKey;
 };
+
+
+export const isDuplicateArrayMany = (arr) => {
+  let duplicate = [];
+  Object.keys(arr).forEach((value, index) => {
+    let data = null;
+    if (typeof arr[value] == "object" || typeof arr[value] == "string") {
+      data = JSON.parse(arr[value]);
+    }
+    const found = data.filter((v, i) => data.indexOf(v) !== i);
+    if (found.length > 0) {
+      found.map((val) => duplicate.push(val));
+    }
+  });
+  return duplicate;
+};

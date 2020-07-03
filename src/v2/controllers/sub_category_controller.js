@@ -18,6 +18,7 @@ export async function saveSubCategory(req, res) {
     if (!Helpers.isEmptyObj(isValid)) {
       return response.badRequest({ data: isValid });
     }
+    console.log(isValid)
 
     // validate object id and store save data
     const isValidId = await SubCatProvider.validateProductSeller(req, {});
