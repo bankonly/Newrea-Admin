@@ -1,6 +1,7 @@
 const Joi = require("@hapi/joi");
 const mongoose = require("mongoose");
 import Res from "../../controllers/response_controller";
+const AdminProvider = require("../../providers/admin_provider");
 
 exports.checkValidObjectId = (req, res, next) => {
   const response = new Res(res);
@@ -29,6 +30,11 @@ exports.deleteValidator = async (req, res, next) => {
 exports.resetPasswordValidator = async (req, res, next) => {
   const response = new Res(res);
   try {
+    const stt = await AdminProvider.verifyPassword(req.auth._id, req.body.adminPassword);
+    // return res.json(req.auth._id)
+    if (!stt.status) {
+      throw new Error(stt.msg);
+    }
     if (req.body.password !== req.body.confirmPassword) {
       throw new Error("password not match");
     }
