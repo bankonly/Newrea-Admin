@@ -244,3 +244,32 @@ exports.updateSellerImages = async (req, res) => {
     return response.somethingWrong({ error: ex });
   }
 };
+
+// reset Password
+exports.resetPassword = async (req, res) => {
+  const response = new Res(res);
+  const sellerID = req.params.sellerID;
+  try {
+    let foundSeller = await sellerModel.findById(sellerID);
+    if (!foundSeller) {
+      return response.notFound({ data: sellerID, msg: "seller not found" });
+    }
+    // encryp password
+    const SECRET_KEY_PASS = process.env.SECRET_KEY_PASS;
+    const encriptedPass = crypto.AES.encrypt(
+      JSON.stringify(req.body.password),
+      SECRET_KEY_PASS
+    );
+    foundSeller.pass = encriptedPass;
+    if (await foundSeller.save()) {
+      return response.success({
+        data: foundSeller,
+        msg: "reset password seller successfully",
+      });
+    } else {
+      return response.somethingWrong({});
+    }
+  } catch (ex) {
+    return response.somethingWrong({ error: ex });
+  }
+};

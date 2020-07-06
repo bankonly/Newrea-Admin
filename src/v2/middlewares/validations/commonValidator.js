@@ -26,3 +26,15 @@ exports.deleteValidator = async (req, res, next) => {
     response.badRequest({ data: err });
   }
 };
+exports.resetPasswordValidator = async (req, res, next) => {
+  const response = new Res(res);
+  try {
+    if (req.body.password !== req.body.confirmPassword) {
+      throw new Error("password not match");
+    }
+    next();
+  } catch (err) {
+    console.log(err);
+    response.badRequest({ data: err.message });
+  }
+};

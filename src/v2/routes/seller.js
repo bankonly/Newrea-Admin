@@ -8,6 +8,7 @@ const { checkImgUpload } = require("./../middlewares/validations/img_file");
 const {
   checkValidObjectId,
   deleteValidator,
+  resetPasswordValidator,
 } = require("./../middlewares/validations/commonValidator");
 const { AccessPermission } = require("../middlewares/AccessPermission");
 
@@ -36,6 +37,11 @@ router.put(
   "/seller/updateSellerIamges/:sellerID",
   [AccessPermission, checkValidObjectId, checkImgUpload],
   sellerController.updateSellerImages
+);
+router.put(
+  "/seller/resetPassword/:sellerID",
+  [AccessPermission, resetPasswordValidator, checkValidObjectId],
+  sellerController.resetPassword
 );
 
 module.exports = router;
