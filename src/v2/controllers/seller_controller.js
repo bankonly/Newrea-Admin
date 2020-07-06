@@ -44,6 +44,8 @@ exports.findSellerByID = async (req, res) => {
 // create new  seller
 exports.createSeller = async (req, res) => {
   const response = new Res(res);
+  let newProfileImgName = "";
+  let newLogoImgName = "";
 
   // upload images
   const uploadSttImg = uploadImage({
@@ -52,22 +54,25 @@ exports.createSeller = async (req, res) => {
     file: req.files.img,
   });
   if (uploadSttImg.status && uploadSttImg.code === 200) {
-    req.body.img = uploadSttImg.data;
+    newProfileImgName = uploadSttImg.data;
   } else {
     throw new Error("can not upload image cover");
   }
+
   const uploadSttLogo = uploadImage({
     req,
     path: config.imgPath.seller.logo,
     file: req.files.logo,
   });
   if (uploadSttLogo.status && uploadSttLogo.code === 200) {
-    req.body.logo = uploadSttLogo.data;
+    newLogoImgName = uploadSttLogo.data;
   } else {
     throw new Error("can not upload image logo");
   }
   // end upload image
-
+  // set image name to body request
+  req.body.img = newProfileImgName;
+  req.body.logo = newLogoImgName;
   // encryp password
   const decrypPassword = req.body.pass;
   const SECRET_KEY_PASS = process.env.SECRET_KEY_PASS;

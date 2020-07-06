@@ -38,6 +38,7 @@ exports.createDriver = async (req, res) => {
     throw new Error("can not upload image");
   }
   // end upload image
+
   // encryp password
   const reqBody = req.body;
   const decrypPassword = reqBody.password;
