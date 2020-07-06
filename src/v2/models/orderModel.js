@@ -2,7 +2,7 @@ let mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 let AutoIncrement = require("mongoose-sequence");
 const orderNumber = AutoIncrement(mongoose);
-const { getDate } = require("../helpers/Global")
+const { getDate } = require("../helpers/Global");
 
 let OrderSchema = new Schema({
   cus_id: {

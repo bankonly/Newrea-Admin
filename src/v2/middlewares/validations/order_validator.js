@@ -17,7 +17,7 @@ exports.asignValidator = async (req, res, next) => {
       });
     } else if (
       foundDriver.is_active !== "active" ||
-      foundDriver.dri_status === false
+      foundDriver.dri_status !== true
     ) {
       return response.badRequest({
         data: driverModel,
@@ -25,7 +25,7 @@ exports.asignValidator = async (req, res, next) => {
       });
     }
     // check product_item ID
-    const orderStatusReadyToAsign = "5e47955f155e132ea0625c9f";
+    const orderStatusReadyToAsign = "confirmed from seller";
     const foundProductItem = await productItemModel
       .findById(reqData.product_item_id)
       .populate({
@@ -33,12 +33,13 @@ exports.asignValidator = async (req, res, next) => {
         select: "name",
       })
       .select("order_status_id");
+    // return res.json(foundProductItem);
     if (foundProductItem) {
-      req.body.order_status_id = req.auth._id.toString();
-      if (foundProductItem.order_status_id !== orderStatusReadyToAsign) {
+      req.body.order_status_id = foundProductItem.order_status_id._id.toString(); // set req body
+      if (foundProductItem.order_status_id.name !== orderStatusReadyToAsign) {
         return response.badRequest({
           data: foundProductItem,
-          msg: "This order status is not ready to asign to a driver",
+          msg: `This order status is not available to assign to a driver (order status must be '${orderStatusReadyToAsign}')`,
         });
       }
     } else {
@@ -47,26 +48,26 @@ exports.asignValidator = async (req, res, next) => {
         msg: `product_item_id '${reqData.product_item_id}' not found`,
       });
     }
-    // make sure order is not asigned yet
-    if (
-      await pickupFromSellerModel
-        .findOne({
-          $and: [
-            {
-              product_item_id: reqData.product_item_id,
-            },
-            {
-              cancel_reason_id: null,
-            },
-          ],
-        })
-        .populate("driver_id")
-    ) {
+    // make sure order is not assigned yet
+    const foundPickupFromseller = await pickupFromSellerModel
+      .findOne({
+        $and: [
+          {
+            product_item_id: reqData.product_item_id,
+          },
+          {
+            cancel_reason_id: null,
+          },
+        ],
+      })
+      .populate("driver_id");
+    if (foundPickupFromseller) {
       return response.badRequest({
-        msg: `This order alerady asign to driver ${pickupFromSellerModel.driver_id.first_name}`,
+        data: foundPickupFromseller,
+        msg: `This order already assign to driver name '${foundPickupFromseller.driver_id.first_name}'`,
       });
     }
-    req.body.admin_id = req.auth._id.toString(); // set admin_id from auth ID
+    req.body.admin_id = req.auth._id.toString(); // set admin_id from auth
     const schema = Joi.object({
       product_item_id: Joi.string().required(),
       driver_id: Joi.string().required(),
