@@ -4,7 +4,9 @@ const AdminCtrl = require("../controllers/admin_controller");
 const { AccessPermission } = require("../middlewares/AccessPermission");
 const mdw = [AccessPermission];
 const {
+  checkValidObjectId,
   resetPasswordValidator,
+  checkAdminPassword,
 } = require("./../middlewares/validations/commonValidator");
 
 router
@@ -17,7 +19,7 @@ router
   .post("/admin/profile", AdminCtrl.profile)
   .put(
     "/admin/resetPassword/:id",
-    [mdw, resetPasswordValidator],
+    [mdw, checkValidObjectId, resetPasswordValidator, checkAdminPassword],
     AdminCtrl.resetPassword
   );
 

@@ -9,6 +9,7 @@ const {
   checkValidObjectId,
   deleteValidator,
   resetPasswordValidator,
+  checkAdminPassword,
 } = require("./../middlewares/validations/commonValidator");
 const { AccessPermission } = require("../middlewares/AccessPermission");
 
@@ -40,7 +41,12 @@ router.put(
 );
 router.put(
   "/seller/resetPassword/:sellerID",
-  [AccessPermission, resetPasswordValidator, checkValidObjectId],
+  [
+    AccessPermission,
+    resetPasswordValidator,
+    checkAdminPassword,
+    checkValidObjectId,
+  ],
   sellerController.resetPassword
 );
 

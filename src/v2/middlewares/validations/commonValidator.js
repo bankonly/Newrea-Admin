@@ -30,8 +30,24 @@ exports.deleteValidator = async (req, res, next) => {
 exports.resetPasswordValidator = async (req, res, next) => {
   const response = new Res(res);
   try {
-    const stt = await AdminProvider.verifyPassword(req.auth._id, req.body.adminPassword);
-    // return res.json(req.auth._id)
+    const schema = Joi.object({
+      password: Joi.string().required(),
+      confirmPassword: Joi.string().required(),
+      adminPassword: Joi.string().required(),
+    });
+    await schema.validateAsync(req.body);
+    next();
+  } catch (err) {
+    return response.badRequest({ data: err });
+  }
+};
+exports.checkAdminPassword = async (req, res, next) => {
+  const response = new Res(res);
+  try {
+    const stt = await AdminProvider.verifyPassword(
+      req.auth._id,
+      req.body.adminPassword
+    );
     if (!stt.status) {
       throw new Error(stt.msg);
     }

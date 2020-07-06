@@ -40,17 +40,18 @@ exports.createDriver = async (req, res) => {
   // end upload image
   // encryp password
   const reqBody = req.body;
+  const decrypPassword = reqBody.password;
   const SECRET_KEY_PASS = process.env.SECRET_KEY_PASS;
   const encriptedPass = crypto.AES.encrypt(
     JSON.stringify(reqBody.password),
     SECRET_KEY_PASS
   );
   reqBody.password = encriptedPass;
-
   try {
     const newDriver = new driverModel(reqBody);
     const createdDriver = await newDriver.save();
     if (createdDriver) {
+      createdDriver.password = decrypPassword;
       response.success({ data: createdDriver });
     } else {
       throw new Error();

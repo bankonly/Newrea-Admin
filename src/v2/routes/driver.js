@@ -7,6 +7,7 @@ const {
   checkValidObjectId,
   deleteValidator,
   resetPasswordValidator,
+  checkAdminPassword
 } = require("./../middlewares/validations/commonValidator");
 const { AccessPermission } = require("../middlewares/AccessPermission");
 
@@ -36,7 +37,7 @@ router.put(
 );
 router.put(
   "/driver/resetPassword/:id",
-  [AccessPermission, resetPasswordValidator, checkValidObjectId],
+  [AccessPermission, resetPasswordValidator, checkAdminPassword,checkValidObjectId],
   driverController.resetPassword
 );
 module.exports = router;

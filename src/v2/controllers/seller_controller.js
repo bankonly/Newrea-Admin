@@ -69,6 +69,7 @@ exports.createSeller = async (req, res) => {
   // end upload image
 
   // encryp password
+  const decrypPassword = req.body.pass;
   const SECRET_KEY_PASS = process.env.SECRET_KEY_PASS;
   const sellerData = req.body;
   const encriptedPass = crypto.AES.encrypt(
@@ -80,6 +81,7 @@ exports.createSeller = async (req, res) => {
     const newSeller = new sellerModel(sellerData);
     const savedSeller = await newSeller.save();
     if (savedSeller) {
+      savedSeller.pass = decrypPassword;
       response.created({
         data: savedSeller,
         msg: "create seller successfully",
