@@ -338,3 +338,27 @@ export async function updateProfile({ admin_id, img }) {
     return Res.somethingWrong({ error: error });
   }
 }
+
+export const verifyPassword = async (adminId, password) => {
+  try {
+    // validate object Id
+    if (!Helpers.validateObjectId(adminId)) {
+      return Res.badRequest({ msg: "invalid object ID" });
+    }
+
+    // get admin password
+    const adminData = await Admin.findById(adminId);
+    if (!adminData) return Res.notFound({ data: adminId });
+
+    const isPasswordValid = await Bcrypt.verifyPassword(
+      password,
+      adminData.password
+    );
+
+    if (!isPasswordValid) return Res.badRequest({ msg: "password incorrect" });
+
+    return Res.success({ msg: "verified" });
+  } catch (error) {
+    return Res.somethingWrong({ error: error });
+  }
+};
