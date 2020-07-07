@@ -145,13 +145,13 @@ export async function getAllCategorys(req, res) {
     const catData = await Category.find()
       .populate({
         path: "parent_id",
-        select: "name img -_id",
+        select: "name img _id",
         populate: {
           path: "parent_id",
-          select: "name img -_id",
+          select: "name img _id",
         },
       })
-      .select(" name img -_id");
+      .select(" name img _id");
     return response.success({ data: catData });
   } catch (error) {
     return response.somethingWrong({ error: error });
@@ -167,7 +167,7 @@ export async function getChildCategory(req, res) {
       parent_id: req.params.parent_id,
     })
       .populate("parent_id")
-      .select("-parent_id");
+      // .select("parent_id");
     return response.success({ data: catData });
   } catch (error) {
     return response.somethingWrong({ error: error });

@@ -271,6 +271,23 @@ export async function updateAdmin(
   }
 }
 
+export const validateResetPwd = (body) => {
+  var error = {};
+  var msg = "field is required";
+  if (!Helpers.isEmpty(body.old_password)) error.old_password = msg;
+  if (!Helpers.isEmpty(body.new_password)) error.new_password = msg;
+  if (!Helpers.isEmpty(body.confirm_password)) error.confirm_password = msg;
+  if (
+    (Helpers.isEmpty(body.new_password) &&
+      Helpers.isEmpty(body.confirm_password)) ||
+    body.new_password !== body.confirm_password
+  ) {
+    error.password = "password not match";
+  }
+
+  return error;
+};
+
 // Validate chnage password
 export function validateChangePwd(obj) {
   var error = {};
@@ -358,6 +375,25 @@ export const verifyPassword = async (adminId, password) => {
     if (!isPasswordValid) return Res.badRequest({ msg: "admin's password is incorrect" });
 
     return Res.success({ msg: "verified" });
+  } catch (error) {
+    return Res.somethingWrong({ error: error });
+  }
+};
+
+export const resetPassword = async (adminId, password) => {
+  try {
+    // validate object Id
+    if (!Helpers.validateObjectId(adminId)) {
+      return Res.badRequest({ msg: "invalid object ID" });
+    }
+    const newPassword = await Bcrypt.hashPassword(password);
+    const adminData = await Admin.findById(adminId);
+
+    adminData.password = newPassword;
+    if (!(await adminData.save())) {
+      return Res.badRequest({ msg: "cannot update" });
+    }
+    return Res.success({ msg: "password has been reset" });
   } catch (error) {
     return Res.somethingWrong({ error: error });
   }
