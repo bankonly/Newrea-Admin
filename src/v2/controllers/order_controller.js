@@ -6,6 +6,7 @@ const orderModel = require("../models/orderModel");
 const orderStatusModel = require("../models/orderStatusModel");
 const productItemModel = require("../models/Product_item");
 const pickupFromSellerModel = require("../models/pickupFromSellerModel");
+const notification = require("./../helpers/notification");
 
 // get all order
 exports.getOrders = async (req, res) => {
@@ -148,15 +149,37 @@ exports.asigneToDriver = async (req, res) => {
     const newData = new pickupFromSellerModel(req.body);
     const savedData = await newData.save();
     if (savedData) {
-      return response.success({ data: savedData });
+      // return response.success({ data: savedData });
       // update order status after assign to driver
       //
       //
       //
       // push notification
-      //
-      //
-      //
+      const notiData = {
+        title: "test notification",
+        body: "new order to delivery",
+        channelId: "asfasgasdgsdgsdg",
+        channelName: "dsgsdgsdgdfg",
+        target: null,
+      };
+      const collection = "token";
+      const condition = { user_id: req.body.driver_id };
+      const notificationStatus = await notification.send_notification(
+        notiData,
+        collection,
+        condition
+      );
+      response.success({ data: savedData });
+
+      // if (notificationStatus) {
+      //   return response.success({
+      //     data: [{ notificationStatus: notificationStatus }, savedData],
+      //   });
+      // } else {
+      //   return response.success({
+      //     data: { notificationStatus: notificationStatus, savedData },
+      //   });
+      // }
     } else {
       return response.somethingWrong({ data: savedData });
     }
