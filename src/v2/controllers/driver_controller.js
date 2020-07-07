@@ -42,10 +42,10 @@ exports.createDriver = async (req, res) => {
   // encryp password
   const reqBody = req.body;
   const decrypPassword = reqBody.password;
-  const SECRET_KEY_PASS = process.env.SECRET_KEY_PASS;
+  const SECRET_KEY_PASS_DRIVER = process.env.SECRET_KEY_PASS_DRIVER;
   const encriptedPass = crypto.AES.encrypt(
     JSON.stringify(reqBody.password),
-    SECRET_KEY_PASS
+    SECRET_KEY_PASS_DRIVER
   );
   reqBody.password = encriptedPass;
   try {
@@ -160,10 +160,10 @@ exports.resetPassword = async (req, res) => {
       return response.notFound({ data: driverID, msg: "driver not found" });
     }
     // encryp password
-    const SECRET_KEY_PASS = process.env.SECRET_KEY_PASS;
+    const SECRET_KEY_PASS_DRIVER = process.env.SECRET_KEY_PASS_DRIVER;
     const encriptedPass = crypto.AES.encrypt(
       JSON.stringify(req.body.password),
-      SECRET_KEY_PASS
+      SECRET_KEY_PASS_DRIVER
     );
     foundDriver.password = encriptedPass;
     if (await foundDriver.save()) {
