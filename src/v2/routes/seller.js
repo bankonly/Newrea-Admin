@@ -8,40 +8,46 @@ const { checkImgUpload } = require("./../middlewares/validations/img_file");
 const {
   checkValidObjectId,
   deleteValidator,
+  resetPasswordValidator,
+  checkAdminPassword,
 } = require("./../middlewares/validations/commonValidator");
+const { AccessPermission } = require("../middlewares/AccessPermission");
 
 router.get("/seller/lists", sellerController.getSellerList);
 router.post("/seller/findSeller/:sellerID", sellerController.findSellerByID);
+
 router.post(
   "/seller/createSeller",
-  [
-    validator.createValidator,
-    checkImgUpload,
-    //
-    //
-  ],
+  [AccessPermission, validator.createValidator, checkImgUpload],
   sellerController.createSeller
 );
+
 router.delete(
   "/seller/disableSeller/:sellerID",
-  [checkValidObjectId, deleteValidator],
+  [AccessPermission, checkValidObjectId, deleteValidator],
   sellerController.enableDisableSeller
 );
+
 router.put(
   "/seller/updateSeller/:sellerID",
-  [checkValidObjectId, validator.createValidator],
+  [AccessPermission, checkValidObjectId, validator.createValidator],
   sellerController.updateSeller
 );
 
 router.put(
   "/seller/updateSellerIamges/:sellerID",
-  [
-    checkValidObjectId,
-    checkImgUpload,
-    //
-    //
-  ],
+  [AccessPermission, checkValidObjectId, checkImgUpload],
   sellerController.updateSellerImages
+);
+router.put(
+  "/seller/resetPassword/:sellerID",
+  [
+    AccessPermission,
+    resetPasswordValidator,
+    checkAdminPassword,
+    checkValidObjectId,
+  ],
+  sellerController.resetPassword
 );
 
 module.exports = router;

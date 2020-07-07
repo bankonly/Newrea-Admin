@@ -20,7 +20,7 @@ const change_password = new Schema({
     },
     created_date: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     }
 }, {
     collection: "change_password"

@@ -137,7 +137,7 @@ export async function isSplitArrayObjectId({ array }) {
   const arrayNum = Object.keys(array);
   for (let i = 0; i < arrayNum.length; i++) {
     let element = arrayNum[i];
-    const arr = JSON.parse(array[element])
+    const arr = JSON.parse(array[element]);
     if (!isArray(arr)) return false;
     if (arr.length == 2) {
       if (arr[1] == "" || arr[1] == null) return false;
@@ -184,3 +184,43 @@ export const convert = (bodyArray) => {
   });
   return productSellerArr;
 };
+
+export const isKey = ({ arr, acceptKey, msg = " invalid", type = "array" }) => {
+  let invalidKey = [];
+  if (isArray(arr)) {
+    for (let i = 0; i < arr.length; i++) {
+      Object.keys(arr[i]).map((v) => {
+        if (!acceptKey.includes(v)) {
+          invalidKey.push("key => '" + v + "'" + msg);
+        }
+      });
+    }
+  } else {
+    Object.keys(arr).map((v) => {
+      if (!acceptKey.includes(v)) {
+        invalidKey.push("key => '" + v + "'" + msg);
+      }
+    });
+  }
+  return invalidKey;
+};
+
+
+export const isDuplicateArrayMany = (arr) => {
+  let duplicate = [];
+  Object.keys(arr).forEach((value, index) => {
+    let data = null;
+    if (typeof arr[value] == "object" || typeof arr[value] == "string") {
+      data = JSON.parse(arr[value]);
+    }
+    const found = data.filter((v, i) => data.indexOf(v) !== i);
+    if (found.length > 0) {
+      found.map((val) => duplicate.push(val));
+    }
+  });
+  return duplicate;
+};
+
+export const getDate = () =>{
+  return Date.now()
+}

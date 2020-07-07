@@ -8,23 +8,16 @@ exports.asignValidator = async (req, res, next) => {
   const response = new Res(res);
   const reqData = req.body;
   try {
-    // check order status
-    const orderStatusReadyToAsign = "5e47955f155e132ea0625c9f";
-    if (req.body.order_status_id !== orderStatusReadyToAsign) {
-      return response.badRequest({
-        msg: `This order status is not ready for asign to driver`,
-      });
-    }
     // check driver
     const foundDriver = await driverModel.findById(req.body.driver_id);
     if (!foundDriver) {
       return response.badRequest({
         data: foundDriver,
-        msg: "Drive not found in database",
+        msg: `Driver id '${req.body.driver_id}' not found in database`,
       });
     } else if (
       foundDriver.is_active !== "active" ||
-      foundDriver.is_working === false
+      foundDriver.dri_status !== true
     ) {
       return response.badRequest({
         data: driverModel,
@@ -32,47 +25,49 @@ exports.asignValidator = async (req, res, next) => {
       });
     }
     // check product_item ID
+    const orderStatusReadyToAsign = "confirmed from seller";
     const foundProductItem = await productItemModel
       .findById(reqData.product_item_id)
       .populate({
         path: "order_status_id",
         select: "name",
       })
-      .select("order_status_id updated_at");
+      .select("order_status_id");
+    // return res.json(foundProductItem);
     if (foundProductItem) {
-      if (foundProductItem.order_status_id !== orderStatusReadyToAsign) {
+      req.body.order_status_id = foundProductItem.order_status_id._id.toString(); // set req body
+      if (foundProductItem.order_status_id.name !== orderStatusReadyToAsign) {
         return response.badRequest({
           data: foundProductItem,
-          msg: "This order status is not ready to asign to a driver",
+          msg: `This order status is not available to assign to a driver (order status must be '${orderStatusReadyToAsign}')`,
         });
       }
     } else {
-      return response.badRequest({
+      return response.notFound({
         data: foundProductItem,
-        msg: "product_item_id not found ",
+        msg: `product_item_id '${reqData.product_item_id}' not found`,
       });
     }
-    if (
-      await pickupFromSellerModel
-        .findOne({
-          $and: [
-            {
-              product_item_id: reqData.product_item_id,
-            },
-            {
-              cancel_reason_id: null,
-            },
-          ],
-        })
-        .populate("driver_id")
-    ) {
-      // make sure order is not asigned yet
+    // make sure order is not assigned yet
+    const foundPickupFromseller = await pickupFromSellerModel
+      .findOne({
+        $and: [
+          {
+            product_item_id: reqData.product_item_id,
+          },
+          {
+            cancel_reason_id: null,
+          },
+        ],
+      })
+      .populate("driver_id");
+    if (foundPickupFromseller) {
       return response.badRequest({
-        msg: `This order alerady asign to driver ${pickupFromSellerModel.driver_id.first_name}`,
+        data: foundPickupFromseller,
+        msg: `This order already assign to driver name '${foundPickupFromseller.driver_id.first_name}'`,
       });
     }
-
-    req.body.admin_id = req.auth._id.toString(); // set admin_id from auth ID
+    req.body.admin_id = req.auth._id.toString(); // set admin_id from auth
     const schema = Joi.object({
       product_item_id: Joi.string().required(),
       driver_id: Joi.string().required(),

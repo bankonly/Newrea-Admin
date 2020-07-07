@@ -1,4 +1,6 @@
 import { Schema, model } from "mongoose"
+const { getDate } = require("../../helpers/Global")
+
 const Category = new Schema({
     parent_id: {
         type: Schema.Types.ObjectId,
@@ -22,12 +24,13 @@ const Category = new Schema({
         required: true,
         default: "active"
     },
-    created_date: {
-        type: Date,
-        default: Date.now()
-    }
+    // created_date: {
+    //     type: Date,
+    //     default: new Date().toISOString()
+    // }
 }, {
-    collection: "category"
+    collection: "category",
+    timestamps:true
 })
 
 const Categorys = model("category", Category)

@@ -51,6 +51,7 @@ export async function fetch({
   adminType = false,
   populate = null,
   condition = {},
+  select = null,
 }) {
   try {
     var data = null;
@@ -66,10 +67,14 @@ export async function fetch({
       if (!Helpers.isEmpty(condition)) {
         condition._id = id;
       }
-      data = model.findOne(condition);
+      data = model.findOne(condition).select(select);
     } else {
-      data = model.find(condition);
+      data = model.find(condition).select(select);
     }
+
+    // if (select !== null) {
+    //   data.select(select);
+    // }
 
     if (populate !== null) {
       data = data.populate(populate);

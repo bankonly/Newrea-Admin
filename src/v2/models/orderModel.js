@@ -2,6 +2,7 @@ let mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 let AutoIncrement = require("mongoose-sequence");
 const orderNumber = AutoIncrement(mongoose);
+const { getDate } = require("../helpers/Global");
 
 let OrderSchema = new Schema({
   cus_id: {
@@ -102,7 +103,7 @@ let OrderSchema = new Schema({
   created_date: {
     type: Date,
     required: true,
-    default: Date.now(),
+    default: Date.now,
   },
 });
 let test = OrderSchema.plugin(orderNumber, { inc_field: "order_number" });

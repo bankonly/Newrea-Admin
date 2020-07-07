@@ -25,7 +25,7 @@ const history_wallet = new Schema(
     },
     create_date: {
       type: Date,
-      default: Date.now(),
+      default: Date.now,
     },
   },
   {

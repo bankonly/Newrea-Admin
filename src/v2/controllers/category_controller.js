@@ -12,6 +12,7 @@ export async function saveCategory(req, res) {
   // define response
   const response = new ResCtl(res);
   try {
+    console.log(Date.now())
     const isValid = CatProvider.validateSaveData(req);
     if (!Helpers.isEmptyObj(isValid)) {
       return response.badRequest({ data: isValid });

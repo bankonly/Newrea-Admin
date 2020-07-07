@@ -18,7 +18,7 @@ const Seller_coin = new Schema({
     },
     created_date: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     }
 }, {
     collation: "seller_coin"

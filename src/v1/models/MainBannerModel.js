@@ -28,7 +28,7 @@ var MainBannerSchema = new Schema({
     created_date: {
         type: Date,
         required: true,
-        default: Date.now(),
+        default: Date.now,
     }
 });
 module.exports = mongoose.model("main_banner", MainBannerSchema, 'main_banner');

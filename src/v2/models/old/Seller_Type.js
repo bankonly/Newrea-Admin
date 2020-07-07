@@ -13,7 +13,7 @@ const schemaSeller_Type = new Schema({
     },
     create_date: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     }
 },
     {

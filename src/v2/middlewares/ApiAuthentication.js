@@ -24,7 +24,6 @@ export default async (req, res, next) => {
     })
       .populate({
         path: "access_policy",
-        select: "is_super_admin",
       })
       .select("-password -__v");
 

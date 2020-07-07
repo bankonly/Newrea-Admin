@@ -22,7 +22,7 @@ const delivery_type = new Schema({
     created_date: {
         type: Date,
         required: true,
-        default: Date.now()
+        default: Date.now
     }
 },
     {
