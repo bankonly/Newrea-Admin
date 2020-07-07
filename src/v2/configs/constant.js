@@ -19,7 +19,7 @@ module.exports = {
   token_life_time: process.env.TOKEN_LIFE_TIME,
   image_size_allow: process.env.IMAGE_SIZE_ALLOW,
   imgPath: {
-    category: "./../img/category/",
+    category: "./../img/dp_category/",
     seller: {
       profile: "./../img/seller_img/profile/",
       logo: "./../img/seller_img/logo/",
@@ -29,6 +29,6 @@ module.exports = {
     admin: "./../img/admin/",
     brand: "./../img/brand/",
     categories: "./../img/categories/",
-    driver: "./../img/driver/",
+    driver: "./../img/driver_profiles/",
   },
 };

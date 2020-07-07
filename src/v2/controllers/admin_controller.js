@@ -8,6 +8,7 @@ const Helpers = require("../helpers/Global");
 const QueryBuilder = require("../helpers/query_builder");
 const File = require("../providers/file_provider");
 const constant = require("../configs/constant");
+const Bcrypt = require("../helpers/Bcrypt");
 
 // Admin Registeration
 export async function register(req, res) {
@@ -203,9 +204,28 @@ export async function profile(req, res) {
   }
 }
 
-export const resetPassword = async (req, res) => {
+// reset Password
+exports.resetPassword = async (req, res) => {
+  const response = new Res(res);
+  const adminID = req.params.id;
   try {
-  } catch (error) {
-    return Res.somethingWrong({ error: error });
+    let foundAdmin = await Admin.findById(adminID);
+    if (!foundAdmin) {
+      return response.notFound({ data: adminID, msg: "admin not found" });
+    }
+
+    // encryp password
+    const encriptedPass = await Bcrypt.hashPassword(req.body.password);
+    foundAdmin.password = encriptedPass;
+    if (await foundAdmin.save()) {
+      return response.success({
+        data: foundAdmin,
+        msg: "reset password admin successfully",
+      });
+    } else {
+      return response.somethingWrong({});
+    }
+  } catch (ex) {
+    return response.somethingWrong({ error: ex });
   }
 };

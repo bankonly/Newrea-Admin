@@ -103,7 +103,7 @@ let OrderSchema = new Schema({
   created_date: {
     type: Date,
     required: true,
-    default: getDate,
+    default: Date.now,
   },
 });
 let test = OrderSchema.plugin(orderNumber, { inc_field: "order_number" });

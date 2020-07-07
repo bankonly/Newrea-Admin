@@ -359,7 +359,7 @@ export async function updateProfile({ admin_id, img }) {
 export const verifyPassword = async (adminId, password) => {
   try {
     // validate object Id
-    if (!Helpers.validateObjectId(adminId)) {
+    if (!Helpers.validateObjectId(adminId.toString())) {
       return Res.badRequest({ msg: "invalid object ID" });
     }
 
@@ -372,7 +372,7 @@ export const verifyPassword = async (adminId, password) => {
       adminData.password
     );
 
-    if (!isPasswordValid) return Res.badRequest({ msg: "password incorrect" });
+    if (!isPasswordValid) return Res.badRequest({ msg: "admin's password is incorrect" });
 
     return Res.success({ msg: "verified" });
   } catch (error) {

@@ -38,19 +38,21 @@ exports.createDriver = async (req, res) => {
     throw new Error("can not upload image");
   }
   // end upload image
+
   // encryp password
   const reqBody = req.body;
+  const decrypPassword = reqBody.password;
   const SECRET_KEY_PASS = process.env.SECRET_KEY_PASS;
   const encriptedPass = crypto.AES.encrypt(
     JSON.stringify(reqBody.password),
     SECRET_KEY_PASS
   );
   reqBody.password = encriptedPass;
-
   try {
     const newDriver = new driverModel(reqBody);
     const createdDriver = await newDriver.save();
     if (createdDriver) {
+      createdDriver.password = decrypPassword;
       response.success({ data: createdDriver });
     } else {
       throw new Error();
@@ -140,6 +142,34 @@ exports.updateDriverImg = async (req, res) => {
       return response.success({
         msg: "update brand logo successfully",
         data: [foundDriver, { remove_file_status: removeFileStatus }],
+      });
+    } else {
+      return response.somethingWrong({});
+    }
+  } catch (ex) {
+    return response.somethingWrong({ error: ex });
+  }
+};
+// reset Password
+exports.resetPassword = async (req, res) => {
+  const response = new Res(res);
+  const driverID = req.params.id;
+  try {
+    let foundDriver = await driverModel.findById(driverID);
+    if (!foundDriver) {
+      return response.notFound({ data: driverID, msg: "driver not found" });
+    }
+    // encryp password
+    const SECRET_KEY_PASS = process.env.SECRET_KEY_PASS;
+    const encriptedPass = crypto.AES.encrypt(
+      JSON.stringify(req.body.password),
+      SECRET_KEY_PASS
+    );
+    foundDriver.password = encriptedPass;
+    if (await foundDriver.save()) {
+      return response.success({
+        data: foundDriver,
+        msg: "reset password driver successfully",
       });
     } else {
       return response.somethingWrong({});

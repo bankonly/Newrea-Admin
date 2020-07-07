@@ -3,6 +3,11 @@ const router = Router();
 const AdminCtrl = require("../controllers/admin_controller");
 const { AccessPermission } = require("../middlewares/AccessPermission");
 const mdw = [AccessPermission];
+const {
+  checkValidObjectId,
+  resetPasswordValidator,
+  checkAdminPassword,
+} = require("./../middlewares/validations/commonValidator");
 
 router
   .get("/admin/me", AdminCtrl.whoami)
@@ -11,6 +16,11 @@ router
   .delete("/admin/:admin_id", mdw, AdminCtrl.deleteAdmin)
   .put("/admin/:admin_id", AdminCtrl.updateAdmin)
   .post("/admin/changePassword", AdminCtrl.changePassword)
-  .post("/admin/profile", AdminCtrl.profile);
+  .post("/admin/profile", AdminCtrl.profile)
+  .put(
+    "/admin/resetPassword/:id",
+    [mdw, checkValidObjectId, resetPasswordValidator, checkAdminPassword],
+    AdminCtrl.resetPassword
+  );
 
 export default router;

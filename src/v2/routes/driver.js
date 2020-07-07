@@ -6,6 +6,8 @@ const driverController = require("./../controllers/driver_controller");
 const {
   checkValidObjectId,
   deleteValidator,
+  resetPasswordValidator,
+  checkAdminPassword
 } = require("./../middlewares/validations/commonValidator");
 const { AccessPermission } = require("../middlewares/AccessPermission");
 
@@ -32,5 +34,10 @@ router.put(
   "/driver/updateImg/:id",
   [AccessPermission, checkValidObjectId, checkImgUpload],
   driverController.updateDriverImg
+);
+router.put(
+  "/driver/resetPassword/:id",
+  [AccessPermission, resetPasswordValidator, checkAdminPassword,checkValidObjectId],
+  driverController.resetPassword
 );
 module.exports = router;
