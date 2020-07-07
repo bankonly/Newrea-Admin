@@ -77,7 +77,7 @@ exports.getAsignedOrders = async (req, res) => {
     const foundOrder = await pickupFromSellerModel
       .find({
         $and: [
-          { order_status_id: "5e47955f155e132ea0625c9f" },
+          { order_status_id: "5e47955f155e132ea0625ca1" },
           { cancel_reason_id: null },
           { driver_id: { $ne: null } },
         ],

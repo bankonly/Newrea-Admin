@@ -25,7 +25,7 @@ exports.asignValidator = async (req, res, next) => {
       });
     }
     // check product_item ID
-    const orderStatusReadyToAsign = "confirmed from seller";
+    const orderStatusReadyToAsign = "order ready to pickup";
     const foundProductItem = await productItemModel
       .findById(reqData.product_item_id)
       .populate({
