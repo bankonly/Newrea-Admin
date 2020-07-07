@@ -1,5 +1,3 @@
-import { array, object } from "@hapi/joi";
-
 const Res = require("./response_controller");
 const File = require("../providers/file_provider");
 const SubCatProvider = require("../providers/sub_category_provider");
@@ -18,7 +16,7 @@ export async function saveSubCategory(req, res) {
     if (!Helpers.isEmptyObj(isValid)) {
       return response.badRequest({ data: isValid });
     }
-    console.log(isValid)
+    console.log(isValid);
 
     // validate object id and store save data
     const isValidId = await SubCatProvider.validateProductSeller(req, {});
@@ -80,7 +78,9 @@ export async function updateSubCategory(req, res) {
     });
     if (!isValidId.status) return response.render(isValidId);
 
+    let img = null;
     if (Helpers.isFile(req.files, "img")) {
+      console.log("THERE IS IMG");
       const isUpload = File.fileUpload({
         path: constant.imgPath.categories,
         file: req.files.img,
@@ -93,10 +93,12 @@ export async function updateSubCategory(req, res) {
         fileName: isId.img,
       });
       // store image file
-      isId.img = isUpload.data;
+      img = isUpload.data;
     }
 
     const { data } = isValidId;
+
+    if (img !== null) data.img = img;
 
     if (!(await data.save()))
       return response.badRequest({ msg: "failed to update" });
@@ -105,7 +107,7 @@ export async function updateSubCategory(req, res) {
       id: req.params.cats_id,
       adminType: req.is_super_admin,
       populate: SubCatProvider.defaultPopulate,
-      select:"-img -desc -_id -desc"
+      // select: "",
     });
     return response.success(resData);
   } catch (error) {
@@ -121,7 +123,7 @@ export async function getAllSubCategory(req, res) {
     const data = await QB.fetch({
       model: SubCategory,
       adminType: req.is_super_admin,
-      populate: SubCatProvider.defaultPopulate
+      populate: SubCatProvider.defaultPopulate,
     });
     return response.success(data);
   } catch (error) {
@@ -161,3 +163,11 @@ export async function deleteSubCategory(req, res) {
     return response.somethingWrong({ error: error });
   }
 }
+
+export const updateImg = (req, res) => {
+  const response = new Res(res);
+  try {
+  } catch (error) {
+    return response.somethingWrong({ error: error });
+  }
+};

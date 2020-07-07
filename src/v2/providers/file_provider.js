@@ -40,7 +40,7 @@ export function createDirIfNotExist(path) {
 export function resizeImage({ size, path, fileName }) {
   try {
     if (!Helpers.isArray(size)) {
-      return new Error("size should be array");
+      throw new Error("size should be array");
     }
     var removePath = [];
     for (var i = 0; i < size.length; i++) {

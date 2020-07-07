@@ -1,5 +1,5 @@
 // Files Import Models,Controller ...
-const Res = require("./response_controller");
+// const Res = require("./response_controller");
 const AdminProvider = require("../providers/admin_provider");
 const AccessPolicyProvider = require("../providers/access_policy_provider");
 const Admin = require("../models/admin");
@@ -11,7 +11,6 @@ const constant = require("../configs/constant");
 
 // Admin Registeration
 export async function register(req, res) {
-  const response = new Res(res);
   try {
     const saveData = {
       name: req.body.name,
@@ -29,19 +28,18 @@ export async function register(req, res) {
 
     // Check validator
     if (!Helpers.isEmptyObj(isValidData))
-      return response.badRequest({ data: isValidData });
+      return Res.badRequest({ data: isValidData });
 
     // register admin
     const registerAdmin = await AdminProvider.createNewAdmin(createData);
-    return response.success(registerAdmin);
+    return Res.success(registerAdmin);
   } catch (error) {
-    return response.somethingWrong({ error: error });
+    return Res.somethingWrong({ error: error });
   }
 }
 
 // Login Admin
 export async function login(req, res) {
-  const response = new Res(res);
   try {
     // prepare save data
     const loginData = {
@@ -53,35 +51,33 @@ export async function login(req, res) {
 
     // Check validator
     if (!Helpers.isEmptyObj(isValidData))
-      return response.badRequest({ data: isValidData });
+      return Res.badRequest({ data: isValidData });
 
     const isLoggedIn = await AdminProvider.login(loginData);
-    return response.success(isLoggedIn);
+    return Res.success(isLoggedIn);
   } catch (error) {
-    return response.somethingWrong({ error: error });
+    return Res.somethingWrong({ error: error });
   }
 }
 
 // get admin list
 export async function getAdminList(req, res) {
-  const response = new Res(res);
   try {
     const adminData = await AdminProvider.getAdmin({
       is_super_admin: req.is_super_admin,
     });
-    return response.success(adminData);
+    return Res.success(adminData);
   } catch (error) {
-    return response.somethingWrong({ error: error });
+    return Res.somethingWrong({ error: error });
   }
 }
 
 // get admin list
 export async function getAdminById(req, res) {
-  const response = new Res(res);
   try {
     // Check validator
     if (!Helpers.validateObjectId(req.params.admin_id)) {
-      return response.badRequest({ data: "invalid id" });
+      return Res.badRequest({ data: "invalid id" });
     }
 
     const adminData = await AdminProvider.getAdmin({
@@ -89,30 +85,28 @@ export async function getAdminById(req, res) {
       is_super_admin: req.is_super_admin,
     });
 
-    return response.success(adminData);
+    return Res.success(adminData);
   } catch (error) {
-    return response.somethingWrong({ error: error });
+    return Res.somethingWrong({ error: error });
   }
 }
 
 // delete admin
 export async function deleteAdmin(req, res) {
-  const response = new Res(res);
   try {
     const isSet = await QueryBuilder.setActive(
       Admin,
       req.params.admin_id,
       req.body.is_active
     );
-    return response.success(isSet);
+    return Res.success(isSet);
   } catch (error) {
-    return response.somethingWrong({ error: error });
+    return Res.somethingWrong({ error: error });
   }
 }
 
 // Update Admin by Id
 export async function updateAdmin(req, res) {
-  const response = new Res(res);
   try {
     const saveData = {
       name: req.body.name,
@@ -125,7 +119,7 @@ export async function updateAdmin(req, res) {
     const updatedata = { ...saveData };
     // Check validator
     if (!Helpers.validateObjectId(req.params.admin_id)) {
-      return response.badRequest({ data: "invalid id" });
+      return Res.badRequest({ data: "invalid id" });
     }
 
     // Validate Request Data
@@ -133,22 +127,21 @@ export async function updateAdmin(req, res) {
 
     // Check validator
     if (!Helpers.isEmptyObj(isValidData))
-      return response.badRequest({ data: isValidData });
+      return Res.badRequest({ data: isValidData });
 
     // register admin
     const registerAdmin = await AdminProvider.updateAdmin(
       updatedata,
       req.params.admin_id
     );
-    return response.success(registerAdmin);
+    return Res.success(registerAdmin);
   } catch (error) {
-    return response.somethingWrong({ error: error });
+    return Res.somethingWrong({ error: error });
   }
 }
 
 // Change Password
 export async function changePassword(req, res) {
-  const response = new Res(res);
   try {
     const bodyData = {
       password: req.body.password,
@@ -159,37 +152,35 @@ export async function changePassword(req, res) {
     // Validate BodyData
     const isValidData = AdminProvider.validateChangePwd(bodyData);
     if (!Helpers.isEmptyObj(isValidData))
-      return response.success({ data: isValidData });
+      return Res.success({ data: isValidData });
 
     // call change password function
     const changePwd = await AdminProvider.changePassword(
       bodyData,
       req.auth._id
     );
-    return response.success(changePwd);
+    return Res.success(changePwd);
   } catch (error) {
-    return response.somethingWrong({ error: error });
+    return Res.somethingWrong({ error: error });
   }
 }
 
 // who am i
 export async function whoami(req, res) {
-  const response = new Res(res);
   try {
-    return response.success({ data: req.auth });
-  } catch (error) { 
-    return response.somethingWrong({ error: error });
+    return Res.success({ data: req.auth });
+  } catch (error) {
+    return Res.somethingWrong({ error: error });
   }
 }
 
 // update profile image
 export async function profile(req, res) {
-  const response = new Res(res);
   try {
     //  validate body data
     const isValid = AdminProvider.validateProfile(req);
     if (!Helpers.isEmptyObj(isValid)) {
-      return response.badRequest({ data: isValid });
+      return Res.badRequest({ data: isValid });
     }
 
     // upload image
@@ -199,15 +190,22 @@ export async function profile(req, res) {
       path: constant.imgPath.admin,
     });
 
-    if (!isUpload.status) return response.badRequest(isUpload);
+    if (!isUpload.status) return Res.badRequest(isUpload);
 
     const isUpdate = await AdminProvider.updateProfile({
       admin_id: req.auth._id,
       img: req.body.img,
     });
 
-    return response.success(isUpdate);
+    return Res.success(isUpdate);
   } catch (error) {
-    return response.somethingWrong({ error: error });
+    return Res.somethingWrong({ error: error });
   }
 }
+
+export const resetPassword = async (req, res) => {
+  try {
+  } catch (error) {
+    return Res.somethingWrong({ error: error });
+  }
+};
