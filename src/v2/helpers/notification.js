@@ -63,6 +63,7 @@ exports.send_notification = async (notiData, collection, condition) => {
       );
     }
   } catch (error) {
+    console.log(error)
     return {
       errorMessage: error,
     };
