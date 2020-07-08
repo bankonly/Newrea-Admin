@@ -50,7 +50,7 @@ exports.getOrders = async (req, res) => {
         },
         {
           path: "items.seller_id",
-          select: "name",
+          select: "name location",
         },
         {
           path: "items.order_status_id",
