@@ -145,6 +145,7 @@ exports.getAllCancelFromDriver = async (req, res) => {
 // get asgined orders
 exports.asigneToDriver = async (req, res) => {
   const response = new Res(res);
+  console.log('assign to user')
   try {
     // push notification
     const notiData = {
