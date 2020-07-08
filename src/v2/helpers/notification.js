@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 // import SSM_token from "./../models/SSM_token"
 
 exports.send_notification = async (notiData, collection, condition) => {
-  console.log('noti working...')
+  console.log("noti working...");
 
   // if (notiData) {
   // console.log(collection)
@@ -11,7 +11,8 @@ exports.send_notification = async (notiData, collection, condition) => {
   try {
     // var result = await SSM_token.find(condition);
     var result = await mongoose.model(collection).find(condition);
-    return result.json(result);
+    console.log(result);
+    return res.json(result);
     // let result = [
     //   {
     //     token:
