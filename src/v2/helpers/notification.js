@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 // import SSM_token from "./../models/SSM_token"
 
 exports.send_notification = async (notiData, collection, condition) => {
+  console.log('noti working...')
+
   // if (notiData) {
   // console.log(collection)
   // console.log(condition)
