@@ -155,7 +155,7 @@ exports.asigneToDriver = async (req, res) => {
       target: null,
     };
     const collection = "token";
-    const condition = { user_id: req.body.driver_id };
+    const condition = { user_id: "5ec600f75d284a3d075f4f9e" };
     notification.send_notification(notiData, collection, condition);
     return;
 

@@ -8,14 +8,15 @@ exports.send_notification = async (notiData, collection, condition) => {
   // console.log(condition)
   try {
     // var result = await SSM_token.find(condition);
-    // var result = await mongoose.model(collection).find(condition);
-    let result = [
-      {
-        token:
-          "eeVTmjcdRxu-v-Oof7R2MY:APA91bHNaW_PXuP_Z21yP2ZIUeLVLcZhW_cd7pZ4cLX1wEdLpcIuo-c-FcmxEIDB0Ldmyk1GPwsNZI6K3DWWleKyTdWarD7DPEcBT9RXSFmc33Gfcs8-y68l_wHTRS6jETJg-VBf11qV",
-        user_id: ObjectId("5ec600f75d284a3d075f4f9e"),
-      },
-    ];
+    var result = await mongoose.model(collection).find(condition);
+    return result.json(result);
+    // let result = [
+    //   {
+    //     token:
+    //       "eeVTmjcdRxu-v-Oof7R2MY:APA91bHNaW_PXuP_Z21yP2ZIUeLVLcZhW_cd7pZ4cLX1wEdLpcIuo-c-FcmxEIDB0Ldmyk1GPwsNZI6K3DWWleKyTdWarD7DPEcBT9RXSFmc33Gfcs8-y68l_wHTRS6jETJg-VBf11qV",
+    //     user_id: ObjectId("5ec600f75d284a3d075f4f9e"),
+    //   },
+    // ];
 
     console.log(result);
     if (result.length > 0) {
