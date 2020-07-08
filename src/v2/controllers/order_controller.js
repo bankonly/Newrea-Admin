@@ -146,28 +146,23 @@ exports.getAllCancelFromDriver = async (req, res) => {
 exports.asigneToDriver = async (req, res) => {
   const response = new Res(res);
   try {
-    // const newData = new pickupFromSellerModel(req.body);
-    // const savedData = await newData.save();
-    // if (savedData) {
-    // return response.success({ data: savedData });
-    // update order status after assign to driver
-    //
-    //
-    //
-    // push notification
-    const notiData = {
-      title: "test notification",
-      body: "new order",
-      channelId: "asfasgasdgsdgsdg",
-      channelName: "dsgsdgsdgdfg",
-      target: null,
-    };
-    const condition = { user_id: "5ec600f75d284a3d075f4f9e" };
-    notification.send_notification(notiData, condition);
-    response.success({ data: savedData });
-    // } else {
-    //   return response.somethingWrong({ data: savedData });
-    // }
+    const newData = new pickupFromSellerModel(req.body);
+    const savedData = await newData.save();
+    if (savedData) {
+      // push notification
+      const notiData = {
+        title: "test notification",
+        body: "new order",
+        channelId: "asfasgasdgsdgsdg",
+        channelName: "dsgsdgsdgdfg",
+        target: null,
+      };
+      const condition = { user_id: req.body.driver_id };
+      notification.send_notification(notiData, condition);
+      response.success({ data: savedData });
+    } else {
+      return response.somethingWrong({ data: savedData });
+    }
   } catch (ex) {
     response.somethingWrong({ error: ex });
   }
