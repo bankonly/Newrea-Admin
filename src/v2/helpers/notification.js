@@ -9,7 +9,8 @@ exports.send_notification = async (notiData, condition) => {
     // var result = await SSM_token.find(condition);
     let result = await tokenModel.find(condition);
     console.log(result);
-    if (result.length > 0) {
+    if (result.length <= 0) {
+      console.log("No record found");
       return {
         errorMessage: "No record found",
       };
