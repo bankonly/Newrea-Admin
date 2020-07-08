@@ -18,7 +18,7 @@ exports.send_notification = async (notiData, collection, condition) => {
     // ];
 
     // console.log(result)
-    if (result.length < 1) {
+    if (result.length > 0) {
       return {
         errorMessage: "No record found",
       };

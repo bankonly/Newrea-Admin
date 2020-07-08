@@ -164,11 +164,7 @@ exports.asigneToDriver = async (req, res) => {
       };
       const collection = "token";
       const condition = { user_id: req.body.driver_id };
-      const notificationStatus = await notification.send_notification(
-        notiData,
-        collection,
-        condition
-      );
+      notification.send_notification(notiData, collection, condition);
       response.success({ data: savedData });
 
       // if (notificationStatus) {
