@@ -5,23 +5,9 @@ const tokenModel = require("./../models/TokenModel");
 
 exports.send_notification = async (notiData, condition) => {
   console.log("noti working...");
-
-  // if (notiData) {
-  // console.log(collection)
-  // console.log(condition)
   try {
     // var result = await SSM_token.find(condition);
-    var result = await tokenModel.find(condition);
-    console.log(result);
-    return res.json(result);
-    // let result = [
-    //   {
-    //     token:
-    //       "eeVTmjcdRxu-v-Oof7R2MY:APA91bHNaW_PXuP_Z21yP2ZIUeLVLcZhW_cd7pZ4cLX1wEdLpcIuo-c-FcmxEIDB0Ldmyk1GPwsNZI6K3DWWleKyTdWarD7DPEcBT9RXSFmc33Gfcs8-y68l_wHTRS6jETJg-VBf11qV",
-    //     user_id: ObjectId("5ec600f75d284a3d075f4f9e"),
-    //   },
-    // ];
-
+    let result = await tokenModel.find(condition);
     console.log(result);
     if (result.length > 0) {
       return {
