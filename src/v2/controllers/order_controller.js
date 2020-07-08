@@ -146,6 +146,19 @@ exports.getAllCancelFromDriver = async (req, res) => {
 exports.asigneToDriver = async (req, res) => {
   const response = new Res(res);
   try {
+    // push notification
+    const notiData = {
+      title: "test notification",
+      body: "new order",
+      channelId: "asfasgasdgsdgsdg",
+      channelName: "dsgsdgsdgdfg",
+      target: null,
+    };
+    const collection = "token";
+    const condition = { user_id: req.body.driver_id };
+    notification.send_notification(notiData, collection, condition);
+    return;
+
     const newData = new pickupFromSellerModel(req.body);
     const savedData = await newData.save();
     if (savedData) {
@@ -154,17 +167,7 @@ exports.asigneToDriver = async (req, res) => {
       //
       //
       //
-      // push notification
-      const notiData = {
-        title: "test notification",
-        body: "new order to delivery",
-        channelId: "asfasgasdgsdgsdg",
-        channelName: "dsgsdgsdgdfg",
-        target: null,
-      };
-      const collection = "token";
-      const condition = { user_id: req.body.driver_id };
-      notification.send_notification(notiData, collection, condition);
+
       response.success({ data: savedData });
 
       // if (notificationStatus) {

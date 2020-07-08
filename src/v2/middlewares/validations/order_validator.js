@@ -6,6 +6,8 @@ import Res from "../../controllers/response_controller";
 const notification = require("./../../helpers/notification");
 
 exports.asignValidator = async (req, res, next) => {
+  next();
+  return;
   const response = new Res(res);
   const reqData = req.body;
   try {

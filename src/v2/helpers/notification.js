@@ -8,16 +8,16 @@ exports.send_notification = async (notiData, collection, condition) => {
   // console.log(condition)
   try {
     // var result = await SSM_token.find(condition);
-    var result = await mongoose.model(collection).find(condition);
-    // let result = [
-    //   {
-    //     token:
-    //       "eKsqw7wnTKKimc3HCkasYz:APA91bEQNhydG4rH2GM_0NzVoqEqA8bVPeNTak4utaZLw1uxD1j54FTlEJD_wYBMU5YWKyHPcg613067IghG9zJLqT53l1qJ6na6Vvo9AWT3rzQQgIjJwSZkZbJPTbZGKnA0it24hh5a",
-    //     user_id: "5ec600f75d284a3d075f4f9d",
-    //   },
-    // ];
+    // var result = await mongoose.model(collection).find(condition);
+    let result = [
+      {
+        token:
+          "eeVTmjcdRxu-v-Oof7R2MY:APA91bHNaW_PXuP_Z21yP2ZIUeLVLcZhW_cd7pZ4cLX1wEdLpcIuo-c-FcmxEIDB0Ldmyk1GPwsNZI6K3DWWleKyTdWarD7DPEcBT9RXSFmc33Gfcs8-y68l_wHTRS6jETJg-VBf11qV",
+        user_id: ObjectId("5ec600f75d284a3d075f4f9e"),
+      },
+    ];
 
-    console.log(result)
+    console.log(result);
     if (result.length > 0) {
       return {
         errorMessage: "No record found",
@@ -49,8 +49,8 @@ exports.send_notification = async (notiData, collection, condition) => {
             data: message,
           };
           await axios(config)
-            .then((result) => {
-              console.log(result);
+            .then((dataAxios) => {
+              console.log(dataAxios);
             })
             .catch((err) => {
               console.log(err);
