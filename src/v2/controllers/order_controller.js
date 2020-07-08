@@ -151,10 +151,10 @@ exports.asigneToDriver = async (req, res) => {
     if (savedData) {
       // push notification
       const notiData = {
-        title: "test notification",
-        body: "new order",
-        channelId: "asfasgasdgsdgsdg",
-        channelName: "dsgsdgsdgdfg",
+        title: "ມິອໍເດີ້ໃໝ່",
+        body: "ກົດເພຶ່ອເບິ່ງລາຍລະອຽດ",
+        channelId: "new_order",
+        channelName: "new_order_notification",
         target: null,
       };
       const condition = { user_id: req.body.driver_id };
