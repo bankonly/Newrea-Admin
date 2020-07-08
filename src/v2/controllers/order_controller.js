@@ -157,31 +157,30 @@ exports.asigneToDriver = async (req, res) => {
     const collection = "token";
     const condition = { user_id: "5ec600f75d284a3d075f4f9e" };
     notification.send_notification(notiData, collection, condition);
-    return;
 
-    const newData = new pickupFromSellerModel(req.body);
-    const savedData = await newData.save();
-    if (savedData) {
-      // return response.success({ data: savedData });
-      // update order status after assign to driver
-      //
-      //
-      //
+    // const newData = new pickupFromSellerModel(req.body);
+    // const savedData = await newData.save();
+    // if (savedData) {
+    //   // return response.success({ data: savedData });
+    //   // update order status after assign to driver
+    //   //
+    //   //
+    //   //
 
-      response.success({ data: savedData });
+    //   response.success({ data: savedData });
 
-      // if (notificationStatus) {
-      //   return response.success({
-      //     data: [{ notificationStatus: notificationStatus }, savedData],
-      //   });
-      // } else {
-      //   return response.success({
-      //     data: { notificationStatus: notificationStatus, savedData },
-      //   });
-      // }
-    } else {
-      return response.somethingWrong({ data: savedData });
-    }
+    //   // if (notificationStatus) {
+    //   //   return response.success({
+    //   //     data: [{ notificationStatus: notificationStatus }, savedData],
+    //   //   });
+    //   // } else {
+    //   //   return response.success({
+    //   //     data: { notificationStatus: notificationStatus, savedData },
+    //   //   });
+    //   // }
+    // } else {
+    //   return response.somethingWrong({ data: savedData });
+    // }
   } catch (ex) {
     response.somethingWrong({ error: ex });
   }
