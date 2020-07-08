@@ -145,7 +145,7 @@ exports.getAllCancelFromDriver = async (req, res) => {
 // get asgined orders
 exports.asigneToDriver = async (req, res) => {
   const response = new Res(res);
-  console.log('assign to user')
+  console.log("assign to user");
   try {
     // push notification
     const notiData = {
@@ -155,9 +155,8 @@ exports.asigneToDriver = async (req, res) => {
       channelName: "dsgsdgsdgdfg",
       target: null,
     };
-    const collection = "Token";
     const condition = { user_id: "5ec600f75d284a3d075f4f9e" };
-    notification.send_notification(notiData, collection, condition);
+    notification.send_notification(notiData, condition);
 
     // const newData = new pickupFromSellerModel(req.body);
     // const savedData = await newData.save();

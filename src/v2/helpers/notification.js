@@ -1,8 +1,9 @@
 const axios = require("axios");
 const mongoose = require("mongoose");
+const tokenModel = require("./../models/TokenModel");
 // import SSM_token from "./../models/SSM_token"
 
-exports.send_notification = async (notiData, collection, condition) => {
+exports.send_notification = async (notiData, condition) => {
   console.log("noti working...");
 
   // if (notiData) {
@@ -10,7 +11,7 @@ exports.send_notification = async (notiData, collection, condition) => {
   // console.log(condition)
   try {
     // var result = await SSM_token.find(condition);
-    var result = await mongoose.model(collection).find(condition);
+    var result = await tokenModel.find(condition);
     console.log(result);
     return res.json(result);
     // let result = [
@@ -63,7 +64,7 @@ exports.send_notification = async (notiData, collection, condition) => {
       );
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return {
       errorMessage: error,
     };
