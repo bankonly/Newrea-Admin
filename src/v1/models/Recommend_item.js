@@ -1,7 +1,7 @@
-var mongoose = require("mongoose");
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-var Recommend_item = new Schema({
+const Recommend_item = new Schema({
     product_seller_id: {
         type: Schema.Types.ObjectId,
         ref: 'product_seller',

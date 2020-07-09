@@ -1,28 +1,33 @@
-var mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import mongoose from "mongoose";
 
-var Most_popular = new Schema({
-  title: {
-    type: String,
-    required: true,
+const tableName = "most_popular";
+const schema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    desc: {
+      type: String,
+      default: null,
+    },
+    img: {
+      type: String,
+      required: true,
+    },
+    is_active: {
+      type: String,
+      default: "active",
+      required: true,
+    },
+    created_date: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  desc: {
-    type: String,
-    default: null,
-  },
-  img: {
-    type: String,
-    required: true,
-  },
-  is_active: {
-    type: String,
-    default: "active",
-    required: true,
-  },
-  created_date: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  { collection: tableName }
+);
 
-module.exports = mongoose.model("most_popular", Most_popular, "most_popular");
+const MostPopular = mongoose.model(tableName, schema);
+
+module.exports = MostPopular;

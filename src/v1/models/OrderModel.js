@@ -1,9 +1,10 @@
-var mongoose = require("mongoose");
+let mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-var AutoIncrement = require("mongoose-sequence");
+let AutoIncrement = require("mongoose-sequence");
 const orderNumber = AutoIncrement(mongoose);
+const { getDate } = require("../helpers/Global");
 
-var OrderSchema = new Schema({
+let OrderSchema = new Schema({
   cus_id: {
     type: Schema.Types.ObjectId,
     ref: "customer",
@@ -96,7 +97,7 @@ var OrderSchema = new Schema({
   },
   is_active: {
     type: String,
-    required: true,
+    enum: ["active", "inactive"],
     default: "active",
   },
   created_date: {
@@ -105,7 +106,7 @@ var OrderSchema = new Schema({
     default: Date.now,
   },
 });
-var test = OrderSchema.plugin(orderNumber, { inc_field: "order_number" });
+let test = OrderSchema.plugin(orderNumber, { inc_field: "order_number" });
 // console.log(test);
 OrderSchema = test;
 module.exports = mongoose.model("order", test, "order");

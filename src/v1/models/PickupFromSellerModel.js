@@ -1,63 +1,49 @@
-var mongoose = require("mongoose");
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const opts = { toJSON: { virtuals: true } };
-
-var PickupFromSellerSchema = new Schema({
+const PickupFromSellerSchema = new Schema(
+  {
     product_item_id: {
-        type: Schema.Types.ObjectId,
-        ref: 'ProductItem',
-        required: true
+      type: Schema.Types.ObjectId,
+      ref: "product_item",
+      required: true,
     },
     driver_id: {
-        type: Schema.Types.ObjectId,
-        ref: 'Driver',
-        required: true
-    },
-    seller_id: {
-        type: Schema.Types.ObjectId,
-        ref: 'Seller',
-        required: true
+      type: Schema.Types.ObjectId,
+      ref: "driver",
+      required: true,
     },
     admin_id: {
-        type: Schema.Types.ObjectId,
-        ref: 'Admin',
-        required: true
+      type: Schema.Types.ObjectId,
+      ref: "admin",
+      required: true,
     },
-    status: {
-        type: String,
-        enum: ['pending', 'confirm', 'complete'],
-        default: 'pending'
-    },
-    order_id: {
-        type: Schema.Types.ObjectId,
-        ref: 'Order',
-        required: true
+    order_status_id: {
+      type: Schema.Types.ObjectId,
+      ref: "order_status",
+      required: true,
     },
     cancel_reason_id: {
-        type: Schema.Types.ObjectId,
-        ref: 'CancelReason',
-        default: null
+      type: Schema.Types.ObjectId,
+      ref: "cancel_reason",
+      default: null,
     },
     is_active: {
-        type: Boolean,
-        default: true,
-        required: true
+      type: String,
+      enum: ["active", "inactive"],
+      default: "active",
     },
-    deleted_at: {
-        type: Date,
-        default: null
-    }
-}, {
+  },
+  {
     timestamps: {
-        createdAt: 'created_at',
-        updatedAt: 'updated_at'
+      createdAt: "created_at",
+      updatedAt: "updated_at",
     },
-}, opts);
+  }
+);
 
-
-PickupFromSellerSchema.virtual('image_full_path').get(function() {
-    return 'storage/pickup-seller/' + this._id + '/image/' + this.profile_img;
-});
-
-module.exports = mongoose.model("PickupFromSeller", PickupFromSellerSchema, 'pickup_from_seller');
+module.exports = mongoose.model(
+  "PickupFromSeller",
+  PickupFromSellerSchema,
+  "pickup_from_seller"
+);
