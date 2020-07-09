@@ -48,6 +48,11 @@ const Product_items = new Schema(
               type: Schema.Types.ObjectId,
               ref: "product_seller",
             },
+            order_status_id: {
+              type: Schema.Types.ObjectId,
+              ref: "order_status",
+              default: null,
+            },
             option_id: {
               type: Schema.Types.ObjectId,
               ref: "products_option",
