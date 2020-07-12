@@ -1,9 +1,13 @@
-const Res = require("../controllers/default_res_controller");
 const ModelName = require("../models/ModelName");
-const Helpers = require("../helpers/Global");
+const _ = require("../helpers/utils");
+const res = require("./response_provider");
 
-// validate save data
+// validate incoming data
 export function validate(obj, update = true) {
-  var error = {};
-  return error;
+  try{
+    var error = {};
+    return error;
+  }catch(error){
+    return res.somethingWrong({error:error})
+  }
 }

@@ -1,6 +1,6 @@
 import { mode } from "crypto-js";
 const Helpers = require("./Global");
-const Res = require("../controllers/default_res_controller");
+const Res = require("../providers/response_provider");
 
 export async function updateOne(model, id, updateData) {
   const isId = await model.findById(id);
@@ -72,15 +72,11 @@ export async function fetch({
       data = model.find(condition).select(select);
     }
 
-    // if (select !== null) {
-    //   data.select(select);
-    // }
-
     if (populate !== null) {
       data = data.populate(populate);
     }
 
-    const resData = await data.select("-__v");
+    const resData = await data;
 
     if (resData == null || resData.length < 1) {
       return Res.notFound({ msg: "no data" });

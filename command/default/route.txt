@@ -1,12 +1,11 @@
-import { Router } from "express";
-const router = Router();
+const router = require("express").Router();
 const ReplaceNameCtrl = require("../controllers/ReplaceName_controller");
 
 router
-  .get("/ReplaceName", ReplaceNameCtrl.getAllReplaceName)
-  .get("/ReplaceName/:banner_id", ReplaceNameCtrl.getReplaceName)
-  .delete("/ReplaceName/:banner_id", ReplaceNameCtrl.deleteReplaceName)
-  .put("/ReplaceName/:banner_id", ReplaceNameCtrl.updateReplaceName)
-  .post("/ReplaceName", ReplaceNameCtrl.saveReplaceName);
+  .get("/ReplaceName/fetch", ReplaceNameCtrl.getAllReplaceName)
+  .get("/ReplaceName/by/:ReplaceName", ReplaceNameCtrl.getReplaceName)
+  .delete("/ReplaceName/delete/:ReplaceName", ReplaceNameCtrl.deleteReplaceName)
+  .put("/ReplaceName/update/:ReplaceName", ReplaceNameCtrl.updateReplaceName)
+  .post("/ReplaceName/store", ReplaceNameCtrl.saveReplaceName);
 
 export default router;

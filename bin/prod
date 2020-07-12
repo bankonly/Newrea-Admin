@@ -1,1 +1,1 @@
-require('./../dist/v2/server')
+require('./../dist/v1/server')
