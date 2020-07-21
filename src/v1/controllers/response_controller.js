@@ -47,7 +47,7 @@ class ResponseController {
 
   // created
 
-  created({ data = {}, msg = "created success", status = true, code = 200 }) {
+  created({ data = {}, msg = "created success", status = true, code = 201 }) {
     return this.res.json({
       message: msg,
       status: status,
@@ -77,7 +77,7 @@ class ResponseController {
   }
 
   // notFound
-  notFound({ data = {}, msg = "notFound", status = false, code = 404 }) {
+  notFound({ data = {}, msg = "no content", status = false, code = 204 }) {
     return this.res.json({
       message: msg,
       status: status,
@@ -102,7 +102,7 @@ class ResponseController {
   }
 
   // notAllowed
-  notAllowed({ data = {}, msg = "notAllowed", status = false, code = 405 }) {
+  notAllowed({ data = {}, msg = "not allow", status = false, code = 405 }) {
     return this.res.json({
       message: msg,
       status: status,
@@ -147,6 +147,15 @@ class ResponseController {
     status = true,
     code = 400,
   }) {
+    return this.res.json({
+      message: msg,
+      status: status,
+      code: code,
+      data: data,
+    });
+  }
+
+  fail({ data = {}, msg = "process failed", status = true, code = 500 }) {
     return this.res.json({
       message: msg,
       status: status,

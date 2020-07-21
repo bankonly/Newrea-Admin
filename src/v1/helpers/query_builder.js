@@ -1,25 +1,25 @@
 import { mode } from "crypto-js";
 const Helpers = require("./Global");
-const Res = require("../providers/response_provider");
+const response = require("../providers/response_provider");
 
 export async function updateOne(model, id, updateData) {
   const isId = await model.findById(id);
   if (!isId) {
-    return Res.notFound({ msg: "no data" });
+    return response.notFound({ msg: "no data" });
   }
 
   const isUpdate = await model.updateOne({ _id: id }, { $set: updateData });
   if (isUpdate) {
-    return Res.success({ msg: "updated", data: isId });
+    return response.success({ msg: "updated", data: isId });
   }
-  return Res.badRequest({ msg: "cannot update" });
+  return response.badRequest({ msg: "cannot update" });
 }
 
 export function deleteOne(model, id) {
   return model.findByIdAndDelete(id);
 }
 
-export function isIdExist(model, id) {
+export function get(model, id) {
   return model.findById(id);
 }
 
@@ -62,7 +62,7 @@ export async function fetch({
 
     if (id !== null) {
       if (!Helpers.validateObjectId(id)) {
-        return Res.badRequest({ msg: "invalid id" });
+        return response.badRequest({ msg: "invalid id" });
       }
       if (!Helpers.isEmpty(condition)) {
         condition._id = id;
@@ -79,12 +79,12 @@ export async function fetch({
     const resData = await data;
 
     if (resData == null || resData.length < 1) {
-      return Res.notFound({ msg: "no data" });
+      return response.notFound({ msg: "no data" });
     }
 
-    return Res.success({ data: resData });
+    return response.success({ data: resData });
   } catch (error) {
-    return Res.somethingWrong({ error: error });
+    return response.somethingWrong({ error: error });
   }
 }
 
@@ -102,25 +102,25 @@ export function isValidActive(is_active) {
 export async function setActive(model, id, is_active) {
   try {
     if (!Helpers.invalidObjectId(id)) {
-      return Res.badRequest({ msg: "invalid id" });
+      return response.badRequest({ msg: "invalid id" });
     }
 
     const isId = await isIdExist(model, id);
     if (!isId) {
-      return Res.notFound({ msg: "no data" });
+      return response.notFound({ msg: "no data" });
     }
     const isValid = isValidActive(is_active);
     if (!Helpers.isEmptyObj(isValid)) {
-      return Res.badRequest({ data: isValid });
+      return response.badRequest({ data: isValid });
     }
 
     isId.is_active = is_active;
 
     if (isId.save()) {
-      return Res.success({ msg: "set to " + is_active });
+      return response.success({ msg: "set to " + is_active });
     }
-    return Res.success({ msg: "cannot set data" });
+    return response.success({ msg: "cannot set data" });
   } catch (error) {
-    return Res.somethingWrong({ error: error });
+    return response.somethingWrong({ error: error });
   }
 }

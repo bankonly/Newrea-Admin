@@ -3,8 +3,10 @@ const userCtrl = require("../controllers/user_controller");
 
 router.get("/welcome", (req, res) => res.send("Welocme to lamo"));
 
-// user_controller
-router.post("/register", userCtrl.register);
-router.post("/login", userCtrl.login);
+router
+  // user_controller
+  .post("/register", userCtrl.register)
+  .post("/login", userCtrl.login)
+  .post("/user/resetPassword", userCtrl.resetPassword);
 
 export default router;

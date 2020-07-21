@@ -2,7 +2,7 @@ import { mode } from "crypto-js";
 
 const mongoose = require("mongoose");
 
-export const collection = "user";
+export const user_collection_name = "user";
 
 const schema = new mongoose.Schema(
   {
@@ -51,6 +51,10 @@ const schema = new mongoose.Schema(
   }
 );
 
-const model = mongoose.model(collection, schema, collection);
+const model = mongoose.model(
+  user_collection_name,
+  schema,
+  user_collection_name
+);
 
 export const UserModel = model;

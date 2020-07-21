@@ -5,23 +5,23 @@ const constant = require("../configs/constant");
 const sharp = require("sharp");
 const formidable = require("formidable");
 const Helpers = require("../helpers/utils");
-const Res = require("../providers/response_provider");
+const response = require("../providers/response_provider");
 
 // validate image
 export function imageValidate(imageSize, file) {
   try {
     if (!Array.isArray(imageSize)) {
-      return Res.badRequest({ msg: "img is should be array" });
+      return response.badRequest({ msg: "img is should be array" });
     }
 
     for (var i = 0; i < imageSize.length; i++) {
       if (typeof imageSize[i] !== "number") {
-        return Res.badRequest({ msg: "img is should be number" });
+        return response.badRequest({ msg: "img is should be number" });
       }
     }
-    return Res.success({});
+    return response.success({});
   } catch (error) {
-    return Res.somethingWrong({ error: error });
+    return response.somethingWrong({ error: error });
   }
 }
 
@@ -141,11 +141,11 @@ export function uploadImage({
     if (!validateImage.status) return validateImage;
 
     if (file.size > constant.image_size_allow) {
-      return Res.badRequest({ msg: "file is to large" });
+      return response.badRequest({ msg: "file is to large" });
     }
 
     if (!constant.image_type_accept.includes(file.mimetype.split("/")[1])) {
-      return Res.badRequest({ msg: "img type not accepted" });
+      return response.badRequest({ msg: "img type not accepted" });
     }
     const fileName = uuid() + Date.now() + "." + fileType;
     req.body.img = fileName;
@@ -157,9 +157,9 @@ export function uploadImage({
       fileName: fileName,
     });
 
-    return Res.success({ data: fileName, msg: "img created" });
+    return response.success({ data: fileName, msg: "img created" });
   } catch (error) {
-    return Res.somethingWrong({ error: error });
+    return response.somethingWrong({ error: error });
   }
 }
 
@@ -173,17 +173,17 @@ export const uploadImageMany = ({
 }) => {
   try {
     if (!Helpers.isArray(file)) {
-      return Res.badRequest({ msg: "file should be array" });
+      return response.badRequest({ msg: "file should be array" });
     }
 
     if (file.length > size) {
-      return Res.badRequest({ msg: "too much file allow only " + size });
+      return response.badRequest({ msg: "too much file allow only " + size });
     }
 
     let imgList = [];
     for (let i = 0; i < file.length; i++) {
       if (file[i].size > constant.image_size_allow) {
-        return Res.badRequest({ msg: "file is to large" });
+        return response.badRequest({ msg: "file is to large" });
       }
 
       // validate image before save
@@ -193,7 +193,7 @@ export const uploadImageMany = ({
       if (
         !constant.image_type_accept.includes(file[i].mimetype.split("/")[1])
       ) {
-        return Res.badRequest({ msg: "img type not accepted" });
+        return response.badRequest({ msg: "img type not accepted" });
       }
       const fileName = uuid() + Date.now() + "." + fileType;
       createDirIfNotExist(path);
@@ -206,11 +206,11 @@ export const uploadImageMany = ({
       imgList.push(fileName);
     }
     if (imgList.length > 0) {
-      return Res.success({ data: imgList, msg: "img created" });
+      return response.success({ data: imgList, msg: "img created" });
     }
-    return Res.badRequest({ msg: "img upload failed" });
+    return response.badRequest({ msg: "img upload failed" });
   } catch (error) {
-    return Res.somethingWrong({ error: error });
+    return response.somethingWrong({ error: error });
   }
 };
 

@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 export function invalidObjectId(id) {
   return Types.ObjectId.isValid(id);
 }
@@ -84,7 +83,7 @@ export const msg = {
   requried: (field, method = "string") => {
     return `:${field} field is required as ${method}`;
   },
-  duplicated: (field) => `${field} is already exist`,
+  exist: (field) => `${field} is already exist`,
   notMatch: "password not match",
   pwd_notMatch_old: "password not match with old password",
   save: (isSave = true) => {
@@ -93,5 +92,60 @@ export const msg = {
       msg_alert = "failed to save";
     }
     return msg_alert;
+  },
+};
+
+export const isPhone = (phone) => {
+  if (isEmpty(phone)) return false;
+  return {
+    la: (country_number = "20", limit = 10) => {
+      const length = phone.split("");
+      const start_number = phone.substring(0, 2);
+      if (length.length == limit && start_number == country_number) return true;
+      return false;
+    },
+  };
+};
+
+export const isEmail = (email) => {
+  if (isEmpty(email)) return false;
+  const isAddress = email.split("@");
+  const isCom = email.split(".com");
+  if (isAddress.length == 1 || isCom.length == 1) return false;
+  if (!isEmpty(isCom[isCom.length - 1])) return false;
+  return true;
+};
+
+export const isObject = (obj) => {
+  if (typeof obj !== "object") return false;
+  if (Object.keys(obj).length === 0) return false;
+  return true;
+};
+
+export const date = {
+  getTimeStamp: (plus = null) => {
+    let time = new Date().getTime();
+    if (plus !== null) time += plus;
+    return time;
+  },
+  nowSec: () => {
+    return parseInt(new Date().getTime() / 1000);
+  },
+  timeStampToSec: (timeTamp) => parseInt(timeTamp / 1000),
+  dateToSec: (date) => {
+    const dt = new Date(date);
+    return parseInt(dt.getTime() / 1000);
+  },
+  getSecond: () => {
+    const date = new Date();
+    return date.getSeconds();
+  },
+  addTime: (value, method = "second") => {
+    if (method == "second") {
+      value = value * 1000;
+    } else {
+      value = value * 60000;
+    }
+    return new Date(new Date().getTime() + value);
   },
 };

@@ -18,7 +18,10 @@ export default async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(authorization, process.env.SECRET_KEY);
+    const decoded = jwt.verify(
+      authorization,
+      process.env.SECRET_KEY_RESET_PASSWORD
+    );
     const userData = await UserModel.findOne({ _id: decoded._id }).select(
       "-password -__v"
     );
@@ -26,9 +29,6 @@ export default async (req, res, next) => {
       return response.notFound({ msg: "user might be deleted or banned" });
     }
 
-    if (userData.login_count !== decoded.login_count) {
-      return response.unAuthorized({});
-    }
     req.auth = userData;
     global.auth = userData;
     return next();
