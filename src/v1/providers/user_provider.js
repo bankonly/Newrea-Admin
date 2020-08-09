@@ -1,8 +1,8 @@
 const _ = require("../helpers/utils");
 const bcrypt = require("../helpers/bcrypt");
-const response = require("./response_provider");
-const { UserModel } = require("../models/user");
 const str = require("../helpers/messages").default;
+const Model = require("newrea_model");
+const UserModel = Model.User.Model;
 
 // validate incoming data
 export const validate = async (req, update = false) => {

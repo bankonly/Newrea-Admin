@@ -1,4 +1,4 @@
-const res = require("../providers/response_provider");
+const res = require("ssv-response-no-res");
 const Mail = require("nodemailer");
 const CONSTANT = require("../configs/constant");
 const c_otp = require("../configs/files/otp");

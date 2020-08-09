@@ -1,7 +1,7 @@
 import bodyParser from "body-parser";
 import cors from "cors";
 import passport from "passport";
-import fileupload from "express-fileupload";
+import { ssv_file_upload } from "ssv-file-upload";
 import global_variable from "./global_variable";
 import { _404 } from "../middlewares/error_handler";
 
@@ -15,13 +15,12 @@ export const preStart = (app) => {
   // parse application/json
   app.use(bodyParser.json());
 
-  app.use(fileupload());
-  
+  app.use(ssv_file_upload());
+
   app.use(global_variable);
 };
 
 export const preEnd = (app) => {
   // error handler
   app.use(_404);
-
 };

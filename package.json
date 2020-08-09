@@ -35,6 +35,7 @@
     "mongoose": "^5.6.9",
     "mongoose-sequence": "^5.2.2",
     "multer": "^1.4.2",
+    "newrea_model": "git+https://github.com/bankonly/Newarea-Model.git",
     "node-unique-id-generator": "^0.1.0",
     "nodemailer": "^6.4.10",
     "nodemon": "^1.19.1",
@@ -43,6 +44,9 @@
     "secure-random-password": "^0.2.1",
     "sharp": "^0.24.0",
     "socket.io": "^2.3.0",
+    "ssv-file-upload": "^1.0.5",
+    "ssv-response": "^1.0.1",
+    "ssv-response-no-res": "^1.0.0",
     "tunnel-ssh": "^4.1.4",
     "uuid": "^3.4.0",
     "validator": "^11.1.0"

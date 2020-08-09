@@ -1,7 +1,8 @@
-import { UserModel } from "../models/user";
-const response = require("../controllers/response_controller");
+const response = require("ssv-response");
 import jwt from "jsonwebtoken";
 import CONSTANT from "../configs/constant";
+const Model = require("newrea_model");
+const UserModel = Model.User.Model;
 
 export default async (req, res, next) => {
 

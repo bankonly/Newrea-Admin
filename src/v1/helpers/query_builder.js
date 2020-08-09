@@ -1,6 +1,6 @@
 import { mode } from "crypto-js";
 const Helpers = require("./Global");
-const response = require("../providers/response_provider");
+const response = require("ssv-response-no-res");
 
 export async function updateOne(model, id, updateData) {
   const isId = await model.findById(id);
