@@ -1,7 +1,7 @@
 import constant from "../configs/constant";
 const { UserModel } = require("../models/user");
 const { OtpModel } = require("../models/otp");
-const Res = require("./response_controller");
+const render = require("./response_controller");
 const _user = require("../providers/user_provider");
 const _ = require("../helpers/utils");
 const jwt = require("../helpers/jwt");
@@ -11,7 +11,6 @@ const _otp = require("../providers/opt_provider");
 const _mail = require("../providers/mail_provider");
 
 export const register = async (req, res) => {
-  const render = new Res(res);
   try {
     // validate register data
     const validate = await _user.validate(req);
@@ -20,7 +19,6 @@ export const register = async (req, res) => {
     }
 
     const save_data = await _user.saveData(req.body);
-    console.log(save_data);
     const user = await UserModel.create(save_data);
     if (!user) return render.badRequest({ msg: _.msg.save(false) });
 
@@ -31,7 +29,6 @@ export const register = async (req, res) => {
 };
 
 export const me = (req, res) => {
-  const render = new Res(res);
   try {
     return render.success({ data: req.auth });
   } catch (error) {
@@ -40,7 +37,6 @@ export const me = (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const render = new Res(res);
   try {
     const body = req.body;
     // validate register data
@@ -74,7 +70,6 @@ export const login = async (req, res) => {
 };
 
 export const changePassword = async (req, res) => {
-  const render = new Res(res);
   try {
     const body = req.body;
     const validate = await _user.validateChangePassword(req);
@@ -96,7 +91,6 @@ export const changePassword = async (req, res) => {
 };
 
 export const resetPassword = async (req, res) => {
-  const render = new Res(res);
   try {
     if (!_.isEmail(body.email)) {
       return render.badRequest({ msg: MSG.INVALID.EMAIL });
@@ -174,7 +168,6 @@ export const resetPassword = async (req, res) => {
 
 // otp_code
 export const verifyOtp = async (req, res) => {
-  const render = new Res(res);
   try {
     if (_.isEmpty(body.otp_code)) {
       return render.badRequest({ msg: MSG.requried("otp_code") });
@@ -214,7 +207,6 @@ export const verifyOtp = async (req, res) => {
 };
 
 export const registerNewPassword = async (req, res) => {
-  const render = new Res(res);
   try {
     const validate = _user.validateResetPassword(body);
     if (!_.isEmptyObj(validate)) {

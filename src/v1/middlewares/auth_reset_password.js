@@ -1,10 +1,9 @@
 import { UserModel } from "../models/user";
-import Res from "../controllers/response_controller";
+const response = require("../controllers/response_controller");
 import jwt from "jsonwebtoken";
 import CONSTANT from "../configs/constant";
 
 export default async (req, res, next) => {
-  const response = new Res(res);
 
   if (!req.headers.authorization) {
     return response.unAuthorized({});
