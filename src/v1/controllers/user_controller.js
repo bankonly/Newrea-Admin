@@ -1,15 +1,15 @@
-import constant from "../configs/constant";
 const Model = require("newrea_model");
+const _ = require("ssv-utils");
+const bcrypt = _.bcryptFn;
 const resp = require("ssv-response");
+const File = require("ssv-file-upload");
 const _user = require("../providers/user_provider");
-const _ = require("../helpers/utils");
 const jwt = require("../helpers/jwt");
-const bcrypt = require("../helpers/bcrypt");
 const MSG = require("../helpers/messages").default;
 const _mail = require("../providers/mail_provider");
+import constant from "../configs/constant";
 const UserModel = Model.User.Model;
 const OtpModel = Model.OTP.Model;
-const File = require("ssv-file-upload");
 
 export const register = async (req, res) => {
   try {
@@ -21,7 +21,7 @@ export const register = async (req, res) => {
 
     const save_data = await _user.saveData(req.body);
     const user = await UserModel.create(save_data);
-    if (!user) return resp.badRequest({ msg: _.msg.save(false) });
+    if (!user) return resp.badRequest({ msg: MSG.save(false) });
 
     return resp.created({});
   } catch (error) {
@@ -52,7 +52,7 @@ export const login = async (req, res) => {
 
     // verify password
     const password = await bcrypt.verifyPassword(body.password, user.password);
-    if (!password) return resp.badRequest({ msg: _.msg.notMatch });
+    if (!password) return resp.badRequest({ msg: MSG.notMatch });
 
     // new login count
     user.login_count = user.login_count + 1;
@@ -83,9 +83,9 @@ export const changePassword = async (req, res) => {
     user.password = await bcrypt.hashPassword(req.body.password);
 
     if (!(await user.save())) {
-      return resp.badRequest({ msg: _.msg.save(false) });
+      return resp.badRequest({ msg: MSG.save(false) });
     }
-    return resp.success({ msg: _.msg.save(true) });
+    return resp.success({ msg: MSG.save(true) });
   } catch (error) {
     return resp.somethingWrong({ error: error });
   }
@@ -106,12 +106,13 @@ export const resetPassword = async (req, res) => {
 
     const user_id = user._id.toString();
 
-    let opt_code = {
-      opt_code: _.generateOtp({}),
+    const opt_new_code = _.generateOtp({});
+    let otp_code = {
+      otp_code: opt_new_code,
     };
 
     let save_data = {};
-    save_data.code = _.generateOtp({});
+    save_data.code = opt_new_code;
     save_data.expire_time = _.date.addTime(constant.OTP_EXPIRED_TIME);
     save_data.resend_after = _.date.addTime(constant.OPT_ALLOW_RESENT_SECOND);
     save_data.author = user._id;
@@ -140,10 +141,10 @@ export const resetPassword = async (req, res) => {
 
     const send = await _mail.send({
       to: user.email,
-      otp_code: opt_code.opt_code,
+      otp_code: otp_code.otp_code,
       link: _mail.generateLink({
         host: constant.APP_HOST,
-        otp_code: opt_code.opt_code,
+        otp_code: otp_code.otp_code,
       }),
     });
 
@@ -170,6 +171,7 @@ export const resetPassword = async (req, res) => {
 // otp_code
 export const verifyOtp = async (req, res) => {
   try {
+    console.log(body.otp_code)
     if (_.isEmpty(body.otp_code)) {
       return resp.badRequest({ msg: MSG.requried("otp_code") });
     }
@@ -182,7 +184,7 @@ export const verifyOtp = async (req, res) => {
     const expire_time_sec = _.date.dateToSec(otp_data.expire_time);
     const now_sec = _.date.nowSec();
 
-    // check opt_code is expired or not
+    // check otp_code is expired or not
     if (expire_time_sec < now_sec) {
       otp_data.resend_count = 0;
       await otp_data.save();
@@ -193,7 +195,7 @@ export const verifyOtp = async (req, res) => {
       return resp.badRequest({ msg: MSG.OTP.LIMITED });
     }
 
-    if (otp_data.otp_code !== body.opt_code) {
+    if (otp_data.code !== body.otp_code) {
       otp_data.resend_count += 1;
       return resp.badRequest({ msg: MSG.OTP.INVALID });
     }

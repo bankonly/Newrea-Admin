@@ -1,5 +1,5 @@
-const _ = require("../helpers/utils");
-const bcrypt = require("../helpers/bcrypt");
+const _ = require("ssv-utils");
+const bcrypt = _.bcryptFn;
 const str = require("../helpers/messages").default;
 const Model = require("newrea_model");
 const UserModel = Model.User.Model;
